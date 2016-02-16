@@ -592,7 +592,7 @@ void fec_destroy(fec _q)
         printf("error: fec_destroy(), cannot destroy fec object of type \"UNKNOWN\"\n");
         exit(-1);
     case LIQUID_FEC_NONE:
-        fec_pass_destroy(NULL);
+        fec_pass_destroy(_q);
         return;
     case LIQUID_FEC_REP3:
         fec_rep3_destroy(_q);
