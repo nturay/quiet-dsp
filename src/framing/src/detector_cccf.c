@@ -377,6 +377,9 @@ void detector_cccf_compute_dotprods(detector_cccf _q)
         // TODO: compute scaled squared magnitude so as not to have
         //       to compute square root
         _q->rxy[k] = cabsf(rxy) * _q->n_inv / sqrtf(_q->x2_hat);
+        if (_q->rxy[k] != _q->rxy[k]) {
+            _q->rxy[k] = 0;
+        }
 #if DEBUG_DETECTOR_PRINT
         printf("%6.4f (%6.4f) ", _q->rxy[k], _q->dphi[k]);
 #endif
