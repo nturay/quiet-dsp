@@ -206,6 +206,7 @@ MODEM() MODEM(_create)(modulation_scheme _scheme)
     case LIQUID_MODEM_ARB128OPT: return MODEM(_create_arb128opt)();
     case LIQUID_MODEM_ARB256OPT: return MODEM(_create_arb256opt)();
     case LIQUID_MODEM_ARB64VT:   return MODEM(_create_arb64vt)();
+    case LIQUID_MODEM_ARB64UI:   return MODEM(_create_arb64ui)();
     
     // arbitrary modem
     case LIQUID_MODEM_ARB:

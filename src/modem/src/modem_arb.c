@@ -180,6 +180,16 @@ MODEM() MODEM(_create_arb64vt)()
     return q;
 }
 
+// create an arb64ui (64-qam ui logo) modem object
+MODEM() MODEM(_create_arb64ui)()
+{
+    MODEM() q = MODEM(_create_arb)(6);
+#if T == float
+    MODEM(_arb_init)(q,(TC*)modem_arb_ui64,64);
+#endif
+    return q;
+}
+
 // initialize an arbitrary modem object
 //  _mod        :   modem object
 //  _symbol_map :   arbitrary modem symbol map
