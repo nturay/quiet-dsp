@@ -1328,6 +1328,7 @@ MODEM() MODEM(_create_arb64opt)(void);                          \
 MODEM() MODEM(_create_arb128opt)(void);                         \
 MODEM() MODEM(_create_arb256opt)(void);                         \
 MODEM() MODEM(_create_arb64vt)(void);                           \
+MODEM() MODEM(_create_arb64ui)(void);                           \
                                                                 \
 /* Scale arbitrary modem energy to unity */                     \
 void MODEM(_arb_scale)(MODEM() _q);                             \

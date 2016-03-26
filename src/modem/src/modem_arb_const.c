@@ -105,6 +105,42 @@ const float complex modem_arb_vt64[64] = {
       1.0122e-01+ -4.3510e-01*_Complex_I,  -4.0500e-03+ -6.1505e-01*_Complex_I
 };
 
+// UIllinois logo
+const float complex modem_arb_ui64[64] = {
+     1.4934e+00+  1.4970e+00*_Complex_I,   1.1965e+00+  1.4970e+00*_Complex_I,
+     8.9956e-01+  1.4970e+00*_Complex_I,   5.9825e-01+  1.4970e+00*_Complex_I,
+     3.0131e-01+  1.4970e+00*_Complex_I,   0.0000e+00+  1.4970e+00*_Complex_I,
+    -2.9694e-01+  1.4970e+00*_Complex_I,  -5.9389e-01+  1.4970e+00*_Complex_I,
+    -8.9520e-01+  1.4970e+00*_Complex_I,  -1.1921e+00+  1.4970e+00*_Complex_I,
+    -1.4934e+00+  1.4970e+00*_Complex_I,  -1.4934e+00+  1.3114e+00*_Complex_I,
+    -1.4934e+00+  1.1228e+00*_Complex_I,  -1.4934e+00+  9.3413e-01*_Complex_I,
+    -1.4934e+00+  7.5150e-01*_Complex_I,  -1.2183e+00+  7.5150e-01*_Complex_I,
+    -9.4323e-01+  7.5150e-01*_Complex_I,  -6.6812e-01+  7.5150e-01*_Complex_I,
+    -6.6812e-01+  5.6587e-01*_Complex_I,  -6.6812e-01+  3.7725e-01*_Complex_I,
+    -6.6812e-01+  1.8862e-01*_Complex_I,  -6.6812e-01+  0.0000e+00*_Complex_I,
+    -6.6812e-01+ -1.8862e-01*_Complex_I,  -6.6812e-01+ -3.7425e-01*_Complex_I,
+    -6.6812e-01+ -5.6287e-01*_Complex_I,  -1.2183e+00+ -7.5150e-01*_Complex_I,
+    -9.4323e-01+ -7.5150e-01*_Complex_I,  -6.6812e-01+ -7.5150e-01*_Complex_I,
+    -1.4934e+00+ -7.5150e-01*_Complex_I,  -1.4934e+00+ -9.3114e-01*_Complex_I,
+    -1.4934e+00+ -1.1198e+00*_Complex_I,  -1.4934e+00+ -1.3084e+00*_Complex_I,
+     1.4934e+00+ -1.4940e+00*_Complex_I,   1.1965e+00+ -1.4940e+00*_Complex_I,
+     8.9956e-01+ -1.4940e+00*_Complex_I,   5.9825e-01+ -1.4940e+00*_Complex_I,
+     3.0131e-01+ -1.4940e+00*_Complex_I,   0.0000e+00+ -1.4940e+00*_Complex_I,
+    -2.9694e-01+ -1.4940e+00*_Complex_I,  -5.9389e-01+ -1.4940e+00*_Complex_I,
+    -8.9520e-01+ -1.4940e+00*_Complex_I,  -1.1921e+00+ -1.4940e+00*_Complex_I,
+    -1.4934e+00+ -1.4940e+00*_Complex_I,   1.4934e+00+ -7.5150e-01*_Complex_I,
+     1.4934e+00+ -9.3114e-01*_Complex_I,   1.4934e+00+ -1.1198e+00*_Complex_I,
+     1.4934e+00+ -1.3084e+00*_Complex_I,   1.2227e+00+ -7.5150e-01*_Complex_I,
+     9.4760e-01+ -7.5150e-01*_Complex_I,   6.7249e-01+ -7.5150e-01*_Complex_I,
+     6.7249e-01+  5.6587e-01*_Complex_I,   6.7249e-01+  3.7725e-01*_Complex_I,
+     6.7249e-01+  1.8862e-01*_Complex_I,   6.7249e-01+  0.0000e+00*_Complex_I,
+     6.7249e-01+ -1.8862e-01*_Complex_I,   6.7249e-01+ -3.7425e-01*_Complex_I,
+     6.7249e-01+ -5.6287e-01*_Complex_I,   1.2227e+00+  7.5150e-01*_Complex_I,
+     9.4760e-01+  7.5150e-01*_Complex_I,   6.7249e-01+  7.5150e-01*_Complex_I,
+     1.4934e+00+  1.3114e+00*_Complex_I,   1.4934e+00+  1.1228e+00*_Complex_I,
+     1.4934e+00+  9.3413e-01*_Complex_I,   1.4934e+00+  7.5150e-01*_Complex_I
+};
+
 // optimal 16-QAM
 const float complex modem_arb16opt[16] = {
      -0.87119000+ -0.87970000*_Complex_I,  -1.15090000+ -0.26101000*_Complex_I, 

@@ -106,6 +106,7 @@ const struct modulation_type_s modulation_types[LIQUID_MODEM_NUM_SCHEMES] = {
     {"arb128opt", "arb128opt (optimal 128-qam)",   LIQUID_MODEM_ARB128OPT, 7},
     {"arb256opt", "arb256opt (optimal 256-qam)",   LIQUID_MODEM_ARB256OPT, 8},
     {"arb64vt",   "arb64vt (64-qam vt logo)",      LIQUID_MODEM_ARB64VT,   6},
+    {"arb64ui",   "arb64ui (64-qam ui logo)",      LIQUID_MODEM_ARB64UI,   6},
 
     // arbitrary modem type
     {"arb",       "arbitrary constellation",       LIQUID_MODEM_ARB,       0},
