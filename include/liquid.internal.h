@@ -1455,6 +1455,9 @@ extern const float complex modem_arb_V29[16];
 // Virginia Tech logo
 extern const float complex modem_arb_vt64[64];
 
+// University of Illinois logo
+extern const float complex modem_arb_ui64[64];
+
 // optimal QAM constellations
 extern const float complex modem_arb16opt[16];
 extern const float complex modem_arb32opt[32];
