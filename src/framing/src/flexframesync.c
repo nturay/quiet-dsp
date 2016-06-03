@@ -292,6 +292,11 @@ void flexframesync_reset(flexframesync _q)
     _q->framesyncstats.evm = 0.0f;
 }
 
+int flexframesync_is_frame_open(flexframesync _q)
+{
+    return (_q->state == FLEXFRAMESYNC_STATE_DETECTFRAME) ? 0 : 1;
+}
+
 void flexframesync_set_header_len(flexframesync _q,
                                   unsigned int  _len)
 {
