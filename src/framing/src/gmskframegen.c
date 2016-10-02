@@ -234,13 +234,13 @@ void gmskframegen_set_header_len(gmskframegen _q,
 //  _check          :   data validity check
 //  _fec0           :   inner forward error correction
 //  _fec1           :   outer forward error correction
-void gmskframegen_assemble(gmskframegen    _q,
+void gmskframegen_assemble(gmskframegen          _q,
                            const unsigned char * _header,
                            const unsigned char * _payload,
-                           unsigned int    _payload_len,
-                           crc_scheme      _check,
-                           fec_scheme      _fec0,
-                           fec_scheme      _fec1)
+                           unsigned int          _payload_len,
+                           crc_scheme            _check,
+                           fec_scheme            _fec0,
+                           fec_scheme            _fec1)
 {
     // re-create frame generator if properties don't match
     if (_q->dec_msg_len != _payload_len ||
@@ -339,7 +339,7 @@ int gmskframegen_write_samples(gmskframegen _q,
 // internal methods
 //
 
-void gmskframegen_encode_header(gmskframegen    _q,
+void gmskframegen_encode_header(gmskframegen          _q,
                                 const unsigned char * _header)
 {
     // first 'n' bytes user data
