@@ -3889,6 +3889,8 @@ gmskframegen gmskframegen_create();
 void gmskframegen_destroy       (gmskframegen _q);
 int  gmskframegen_is_assembled  (gmskframegen _q);
 void gmskframegen_print         (gmskframegen _q);
+void gmskframegen_set_header_len(gmskframegen _fg,
+                                 unsigned int _len);
 void gmskframegen_reset         (gmskframegen _q);
 void gmskframegen_assemble      (gmskframegen          _q,
                                  const unsigned char * _header,
