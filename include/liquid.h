@@ -29,6 +29,9 @@ extern "C" {
 #   define LIQUID_USE_COMPLEX_H 1
 #endif // __cplusplus
 
+// common headers
+#include <inttypes.h>
+
 //
 // Make sure the version and version number macros weren't defined by
 // some prevoiusly included header file.
@@ -1297,20 +1300,14 @@ LIQUID_FFT_DEFINE_API(LIQUID_FFT_MANGLE_FLOAT,float,liquid_float_complex)
 typedef struct SPGRAM(_s) * SPGRAM();                           \
                                                                 \
 /* create spgram object                                     */  \
-/*  _nfft       :   FFT size                                */  \
-/*  _window     :   window [size: _window_len x 1]          */  \
-/*  _window_len :   window length                           */  \
+/*  _nfft       : FFT size                                  */  \
+/*  _window     : window [size: _window_len x 1]            */  \
+/*  _window_len : window length, _window_len in [1,_nfft]   */  \
+/*  _delay      : delay between transforms, _delay > 0      */  \
 SPGRAM() SPGRAM(_create)(unsigned int _nfft,                    \
-                         float *      _window,                  \
-                         unsigned int _window_len);             \
-                                                                \
-/* create spgram object with Kaiser-Bessel window           */  \
-/*  _nfft       :   FFT size                                */  \
-/*  _window_len :   window length                           */  \
-/*  _beta       :   Kaiser-Bessel parameter (_beta > 0)     */  \
-SPGRAM() SPGRAM(_create_kaiser)(unsigned int _nfft,             \
-                                unsigned int _window_len,       \
-                                float        _beta);            \
+                         int          _wtype,                   \
+                         unsigned int _window_len,              \
+                         unsigned int _delay);                  \
                                                                 \
 /* create default spgram object (Kaiser-Bessel window)      */  \
 SPGRAM() SPGRAM(_create_default)(unsigned int _nfft);           \
@@ -1320,6 +1317,22 @@ void SPGRAM(_destroy)(SPGRAM() _q);                             \
                                                                 \
 /* resets the internal state of the spgram object           */  \
 void SPGRAM(_reset)(SPGRAM() _q);                               \
+                                                                \
+/* print internal state of the spgram object                */  \
+void SPGRAM(_print)(SPGRAM() _q);                               \
+                                                                \
+/* set methods                                              */  \
+int          SPGRAM(_set_alpha)(SPGRAM() _q, float _alpha);     \
+                                                                \
+/* access methods                                           */  \
+unsigned int SPGRAM(_get_nfft)                (SPGRAM() _q);    \
+unsigned int SPGRAM(_get_window_len)          (SPGRAM() _q);    \
+unsigned int SPGRAM(_get_delay)               (SPGRAM() _q);    \
+uint64_t     SPGRAM(_get_num_samples)         (SPGRAM() _q);    \
+uint64_t     SPGRAM(_get_num_samples_total)   (SPGRAM() _q);    \
+uint64_t     SPGRAM(_get_num_transforms)      (SPGRAM() _q);    \
+uint64_t     SPGRAM(_get_num_transforms_total)(SPGRAM() _q);    \
+float        SPGRAM(_get_alpha)               (SPGRAM() _q);    \
                                                                 \
 /* push a single sample into the spgram object              */  \
 /*  _q      :   spgram object                               */  \
@@ -1335,43 +1348,27 @@ void SPGRAM(_write)(SPGRAM()     _q,                            \
                     TI *         _x,                            \
                     unsigned int _n);                           \
                                                                 \
-/* compute spectral periodogram output (complex values)     */  \
-/* from current buffer contents                             */  \
-/*  _q      :   spgram object                               */  \
-/*  _X      :   output complex spectrum [size: _nfft x 1]   */  \
-void SPGRAM(_execute)(SPGRAM() _q,                              \
-                      TC *     _X);                             \
-                                                                \
 /* compute spectral periodogram output (fft-shifted values  */  \
 /* in dB) from current buffer contents                      */  \
 /*  _q      :   spgram object                               */  \
-/*  _X      :   output spectrum [size: _nfft x 1]           */  \
-void SPGRAM(_execute_psd)(SPGRAM() _q,                          \
-                          T *      _X);                         \
+/*  _X      :   output spectrum (dB) [size: _nfft x 1]      */  \
+void SPGRAM(_get_psd)(SPGRAM() _q,                              \
+                      T *      _X);                             \
                                                                 \
-/* accumulate power spectral density                        */  \
-/*  _q      :   spgram object                               */  \
-/*  _x      :   input buffer [size: _n x 1]                 */  \
-/*  _alpha  :   auto-regressive memory factor, [0,1]        */  \
-/*  _n      :   input buffer length                         */  \
-void SPGRAM(_accumulate_psd)(SPGRAM()       _q,                 \
-                             TI *           _x,                 \
-                             float          _alpha,             \
-                             unsigned int   _n);                \
+/* export gnuplot file                                      */  \
+/*  _q        : spgram object                               */  \
+/*  _filename : input buffer [size: _n x 1]                 */  \
+int SPGRAM(_export_gnuplot)(SPGRAM()     _q,                    \
+                            const char * _filename);            \
                                                                 \
-/* write accumulated psd                                    */  \
-/*  _q      :   spgram object                               */  \
-/*  _x      :   input buffer [size: _n x 1]                 */  \
-/*  _n      :   input buffer length [size: _nfft x 1]       */  \
-void SPGRAM(_write_accumulation)(SPGRAM() _q,                   \
-                                 T *      _x);                  \
+/* object-independent methods */                                \
                                                                 \
 /* estimate spectrum on input signal                        */  \
-/*  _q      :   spgram object                               */  \
+/*  _nfft   :   FFT size                                    */  \
 /*  _x      :   input signal [size: _n x 1]                 */  \
 /*  _n      :   input signal length                         */  \
 /*  _psd    :   output spectrum, [size: _nfft x 1]          */  \
-void SPGRAM(_estimate_psd)(SPGRAM()     _q,                     \
+void SPGRAM(_estimate_psd)(unsigned int _nfft,                  \
                            TI *         _x,                     \
                            unsigned int _n,                     \
                            T *          _psd);                  \
@@ -4543,6 +4540,33 @@ float liquid_nchoosek(unsigned int _n, unsigned int _k);
 // 
 // Windowing functions
 //
+
+// Modulation schemes available
+#define LIQUID_WINDOW_NUM_FUNCTIONS (10)
+
+// prototypes
+typedef enum {
+    LIQUID_WINDOW_UNKNOWN=0,        // unknown/unsupported scheme
+
+    LIQUID_WINDOW_HAMMING,          // Hamming
+    LIQUID_WINDOW_HANN,             // Hann
+    LIQUID_WINDOW_BLACKMANHARRIS,   // Blackman-harris (4-term)
+    LIQUID_WINDOW_BLACKMANHARRIS7,  // Blackman-harris (7-term)
+    LIQUID_WINDOW_KAISER,           // Kaiser (beta factor unspecified)
+    LIQUID_WINDOW_FLATTOP,          // flat top (includes negative values)
+    LIQUID_WINDOW_TRIANGULAR,       // triangular
+    LIQUID_WINDOW_RCOSTAPER,        // raised-cosine taper (taper size unspecified)
+    LIQUID_WINDOW_KBD,              // Kaiser-Bessel derived window (beta factor unspecified)
+} liquid_window_type;
+
+// pretty names for window
+extern const char * liquid_window_str[LIQUID_WINDOW_NUM_FUNCTIONS][2];
+
+// Print compact list of existing and available windowing functions
+void liquid_print_windows();
+
+// returns modulation_scheme based on input string
+liquid_window_type liquid_getopt_str2window(const char * _str);
 
 // Kaiser-Bessel derived window (single sample)
 //  _n      :   index (0 <= _n < _N)

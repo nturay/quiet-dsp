@@ -64,9 +64,7 @@ ASGRAM() ASGRAM(_create)(unsigned int _nfft)
     q->psd = (float *) malloc((q->nfft)*sizeof(float));
 
     // create spectral periodogram object
-    unsigned int window_len = q->nfft;
-    float beta = 10.0f;
-    q->periodogram = SPGRAM(_create_kaiser)(q->nfft, window_len, beta);
+    q->periodogram = SPGRAM(_create_default)(q->nfft);
 
     // power spectral density levels
     q->num_levels = 10;
@@ -160,6 +158,7 @@ void ASGRAM(_execute)(ASGRAM()  _q,
                       float *   _peakval,
                       float *   _peakfreq)
 {
+#if 0
     // execute spectral periodogram
     SPGRAM(_execute)(_q->periodogram, _q->X);
 
@@ -167,6 +166,11 @@ void ASGRAM(_execute)(ASGRAM()  _q,
     unsigned int i;
     for (i=0; i<_q->nfft; i++)
         _q->psd[i] = 10*log10f(cabsf(_q->X[(i + _q->nfft/2)%_q->nfft]));
+#else
+    unsigned int i;
+    for (i=0; i<_q->nfft; i++)
+        _q->psd[i] = 0.0f;
+#endif
 
     unsigned int j;
     for (i=0; i<_q->nfft; i++) {

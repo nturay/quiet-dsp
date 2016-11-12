@@ -10,60 +10,45 @@
 
 int main()
 {
-    // msource parameters
-    int          ms          = LIQUID_MODEM_QPSK;
-    unsigned int k           =     4;
-    unsigned int m           =    12;
-    float        beta        = 0.30f;
-
     // spectral periodogram options
-    unsigned int nfft        =   2400;  // spectral periodogram FFT size
-    unsigned int num_samples = 248000;  // number of samples
-    float        alpha       =   0.50f; // PSD estimate bandwidth
+    unsigned int nfft        =    1200; // spectral periodogram FFT size
+    unsigned int num_samples = 2000000; // number of samples
+
+    // derived values
+    unsigned int num_estimates = 800;  // target number of PSD estimates
+    unsigned int samples_per_estimate = (unsigned int)(num_samples/num_estimates);
 
     unsigned int i;
-
-    // create spectral periodogram
-    unsigned int window_size = nfft/2;  // spgramcf window size
-    spgramcf periodogram = spgramcf_create_kaiser(nfft, window_size, 10.0f);
 
     // create time-varying multi-path channel object
     unsigned int c_len = 17;
     float        std   = 0.1f;
     float        tau   = 1e-4f;
     tvmpch_cccf channel = tvmpch_cccf_create(c_len, std, tau);
-    tvmpch_cccf_print(channel);
 
-    unsigned int buf_len = 1024;
+    unsigned int buf_len = 64;
     float complex buf[buf_len];
+
+    // create spectral periodogram
+    spgramcf periodogram = spgramcf_create_default(nfft);
 
     // create stream generator
     msourcecf gen = msourcecf_create();
     
-    // add noise source (wide-band)
-    int id_noise1 = msourcecf_add_noise(gen, 1.00f);
-    msourcecf_set_gain(gen, id_noise1, -80.0f);
-
     // add noise source (narrow-band)
-    int id_noise2 = msourcecf_add_noise(gen, 1.00f);
-    //msourcecf_set_frequency(gen, id_noise2, 0.4*2*M_PI);
-    msourcecf_set_gain     (gen, id_noise2, -20.0f);
+    int id_noise = msourcecf_add_noise(gen, 0.10f);
+    msourcecf_set_frequency(gen, id_noise, 0.4*2*M_PI);
+    msourcecf_set_gain     (gen, id_noise, -20.0f);
 
-#if 0
     // add tone
     int id_tone = msourcecf_add_tone(gen);
     msourcecf_set_frequency(gen, id_tone, -0.4*2*M_PI);
-    msourcecf_set_gain     (gen, id_tone, -40.0f);
+    msourcecf_set_gain     (gen, id_tone, -10.0f);
 
     // add modulated data
-    int id_modem = msourcecf_add_modem(gen,ms,k,m,beta);
+    int id_modem = msourcecf_add_modem(gen,LIQUID_MODEM_QPSK,4,12,0.30f);
+    msourcecf_set_frequency(gen, id_modem, -0.1*2*M_PI);
     msourcecf_set_gain     (gen, id_modem, 0.0f);
-#endif
-
-    // print source generator object
-    msourcecf_print(gen);
-
-    unsigned int num_transforms = 0;
 
     FILE * fid = fopen("waterfall.bin","wb");
     // write header
@@ -75,7 +60,9 @@ int main()
     }
 
     float psd[nfft];
-    unsigned int total_samples = 0;
+    unsigned int total_samples   = 0;
+    unsigned int total_estimates = 0;
+    int state = 1;
     while (total_samples < num_samples) {
         // write samples to buffer
         msourcecf_write_samples(gen, buf, buf_len);
@@ -84,24 +71,39 @@ int main()
         tvmpch_cccf_execute_block(channel, buf, buf_len, buf);
 
         // push resulting sample through periodogram
-        spgramcf_accumulate_psd(periodogram, buf, alpha, buf_len);
-        
-        // compute power spectral density output
-        spgramcf_write_accumulation(periodogram, psd);
+        spgramcf_write(periodogram, buf, buf_len);
 
-        // write output
-        float n = (float)num_transforms;
-        fwrite(&n, sizeof(float), 1, fid);
-        fwrite(psd, sizeof(float), nfft, fid);
-        num_transforms++;
+        if (spgramcf_get_num_samples(periodogram) > samples_per_estimate) {
+            // compute power spectral density output
+            spgramcf_get_psd(periodogram, psd);
+
+            // write output
+            float n = (float)total_samples;
+            fwrite(&n, sizeof(float), 1, fid);
+            fwrite(psd, sizeof(float), nfft, fid);
+
+            // soft reset of internal state, counters
+            spgramcf_reset(periodogram);
+
+            // update counter for total number of PSD estimates taken
+            total_estimates++;
+        }
 
         // accumulated samples
         total_samples += buf_len;
 
+        // update state for noise source
+        if (state == 0 && randf() < 0.01f) {
+            state = 1;
+            msourcecf_enable(gen, id_noise);
+        } else if (state == 1 && randf() < 0.01f) {
+            state = 0;
+            msourcecf_disable(gen, id_noise);
+        }
     }
-    tvmpch_cccf_print(channel);
-    printf("total samples:    %u\n", total_samples);
-    printf("total transforms: %u\n", num_transforms);
+    printf("samples per PSD estimate : %u\n", samples_per_estimate);
+    printf("total samples            : %u (%u)\n", total_samples,   num_samples);
+    printf("total estimates          : %u (%u)\n", total_estimates, num_estimates);
     fclose(fid);
 
     // destroy objects
@@ -114,13 +116,18 @@ int main()
     fprintf(fid,"#!/usr/bin/gnuplot\n");
     fprintf(fid,"reset\n");
     fprintf(fid,"set terminal png size 800,800 enhanced font 'Verdana,10'\n");
-    fprintf(fid,"set output 'waterfall.png'\n");
+    fprintf(fid,"set output '%s.png'\n", OUTPUT_FILENAME);
     fprintf(fid,"unset key\n");
     fprintf(fid,"set style line 11 lc rgb '#808080' lt 1\n");
     fprintf(fid,"set border 3 front ls 11\n");
+    fprintf(fid,"set style line 12 lc rgb '#888888' lt 0 lw 1\n");
+    fprintf(fid,"set grid front ls 12\n");
     fprintf(fid,"set tics nomirror out scale 0.75\n");
     fprintf(fid,"set xrange [-0.5:0.5]\n");
-    fprintf(fid,"set yrange [0:%u]\n", num_transforms-1);
+    fprintf(fid,"set yrange [0:%f]\n", (float)(num_samples-1)*1e-3f);
+    fprintf(fid,"set xlabel 'Normalized Frequency [f/F_s]'\n");
+    fprintf(fid,"set ylabel 'Sample Index'\n");
+    fprintf(fid,"set format y '%%.0f k'\n");
     fprintf(fid,"# disable colorbar tics\n");
     fprintf(fid,"set cbtics scale 0\n");
     fprintf(fid,"set palette negative defined ( \\\n");
@@ -133,7 +140,7 @@ int main()
     fprintf(fid,"    6 '#66C2A5',\\\n");
     fprintf(fid,"    7 '#3288BD' )\n");
     fprintf(fid,"\n");
-    fprintf(fid,"plot 'waterfall.bin' u 1:2:3 binary matrix with image\n");
+    fprintf(fid,"plot 'waterfall.bin' u 1:($2*1e-3):3 binary matrix with image\n");
     fclose(fid);
     printf("results written to %s.\n", "waterfall.bin");
     printf("results written to %s.\n", OUTPUT_FILENAME);
