@@ -432,6 +432,7 @@ filter_objects :=						\
 
 # list explicit targets and dependencies here
 filter_includes :=						\
+	src/filter/src/autocorr.c				\
 	src/filter/src/fftfilt.c				\
 	src/filter/src/firdecim.c				\
 	src/filter/src/firfarrow.c				\
@@ -649,6 +650,7 @@ framing_benchmarks :=						\
 	src/framing/bench/flexframesync_benchmark.c		\
 	src/framing/bench/framesync64_benchmark.c		\
 	src/framing/bench/gmskframesync_benchmark.c		\
+	src/framing/bench/qdetector_benchmark.c			\
 
 
 # 
@@ -1388,7 +1390,9 @@ example_programs :=						\
 	examples/firfilt_crcf_example				\
 	examples/firfilt_rrrf_example				\
 	examples/firdes_kaiser_example				\
+	examples/firdespm_callback_example			\
 	examples/firdespm_example				\
+	examples/firdespm_lowpass_example			\
 	examples/firhilb_example				\
 	examples/firhilb_decim_example				\
 	examples/firhilb_interp_example				\

@@ -124,8 +124,8 @@ flexframegen flexframegen_create(flexframegenprops_s * _fgprops)
     q->preamble_pn = (float complex *) malloc(64*sizeof(float complex));
     msequence ms = msequence_create(7, 0x0089, 1);
     for (i=0; i<64; i++) {
-        q->preamble_pn[i] = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2) +
-                            (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2) * _Complex_I;
+        q->preamble_pn[i] = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2);
+        q->preamble_pn[i] += (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2) * _Complex_I;
     }
     msequence_destroy(ms);
 
@@ -369,7 +369,10 @@ void flexframegen_assemble(flexframegen          _q,
     _q->payload_dec_len = _payload_dec_len;
 
     // copy user-defined header to internal
-    memmove(_q->header, _header, _q->header_user_len*sizeof(unsigned char));
+    if (_header == NULL)
+        memset(_q->header, 0x00, _q->header_user_len*sizeof(unsigned char));
+    else
+        memmove(_q->header, _header, _q->header_user_len*sizeof(unsigned char));
 
     // first several bytes of header are user-defined
     unsigned int n = _q->header_user_len;
