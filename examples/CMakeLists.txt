@@ -22,7 +22,7 @@ LIQUID_BUILD_SAMPLES(
     conversion_example
     crc_example
     cpfskmodem_example
-    cpfsk_psd_example
+    cpfskmodem_psd_example
     cvsd_example
     detector_cccf_example
     dotprod_rrrf_example
