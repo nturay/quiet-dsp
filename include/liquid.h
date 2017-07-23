@@ -77,10 +77,10 @@ int liquid_libversion_number(void);
  * define complex type compatible with the C++ complex standard,
  * otherwise resort to defining binary compatible array.
  */
-#if LIQUID_USE_COMPLEX_H==1
+#if LIQUID_USE_COMPLEX_H==1 && !defined _MSC_VER
 #   include <complex.h>
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef R _Complex C
-#elif defined _GLIBCXX_COMPLEX || defined _LIBCPP_COMPLEX
+#elif defined _GLIBCXX_COMPLEX || defined _LIBCPP_COMPLEX || _MSC_VER >= 1900
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef std::complex<R> C
 #else
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef struct {R real; R imag;} C;
