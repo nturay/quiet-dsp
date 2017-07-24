@@ -221,8 +221,8 @@ void autotest_nco_block_mixing()
     unsigned int num_samples = 1024;
 
     // store samples
-    float complex * x = (float complex*)malloc(num_samples*sizeof(float complex));
-    float complex * y = (float complex*)malloc(num_samples*sizeof(float complex));
+    liquid_float_complex * x = (liquid_float_complex*)malloc(num_samples*sizeof(liquid_float_complex));
+    liquid_float_complex * y = (liquid_float_complex*)malloc(num_samples*sizeof(liquid_float_complex));
 
     // generate complex sin/cos
     for (i=0; i<num_samples; i++)

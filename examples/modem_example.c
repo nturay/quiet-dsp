@@ -74,7 +74,7 @@ int main(int argc, char*argv[])
     unsigned int i; // modulated symbol
     unsigned int s; // demodulated symbol
     unsigned int num_symbols = 1<<bps;
-    float complex x;
+    liquid_float_complex x;
     unsigned int num_sym_errors = 0;
     unsigned int num_bit_errors = 0;
 

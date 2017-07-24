@@ -160,7 +160,7 @@ FIRFILT() FIRFILT(_create_rnyquist)(int          _type,
     float hf[h_len];
     liquid_firdes_prototype(_type,_k,_m,_beta,_mu,hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
     TC hc[h_len];
     for (i=0; i<h_len; i++)
@@ -370,10 +370,10 @@ unsigned int FIRFILT(_get_length)(FIRFILT() _q)
 //  _H      :   output frequency response
 void FIRFILT(_freqresponse)(FIRFILT()       _q,
                             float           _fc,
-                            float complex * _H)
+                            liquid_float_complex * _H)
 {
     unsigned int i;
-    float complex H = 0.0f;
+    liquid_float_complex H = 0.0f;
 
     // compute dot product between coefficients and exp{ 2 pi fc {0..n-1} }
     for (i=0; i<_q->h_len; i++)

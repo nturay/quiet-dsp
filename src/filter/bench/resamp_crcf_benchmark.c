@@ -38,7 +38,7 @@ void resamp_crcf_bench(struct rusage *     _start,
 
     resamp_crcf q = resamp_crcf_create(r,m,bw,As,npfb);
 
-    float complex y[4];
+    liquid_float_complex y[4];
 
     unsigned int num_written;
 

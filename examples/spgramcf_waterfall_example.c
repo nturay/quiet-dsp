@@ -27,7 +27,7 @@ int main()
     tvmpch_cccf channel = tvmpch_cccf_create(c_len, std, tau);
 
     unsigned int buf_len = 64;
-    float complex buf[buf_len];
+    liquid_float_complex buf[buf_len];
 
     // create spectral periodogram
     spgramcf periodogram = spgramcf_create_default(nfft);

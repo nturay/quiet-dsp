@@ -69,8 +69,8 @@ void liquid_firdes_fnyquist(liquid_firfilt_type _type,
     unsigned int h_len = 2*_k*_m+1;   // filter length
 
     float H_prime[h_len];   // frequency response of Nyquist filter (real)
-    float complex H[h_len]; // frequency response of Nyquist filter
-    float complex h[h_len]; // impulse response of Nyquist filter
+    liquid_float_complex H[h_len]; // frequency response of Nyquist filter
+    liquid_float_complex h[h_len]; // impulse response of Nyquist filter
 
     // compute Nyquist filter frequency response
     switch (_type) {

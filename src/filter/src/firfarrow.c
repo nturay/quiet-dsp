@@ -272,10 +272,10 @@ void FIRFARROW(_get_coefficients)(FIRFARROW() _q,
 //  _H      : output frequency response
 void FIRFARROW(_freqresponse)(FIRFARROW() _q,
                               float _fc,
-                              float complex * _H)
+                              liquid_float_complex * _H)
 {
     unsigned int i;
-    float complex H = 0.0f;
+    liquid_float_complex H = 0.0f;
 
     for (i=0; i<_q->h_len; i++)
         H += _q->h[i] * cexpf(_Complex_I*2*M_PI*_fc*i);

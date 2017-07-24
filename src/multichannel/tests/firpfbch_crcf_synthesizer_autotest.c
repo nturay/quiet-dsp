@@ -59,9 +59,9 @@ void autotest_firpfbch_crcf_synthesis()
     // create filterbank channelizer object
     firpfbch_crcf q = firpfbch_crcf_create(LIQUID_SYNTHESIZER, num_channels, p, h);
 
-    float complex Y[num_symbols][num_channels];     // channelized input
-    float complex y0[num_samples];                  // time-domain output
-    float complex y1[num_samples];                  // time-domain output
+    liquid_float_complex Y[num_symbols][num_channels];     // channelized input
+    liquid_float_complex y0[num_samples];                  // time-domain output
+    liquid_float_complex y1[num_samples];                  // time-domain output
 
     // generate input sequence (complex noise)
     ms = msequence_create_default(7);
@@ -90,7 +90,7 @@ void autotest_firpfbch_crcf_synthesis()
 
     unsigned int n;
     float dphi; // carrier frequency
-    float complex y_hat;
+    liquid_float_complex y_hat;
     for (i=0; i<num_channels; i++) {
         // reset filter
         firfilt_crcf_reset(f);

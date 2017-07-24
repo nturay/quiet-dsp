@@ -100,18 +100,18 @@ void autotest_firinterp_crcf_generic()
     firinterp_crcf q = firinterp_crcf_create(M,h,9);
 
     //  x = [1+j*0.2, -0.2+j*1.3, 0.5+j*0.3, 1.1-j*0.2]
-    float complex x[4] = {
+    liquid_float_complex x[4] = {
       1.0000e+00+  2.0000e-01*_Complex_I, 
      -2.0000e-01+  1.3000e+00*_Complex_I, 
       5.0000e-01+  3.0000e-01*_Complex_I, 
       1.1000e+00+ -2.0000e-01*_Complex_I
     };
         
-    float complex y[16];
+    liquid_float_complex y[16];
 
     // z = [x(1) 0 0 0 x(2) 0 0 0 x(3) 0 0 0 x(4) 0 0 0];
     // test = filter(h,1,z)
-    float complex test[16] = {
+    liquid_float_complex test[16] = {
       -0.7393353832652201 - 0.1478670766530440*_Complex_I,
        0.1909821993029451 + 0.0381964398605890*_Complex_I,
       -1.7013834621383086 - 0.3402766924276617*_Complex_I,

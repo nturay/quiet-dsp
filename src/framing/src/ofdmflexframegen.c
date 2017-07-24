@@ -91,8 +91,8 @@ struct ofdmflexframegen_s {
     unsigned int frame_len; // frame length (M + cp_len)
 
     // buffers
-    float complex * X;          // frequency-domain buffer
-    float complex * buf_tx;     // transmit buffer
+    liquid_float_complex * X;          // frequency-domain buffer
+    liquid_float_complex * buf_tx;     // transmit buffer
     unsigned int    buf_index;  // buffer index
 
     // internal low-level objects
@@ -171,8 +171,8 @@ ofdmflexframegen ofdmflexframegen_create(unsigned int              _M,
 
     // allocate memory for transform buffers
     q->frame_len = q->M + q->cp_len;    // frame length
-    q->X         = (float complex*) malloc((q->M        )*sizeof(float complex));
-    q->buf_tx    = (float complex*) malloc((q->frame_len)*sizeof(float complex));
+    q->X         = (liquid_float_complex*) malloc((q->M        )*sizeof(liquid_float_complex));
+    q->buf_tx    = (liquid_float_complex*) malloc((q->frame_len)*sizeof(liquid_float_complex));
     q->buf_index = q->frame_len;
 
     // allocate memory for subcarrier allocation IDs
@@ -471,7 +471,7 @@ void ofdmflexframegen_assemble(ofdmflexframegen      _q,
 //  _buf            :   output buffer [size: _buf_len x 1]
 //  _buf_len        :   output buffer length
 int ofdmflexframegen_write(ofdmflexframegen _q,
-                           float complex *  _buf,
+                           liquid_float_complex *  _buf,
                            unsigned int     _buf_len)
 {
     unsigned int i;

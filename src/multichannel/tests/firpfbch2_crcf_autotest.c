@@ -37,8 +37,8 @@ void firpfbch2_crcf_runtest(unsigned int _M,
     unsigned int num_samples = _M * num_symbols;
 
     // allocate arrays
-    float complex x[num_samples];
-    float complex y[num_samples];
+    liquid_float_complex x[num_samples];
+    liquid_float_complex y[num_samples];
 
     // generate pseudo-random sequence
     unsigned int s = 1;         // seed
@@ -55,7 +55,7 @@ void firpfbch2_crcf_runtest(unsigned int _M,
     firpfbch2_crcf qs = firpfbch2_crcf_create_kaiser(LIQUID_SYNTHESIZER, _M, _m, _As);
 
     // run channelizer
-    float complex Y[_M];
+    liquid_float_complex Y[_M];
     for (i=0; i<num_samples; i+=_M/2) {
         // run analysis filterbank
         firpfbch2_crcf_execute(qa, &x[i], Y);
@@ -82,7 +82,7 @@ void firpfbch2_crcf_runtest(unsigned int _M,
         }
 
         // compute rmse
-        float complex err = y[i] - (i < delay ? 0.0f : x[i-delay]);
+        liquid_float_complex err = y[i] - (i < delay ? 0.0f : x[i-delay]);
         rmse += crealf(err * conjf(err));
     }
 

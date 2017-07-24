@@ -32,7 +32,7 @@ void modem_test_mod_demod(modulation_scheme _ms)
 
     // run the test
     unsigned int i, s, M = 1 << modem_get_bps(mod);
-    float complex x;
+    liquid_float_complex x;
     float e = 0.0f;
     for (i=0; i<M; i++) {
         modem_modulate(mod, i, &x);

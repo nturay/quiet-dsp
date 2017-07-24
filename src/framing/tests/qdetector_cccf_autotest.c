@@ -78,11 +78,11 @@ void qdetector_cccf_runtest_linear(unsigned int _sequence_len)
     unsigned int num_samples = k * num_symbols;
 
     // arrays
-    float complex x[num_samples];   // transmitted signal
-    float complex y[num_samples];   // received signal
+    liquid_float_complex x[num_samples];   // transmitted signal
+    liquid_float_complex y[num_samples];   // received signal
 
     // generate synchronization sequence (QPSK symbols)
-    float complex sequence[_sequence_len];
+    liquid_float_complex sequence[_sequence_len];
     for (i=0; i<_sequence_len; i++) {
         sequence[i] = (rand() % 2 ? 1.0f : -1.0f) * M_SQRT1_2 +
                       (rand() % 2 ? 1.0f : -1.0f) * M_SQRT1_2 * _Complex_I;
@@ -93,7 +93,7 @@ void qdetector_cccf_runtest_linear(unsigned int _sequence_len)
     unsigned int n = 0;
     for (i=0; i<num_symbols; i++) {
         // original sequence, then random symbols
-        float complex sym = i < _sequence_len ? sequence[i] : sequence[rand()%_sequence_len];
+        liquid_float_complex sym = i < _sequence_len ? sequence[i] : sequence[rand()%_sequence_len];
 
         // interpolate
         firinterp_crcf_execute(interp, sym, &x[n]);
@@ -128,7 +128,7 @@ void qdetector_cccf_runtest_linear(unsigned int _sequence_len)
     unsigned int buf_len = qdetector_cccf_get_buf_len(q);
 
     // try to detect frame
-    float complex * v = NULL;
+    liquid_float_complex * v = NULL;
     for (i=0; i<num_samples; i++) {
         if (frame_detected)
             break;
@@ -202,8 +202,8 @@ void qdetector_cccf_runtest_gmsk(unsigned int _sequence_len)
     unsigned int num_samples = k * num_symbols;
 
     // arrays
-    float complex x[num_samples];   // transmitted signal
-    float complex y[num_samples];   // received signal
+    liquid_float_complex x[num_samples];   // transmitted signal
+    liquid_float_complex y[num_samples];   // received signal
 
     // generate synchronization sequence (QPSK symbols)
     unsigned char sequence[_sequence_len];
@@ -250,7 +250,7 @@ void qdetector_cccf_runtest_gmsk(unsigned int _sequence_len)
     unsigned int buf_len = qdetector_cccf_get_buf_len(q);
 
     // try to detect frame
-    float complex * v = NULL;
+    liquid_float_complex * v = NULL;
     for (i=0; i<num_samples; i++) {
         if (frame_detected)
             break;

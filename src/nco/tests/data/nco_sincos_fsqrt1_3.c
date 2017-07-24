@@ -26,7 +26,9 @@
 
 #include <complex.h>
 
-float complex nco_sincos_fsqrt1_3[256] = {
+#include "liquid.h"
+
+liquid_float_complex nco_sincos_fsqrt1_3[256] = {
     1.000000000000 + _Complex_I*  0.000000000000,
     0.837911827695 + _Complex_I*  0.545805614673,
     0.404192461982 + _Complex_I*  0.914673960314,

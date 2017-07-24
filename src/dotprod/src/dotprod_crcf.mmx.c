@@ -36,19 +36,19 @@
 
 // forward declaration of internal methods
 void dotprod_crcf_execute_mmx(dotprod_crcf    _q,
-                              float complex * _x,
-                              float complex * _y);
+                              liquid_float_complex * _x,
+                              liquid_float_complex * _y);
 void dotprod_crcf_execute_mmx4(dotprod_crcf    _q,
-                               float complex * _x,
-                               float complex * _y);
+                               liquid_float_complex * _x,
+                               liquid_float_complex * _y);
 
 // basic dot product (ordinal calculation)
 void dotprod_crcf_run(float *         _h,
-                      float complex * _x,
+                      liquid_float_complex * _x,
                       unsigned int    _n,
-                      float complex * _y)
+                      liquid_float_complex * _y)
 {
-    float complex r = 0;
+    liquid_float_complex r = 0;
     unsigned int i;
     for (i=0; i<_n; i++)
         r += _h[i] * _x[i];
@@ -57,11 +57,11 @@ void dotprod_crcf_run(float *         _h,
 
 // basic dot product (ordinal calculation) with loop unrolled
 void dotprod_crcf_run4(float *         _h,
-                       float complex * _x,
+                       liquid_float_complex * _x,
                        unsigned int    _n,
-                       float complex * _y)
+                       liquid_float_complex * _y)
 {
-    float complex r = 0;
+    liquid_float_complex r = 0;
 
     // t = 4*(floor(_n/4))
     unsigned int t=(_n>>2)<<2; 
@@ -142,8 +142,8 @@ void dotprod_crcf_print(dotprod_crcf _q)
 
 // 
 void dotprod_crcf_execute(dotprod_crcf    _q,
-                          float complex * _x,
-                          float complex * _y)
+                          liquid_float_complex * _x,
+                          liquid_float_complex * _y)
 {
     // switch based on size
     if (_q->n < 32) {
@@ -155,8 +155,8 @@ void dotprod_crcf_execute(dotprod_crcf    _q,
 
 // use MMX/SSE extensions
 void dotprod_crcf_execute_mmx(dotprod_crcf    _q,
-                              float complex * _x,
-                              float complex * _y)
+                              liquid_float_complex * _x,
+                              liquid_float_complex * _y)
 {
     // type cast input as floating point array
     float * x = (float*) _x;
@@ -211,8 +211,8 @@ void dotprod_crcf_execute_mmx(dotprod_crcf    _q,
 
 // use MMX/SSE extensions
 void dotprod_crcf_execute_mmx4(dotprod_crcf    _q,
-                               float complex * _x,
-                               float complex * _y)
+                               liquid_float_complex * _x,
+                               liquid_float_complex * _y)
 {
     // type cast input as floating point array
     float * x = (float*) _x;

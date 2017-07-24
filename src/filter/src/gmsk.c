@@ -133,15 +133,15 @@ void liquid_firdes_gmskrx(unsigned int _k,
     float h_primef[h_len];          // temporary buffer for real 'prototype' coefficients
     float g_primef[h_len];          // temporary buffer for real 'gain' coefficient
 
-    float complex h_tx[h_len];      // impulse response of transmit filter
-    float complex h_prime[h_len];   // impulse response of 'prototype' filter
-    float complex g_prime[h_len];   // impulse response of 'gain' filter
-    float complex h_hat[h_len];     // impulse response of receive filter
+    liquid_float_complex h_tx[h_len];      // impulse response of transmit filter
+    liquid_float_complex h_prime[h_len];   // impulse response of 'prototype' filter
+    liquid_float_complex g_prime[h_len];   // impulse response of 'gain' filter
+    liquid_float_complex h_hat[h_len];     // impulse response of receive filter
     
-    float complex H_tx[h_len];      // frequency response of transmit filter
-    float complex H_prime[h_len];   // frequency response of 'prototype' filter
-    float complex G_prime[h_len];   // frequency response of 'gain' filter
-    float complex H_hat[h_len];     // frequency response of receive filter
+    liquid_float_complex H_tx[h_len];      // frequency response of transmit filter
+    liquid_float_complex H_prime[h_len];   // frequency response of 'prototype' filter
+    liquid_float_complex G_prime[h_len];   // frequency response of 'gain' filter
+    liquid_float_complex H_hat[h_len];     // frequency response of receive filter
 
     // create 'prototype' matched filter
     liquid_firdes_prototype(prototype,k,m,beta,0.0f,h_primef);

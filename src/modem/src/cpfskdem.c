@@ -45,23 +45,23 @@ void cpfskdem_init_noncoherent(cpfskdem _q);
 #if 0
 // demodulate array of samples (coherent)
 void cpfskdem_demodulate_coherent(cpfskdem        _q,
-                                  float complex   _y,
+                                  liquid_float_complex   _y,
                                   unsigned int  * _s,
                                   unsigned int  * _nw);
 
 // demodulate array of samples (non-coherent)
 void cpfskdem_demodulate_noncoherent(cpfskdem        _q,
-                                     float complex   _y,
+                                     liquid_float_complex   _y,
                                      unsigned int  * _s,
                                      unsigned int  * _nw);
 #else
 // demodulate array of samples (coherent)
 unsigned int cpfskdem_demodulate_coherent(cpfskdem        _q,
-                                          float complex * _y);
+                                          liquid_float_complex * _y);
 
 // demodulate array of samples (non-coherent)
 unsigned int cpfskdem_demodulate_noncoherent(cpfskdem        _q,
-                                             float complex * _y);
+                                             liquid_float_complex * _y);
 #endif
 
 // cpfskdem
@@ -85,12 +85,12 @@ struct cpfskdem_s {
     // demodulation function pointer
 #if 0
     void (*demodulate)(cpfskdem        _q,
-                       float complex   _y,
+                       liquid_float_complex   _y,
                        unsigned int  * _s,
                        unsigned int  * _nw);
 #else
     unsigned int (*demodulate)(cpfskdem        _q,
-                               float complex * _y);
+                               liquid_float_complex * _y);
 #endif
 
     // common data structure shared between coherent and non-coherent
@@ -118,7 +118,7 @@ struct cpfskdem_s {
     // state variables
     unsigned int  index;    // debug
     unsigned int  counter;  // sample counter
-    float complex z_prime;  // (coherent only)
+    liquid_float_complex z_prime;  // (coherent only)
 };
 
 // create cpfskdem object (frequency demodulator)
@@ -311,7 +311,7 @@ unsigned int cpfskdem_get_delay(cpfskdem _q)
 //  _s      :   output symbol array
 //  _nw     :   number of output symbols written
 void cpfskdem_demodulate(cpfskdem        _q,
-                         float complex * _y,
+                         liquid_float_complex * _y,
                          unsigned int    _n,
                          unsigned int  * _s,
                          unsigned int  * _nw)
@@ -333,7 +333,7 @@ void cpfskdem_demodulate(cpfskdem        _q,
 
 // demodulate array of samples (coherent)
 void cpfskdem_demodulate_coherent(cpfskdem        _q,
-                                  float complex   _y,
+                                  liquid_float_complex   _y,
                                   unsigned int  * _s,
                                   unsigned int  * _nw)
 {
@@ -345,7 +345,7 @@ void cpfskdem_demodulate_coherent(cpfskdem        _q,
 
 #if DEBUG_CPFSKDEM
     // compute output sample
-    float complex zp;
+    liquid_float_complex zp;
     firfilt_crcf_execute(_q->data.coherent.mf, &zp);
     printf("y(end+1) = %12.8f + 1i*%12.8f;\n", crealf(_y), cimagf(_y));
     printf("z(end+1) = %12.8f + 1i*%12.8f;\n", crealf(zp), cimagf(zp));
@@ -358,7 +358,7 @@ void cpfskdem_demodulate_coherent(cpfskdem        _q,
         _q->counter = 0;
     
         // compute output sample
-        float complex z;
+        liquid_float_complex z;
         firfilt_crcf_execute(_q->data.coherent.mf, &z);
 
         // compute instantaneous frequency scaled by modulation index
@@ -386,7 +386,7 @@ void cpfskdem_demodulate_coherent(cpfskdem        _q,
 
 // demodulate array of samples (non-coherent)
 void cpfskdem_demodulate_noncoherent(cpfskdem        _q,
-                                     float complex   _y,
+                                     liquid_float_complex   _y,
                                      unsigned int  * _s,
                                      unsigned int  * _nw)
 {
@@ -399,14 +399,14 @@ void cpfskdem_demodulate_noncoherent(cpfskdem        _q,
 //  _q      :   continuous-phase frequency demodulator object
 //  _y      :   input sample array [size: _k x 1]
 unsigned int cpfskdem_demodulate(cpfskdem        _q,
-                                 float complex * _y)
+                                 liquid_float_complex * _y)
 {
     return _q->demodulate(_q, _y);
 }
 
 // demodulate array of samples (coherent)
 unsigned int cpfskdem_demodulate_coherent(cpfskdem        _q,
-                                          float complex * _y)
+                                          liquid_float_complex * _y)
 {
     unsigned int i;
     unsigned int sym_out = 0;
@@ -417,7 +417,7 @@ unsigned int cpfskdem_demodulate_coherent(cpfskdem        _q,
 
 #if DEBUG_CPFSKDEM
         // compute output sample
-        float complex zp;
+        liquid_float_complex zp;
         firfilt_crcf_execute(_q->data.coherent.mf, &zp);
         printf("y(end+1) = %12.8f + 1i*%12.8f;\n", crealf(_y), cimagf(_y));
         printf("z(end+1) = %12.8f + 1i*%12.8f;\n", crealf(zp), cimagf(zp));
@@ -426,7 +426,7 @@ unsigned int cpfskdem_demodulate_coherent(cpfskdem        _q,
         // decimate output
         if ( i == 0 ) {
             // compute output sample
-            float complex z;
+            liquid_float_complex z;
             firfilt_crcf_execute(_q->data.coherent.mf, &z);
 
             // compute instantaneous frequency scaled by modulation index
@@ -452,7 +452,7 @@ unsigned int cpfskdem_demodulate_coherent(cpfskdem        _q,
 
 // demodulate array of samples (non-coherent)
 unsigned int cpfskdem_demodulate_noncoherent(cpfskdem        _q,
-                                             float complex * _y)
+                                             liquid_float_complex * _y)
 {
     return 0;
 }

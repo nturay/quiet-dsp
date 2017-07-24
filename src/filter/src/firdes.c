@@ -555,7 +555,7 @@ float liquid_filter_energy(float *      _h,
     }
 
     // allocate memory for complex phasor
-    float complex expjwt[_h_len];
+    liquid_float_complex expjwt[_h_len];
 
     // initialize accumulators
     float e_total = 0.0f;       // total energy
@@ -574,7 +574,7 @@ float liquid_filter_energy(float *      _h,
             expjwt[k] = cexpf(_Complex_I*2*M_PI*f*k);
 
         // compute vector dot product
-        float complex v;
+        liquid_float_complex v;
         dotprod_crcf_execute(dp, expjwt, &v);
 
         // accumulate output

@@ -27,7 +27,7 @@ int main() {
 
     // data arrays
     float x[2*num_samples];         // real input
-    float complex y[num_samples];   // complex output
+    liquid_float_complex y[num_samples];   // complex output
 
     // initialize input array
     unsigned int i;

@@ -30,7 +30,7 @@
 #define POLY(name)      LIQUID_CONCAT(polyf,   name)
 #define POLY_NAME       "polyf"
 #define T               float
-#define TC              float complex
+#define TC              liquid_float_complex
 
 #define T_COMPLEX       1
 #define TI_COMPLEX      1

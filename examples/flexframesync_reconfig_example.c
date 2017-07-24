@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 
     // frame buffers, properties
     unsigned int  buf_len = 256;
-    float complex buf[buf_len];
+    liquid_float_complex buf[buf_len];
 
     unsigned int j;
     for (j=0; j<num_frames; j++) {

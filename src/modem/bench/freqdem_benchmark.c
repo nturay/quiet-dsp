@@ -35,7 +35,7 @@ void benchmark_freqdem(struct rusage *     _start,
     float   kf  = 0.05f; // modulation index
     freqdem dem = freqdem_create(kf);
 
-    float complex r[20];    // modulated signal
+    liquid_float_complex r[20];    // modulated signal
     float         m[20];    // message signal
 
     unsigned long int i;

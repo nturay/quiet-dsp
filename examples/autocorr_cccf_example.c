@@ -64,9 +64,9 @@ int main(int argc, char*argv[]) {
     unsigned int num_samples = sequence_len*(n+2); // pad end w/ zeros
 
     // data arrays
-    float complex sequence[sequence_len];   // short sequence
-    float complex x[num_samples];           // autocorr input sequence
-    float complex rxx[num_samples];         // autocorr output
+    liquid_float_complex sequence[sequence_len];   // short sequence
+    liquid_float_complex x[num_samples];           // autocorr input sequence
+    liquid_float_complex rxx[num_samples];         // autocorr output
 
     // generate objects
     autocorr_cccf q = autocorr_cccf_create(window_size,delay);
@@ -83,7 +83,7 @@ int main(int argc, char*argv[]) {
     unsigned int t=0;
     for (i=0; i<n; i++) {
         // copy sequence
-        memmove(&x[t], sequence, sequence_len*sizeof(float complex));
+        memmove(&x[t], sequence, sequence_len*sizeof(liquid_float_complex));
 
         t += sequence_len;
     }
@@ -108,7 +108,7 @@ int main(int argc, char*argv[]) {
     }
 
     // find peak
-    float complex rxx_peak = 0;
+    liquid_float_complex rxx_peak = 0;
     for (i=0; i<num_samples; i++) {
         if (i==0 || cabsf(rxx[i]) > cabsf(rxx_peak))
             rxx_peak = rxx[i];

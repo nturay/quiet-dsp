@@ -38,8 +38,8 @@ void autotest_agc_crcf_dc_gain_control()
     agc_crcf_set_bandwidth(q, bt);
 
     unsigned int i;
-    float complex x = gamma;    // input sample
-    float complex y;            // output sample
+    liquid_float_complex x = gamma;    // input sample
+    liquid_float_complex y;            // output sample
     for (i=0; i<256; i++)
         agc_crcf_execute(q, x, &y);
     
@@ -68,8 +68,8 @@ void autotest_agc_crcf_ac_gain_control()
     agc_crcf_set_bandwidth(q, bt);
 
     unsigned int i;
-    float complex x;
-    float complex y;
+    liquid_float_complex x;
+    liquid_float_complex y;
     for (i=0; i<256; i++) {
         x = gamma * cexpf(_Complex_I*i*dphi);
         agc_crcf_execute(q, x, &y);
@@ -105,7 +105,7 @@ void autotest_agc_crcf_rssi_sinusoid()
     agc_crcf_set_bandwidth(q, bt);
 
     unsigned int i;
-    float complex x, y;
+    liquid_float_complex x, y;
     for (i=0; i<512; i++) {
         // generate sample (complex sinusoid)
         x = gamma * cexpf(_Complex_I*dphi*i);
@@ -146,7 +146,7 @@ void autotest_agc_crcf_rssi_noise()
     agc_crcf_set_bandwidth(q, bt);
 
     unsigned int i;
-    float complex x, y;
+    liquid_float_complex x, y;
     for (i=0; i<3000; i++) {
         // generate sample (circular complex noise)
         x = nstd*(randnf() + _Complex_I*randnf())*M_SQRT1_2;

@@ -56,7 +56,7 @@ float expand_mulaw(float _y, float _mu)
     return copysign(x, _y);
 }
 
-void compress_cf_mulaw(float complex _x, float _mu, float complex * _y)
+void compress_cf_mulaw(liquid_float_complex _x, float _mu, liquid_float_complex * _y)
 {
 #ifdef LIQUID_VALIDATE_INPUT
     if ( _mu <= 0.0f ) {
@@ -67,7 +67,7 @@ void compress_cf_mulaw(float complex _x, float _mu, float complex * _y)
     *_y = cexpf(_Complex_I*cargf(_x)) * logf(1 + _mu*cabsf(_x)) / logf(1 + _mu);
 }
 
-void expand_cf_mulaw(float complex _y, float _mu, float complex * _x)
+void expand_cf_mulaw(liquid_float_complex _y, float _mu, liquid_float_complex * _x)
 {
 #ifdef LIQUID_VALIDATE_INPUT
     if ( _mu <= 0.0f ) {

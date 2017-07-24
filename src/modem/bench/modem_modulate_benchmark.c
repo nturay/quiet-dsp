@@ -64,7 +64,7 @@ void modem_modulate_bench(struct rusage *_start,
     // initialize modulator
     modem mod = modem_create(_ms);
 
-    float complex x;
+    liquid_float_complex x;
     unsigned int symbol_in = 0;
     
     unsigned long int i;

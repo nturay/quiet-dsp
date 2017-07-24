@@ -127,7 +127,7 @@ FIRPFB() FIRPFB(_create_kaiser)(unsigned int _M,
     float Hf[H_len];
     liquid_firdes_kaiser(H_len, _fc/(float)_M, _As, 0.0f, Hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
     TC Hc[H_len];
     for (i=0; i<H_len; i++)
@@ -169,7 +169,7 @@ FIRPFB() FIRPFB(_create_rnyquist)(int          _type,
     float Hf[H_len];
     liquid_firdes_prototype(_type,_M*_k,_m,_beta,0,Hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
     TC Hc[H_len];
     for (i=0; i<H_len; i++)
@@ -229,7 +229,7 @@ FIRPFB() FIRPFB(_create_drnyquist)(int          _type,
             HdH_max = fabsf(Hf[i]*dHf[i]);
     }
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     // and apply scaling factor for normalized response
     TC Hc[H_len];
     for (i=0; i<H_len; i++)

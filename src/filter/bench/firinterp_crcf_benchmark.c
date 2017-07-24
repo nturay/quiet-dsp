@@ -42,7 +42,7 @@ void firinterp_crcf_bench(struct rusage *_start,
 
     firinterp_crcf q = firinterp_crcf_create(_M,h,_h_len);
 
-    float complex y[_M];
+    liquid_float_complex y[_M];
     // start trials
     getrusage(RUSAGE_SELF, _start);
     for (i=0; i<(*_num_iterations); i++) {

@@ -27,8 +27,8 @@
 //  _x      :   fft input array
 //  _test   :   expected fft output
 //  _n      :   fft size
-void fft_test(float complex * _x,
-              float complex * _test,
+void fft_test(liquid_float_complex * _x,
+              liquid_float_complex * _test,
               unsigned int    _n)
 {
     int _method = 0;
@@ -36,7 +36,7 @@ void fft_test(float complex * _x,
 
     unsigned int i;
 
-    float complex y[_n], z[_n];
+    liquid_float_complex y[_n], z[_n];
 
     // compute FFT
     fftplan pf = fft_create_plan(_n, _x, y, LIQUID_FFT_FORWARD, _method);

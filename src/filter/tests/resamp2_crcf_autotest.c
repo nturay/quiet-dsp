@@ -38,9 +38,9 @@ void autotest_resamp2_analysis()
     unsigned int i;
 
     // allocate memory for data arrays
-    float complex x[2*n+2*m+1]; // input signal (with delay)
-    float complex y0[n];        // low-pass output
-    float complex y1[n];        // high-pass output
+    liquid_float_complex x[2*n+2*m+1]; // input signal (with delay)
+    liquid_float_complex y0[n];        // low-pass output
+    liquid_float_complex y1[n];        // high-pass output
 
     // generate the baseband signal
     for (i=0; i<2*n+2*m+1; i++)
@@ -51,7 +51,7 @@ void autotest_resamp2_analysis()
     resamp2_crcf q = resamp2_crcf_create(m,0,As);
 
     // run half-band decimation
-    float complex y_hat[2];
+    liquid_float_complex y_hat[2];
     for (i=0; i<n; i++) {
         resamp2_crcf_analyzer_execute(q, &x[2*i], y_hat);
         y0[i] = y_hat[0];
@@ -114,9 +114,9 @@ void autotest_resamp2_synthesis()
     unsigned int i;
 
     // allocate memory for data arrays
-    float complex x0[n+2*m+1];  // input signal (with delay)
-    float complex x1[n+2*m+1];  // input signal (with delay)
-    float complex y[2*n];       // synthesized output
+    liquid_float_complex x0[n+2*m+1];  // input signal (with delay)
+    liquid_float_complex x1[n+2*m+1];  // input signal (with delay)
+    liquid_float_complex y[2*n];       // synthesized output
 
     // generate the baseband signals
     for (i=0; i<n+2*m+1; i++) {
@@ -129,7 +129,7 @@ void autotest_resamp2_synthesis()
     resamp2_crcf q = resamp2_crcf_create(m,0,As);
 
     // run synthesis
-    float complex x_hat[2];
+    liquid_float_complex x_hat[2];
     for (i=0; i<n; i++) {
         x_hat[0] = x0[i];
         x_hat[1] = x1[i];

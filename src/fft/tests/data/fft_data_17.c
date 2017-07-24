@@ -26,7 +26,9 @@
 
 #include <complex.h>
 
-float complex fft_test_x17[] = {
+#include "liquid.h"
+
+liquid_float_complex fft_test_x17[] = {
    -0.655587921776 +  -0.863886550358*_Complex_I,
    -1.070139919529 +  -2.370656605854*_Complex_I,
     1.167384281127 +   0.116747569575*_Complex_I,
@@ -45,7 +47,7 @@ float complex fft_test_x17[] = {
    -0.236452649938 +  -0.998080495482*_Complex_I,
    -0.197908967423 +  -0.229518503722*_Complex_I};
 
-float complex fft_test_y17[] = {
+liquid_float_complex fft_test_y17[] = {
    -0.719066520735 +  -6.089659996026*_Complex_I,
     1.821427336790 +  -5.621144218242*_Complex_I,
    -6.173678834923 +  -4.525807530343*_Complex_I,

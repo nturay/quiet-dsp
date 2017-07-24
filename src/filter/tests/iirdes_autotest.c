@@ -85,7 +85,7 @@ void autotest_iirdes_cplxpair_n6()
     float tol = 1e-8f;
 
     //
-    float complex r[6] = {
+    liquid_float_complex r[6] = {
        0.980066577841242 + 0.198669330795061 * _Complex_I,
        5.000000000000000 + 0.000000000000000 * _Complex_I,
       -0.416146836547142 + 0.909297426825682 * _Complex_I,
@@ -94,9 +94,9 @@ void autotest_iirdes_cplxpair_n6()
       -0.416146836547142 - 0.909297426825682 * _Complex_I
     };
 
-    float complex p[6];
+    liquid_float_complex p[6];
 
-    float complex ptest[6] = {
+    liquid_float_complex ptest[6] = {
       -0.416146836547142 - 0.909297426825682 * _Complex_I,
       -0.416146836547142 + 0.909297426825682 * _Complex_I,
        0.980066577841242 - 0.198669330795061 * _Complex_I,
@@ -137,7 +137,7 @@ void autotest_iirdes_cplxpair_n20()
     float tol = 1e-8f;
 
     //
-    float complex r[20] = {
+    liquid_float_complex r[20] = {
       -0.340396183901119 + 1.109902927794652 * _Complex_I,
        1.148964416793990 + 0.000000000000000 * _Complex_I,
        0.190037889511651 + 0.597517076404221 * _Complex_I,
@@ -160,9 +160,9 @@ void autotest_iirdes_cplxpair_n20()
       -0.089598596934739 + 0.000000000000000 * _Complex_I
     };
 
-    float complex p[20];
+    liquid_float_complex p[20];
 
-    float complex ptest[20] = {
+    liquid_float_complex ptest[20] = {
       -0.485244526317243 - 0.452251520655749 * _Complex_I,
       -0.485244526317243 + 0.452251520655749 * _Complex_I,
       -0.340396183901119 - 1.109902927794652 * _Complex_I,
@@ -220,14 +220,14 @@ void autotest_iirdes_dzpk2sosf()
     float B[3*L];
     float A[3*L];
 
-    float complex za[n];    // analog zeros
-    float complex pa[n];    // analog poles
-    float complex ka;       // analog gain
+    liquid_float_complex za[n];    // analog zeros
+    liquid_float_complex pa[n];    // analog poles
+    liquid_float_complex ka;       // analog gain
     butter_azpkf(n,za,pa,&ka);
 
-    float complex zd[n];    // digital zeros
-    float complex pd[n];    // digital poles
-    float complex kd;       // digital gain
+    liquid_float_complex zd[n];    // digital zeros
+    liquid_float_complex pd[n];    // digital poles
+    liquid_float_complex kd;       // digital gain
     float m = 1 / tanf(M_PI * fc);
     bilinear_zpkf(za,  0,
                   pa,  n,

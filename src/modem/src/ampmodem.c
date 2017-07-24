@@ -152,10 +152,10 @@ void ampmodem_reset(ampmodem _q)
 
 void ampmodem_modulate(ampmodem _q,
                        float _x,
-                       float complex *_y)
+                       liquid_float_complex *_y)
 {
-    float complex x_hat = 0.0f;
-    float complex y_hat;
+    liquid_float_complex x_hat = 0.0f;
+    liquid_float_complex y_hat;
 
     if (_q->type == LIQUID_AMPMODEM_DSB) {
         x_hat = _x;
@@ -187,7 +187,7 @@ void ampmodem_modulate(ampmodem _q,
 void ampmodem_modulate_block(ampmodem        _q,
                              float *         _m,
                              unsigned int    _n,
-                             float complex * _s)
+                             liquid_float_complex * _s)
 {
     // TODO: implement more efficient method
     unsigned int i;
@@ -197,7 +197,7 @@ void ampmodem_modulate_block(ampmodem        _q,
 
 
 void ampmodem_demodulate(ampmodem _q,
-                         float complex _y,
+                         liquid_float_complex _y,
                          float *_x)
 {
 #if DEBUG_AMPMODEM
@@ -214,7 +214,7 @@ void ampmodem_demodulate(ampmodem _q,
         // coherent demodulation
         
         // mix signal down
-        float complex y_hat;
+        liquid_float_complex y_hat;
         nco_crcf_mix_down(_q->oscillator, _y, &y_hat);
 
         // compute phase error
@@ -254,7 +254,7 @@ void ampmodem_demodulate(ampmodem _q,
 //  _n      :   number of input, output samples
 //  _m      :   message signal m(t), [size: _n x 1]
 void ampmodem_demodulate_block(ampmodem        _q,
-                               float complex * _r,
+                               liquid_float_complex * _r,
                                unsigned int    _n,
                                float *         _m)
 {
@@ -279,7 +279,7 @@ void ampmodem_debug_print(ampmodem _q,
     fprintf(fid,"clear all;\n");
     fprintf(fid,"n = %u;\n", DEBUG_AMPMODEM_BUFFER_LEN);
     unsigned int i;
-    float complex * rc;
+    liquid_float_complex * rc;
     float * r;
 
     // plot received signal

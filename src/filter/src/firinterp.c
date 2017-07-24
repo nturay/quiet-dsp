@@ -105,7 +105,7 @@ FIRINTERP() FIRINTERP(_create_kaiser)(unsigned int _M,
     float fc = 0.5f / (float) (_M);
     liquid_firdes_kaiser(h_len, fc, _As, 0.0f, hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     TC hc[h_len];
     unsigned int i;
     for (i=0; i<h_len; i++)
@@ -147,7 +147,7 @@ FIRINTERP() FIRINTERP(_create_prototype)(int          _type,
     float h[h_len];
     liquid_firdes_prototype(_type,_k,_m,_beta,_dt,h);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
     TC hc[h_len];
     for (i=0; i<h_len; i++)

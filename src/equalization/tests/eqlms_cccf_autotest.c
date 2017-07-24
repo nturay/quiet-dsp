@@ -48,7 +48,7 @@ void autotest_eqlms_cccf_blind()
     eqlms_cccf_set_bw(eq, mu);
 
     // create channel filter
-    float complex h[5] = {
+    liquid_float_complex h[5] = {
         { 1.00f,  0.00f},
         { 0.00f, -0.01f},
         {-0.11f,  0.02f},
@@ -57,9 +57,9 @@ void autotest_eqlms_cccf_blind()
     firfilt_cccf fchannel = firfilt_cccf_create(h,5);
 
     // arrays
-    float complex buf[k];               // filter buffer
-    float complex sym_in [num_symbols]; // input symbols
-    float complex sym_out[num_symbols]; // equalized symbols
+    liquid_float_complex buf[k];               // filter buffer
+    liquid_float_complex sym_in [num_symbols]; // input symbols
+    liquid_float_complex sym_out[num_symbols]; // equalized symbols
 
     // run equalization
     unsigned int i;
@@ -144,13 +144,13 @@ void autotest_eqlms_cccf_decisiondirected()
 
     // create channel filter
     unsigned int h_len = 5; // channel filter length
-    float complex h[5] = {1.0f, 0.0f, -0.1f, 0.02f, -0.1f};
+    liquid_float_complex h[5] = {1.0f, 0.0f, -0.1f, 0.02f, -0.1f};
     firfilt_cccf fchannel = firfilt_cccf_create(h,h_len);
 
     // arrays
-    float complex buf[k];               // filter buffer
-    float complex sym_in [num_symbols]; // input symbols
-    float complex sym_out[num_symbols]; // equalized symbols
+    liquid_float_complex buf[k];               // filter buffer
+    liquid_float_complex sym_in [num_symbols]; // input symbols
+    liquid_float_complex sym_out[num_symbols]; // equalized symbols
 
     // run equalization
     unsigned int i;

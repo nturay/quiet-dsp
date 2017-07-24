@@ -26,6 +26,8 @@
 
 #include <complex.h>
 
+#include "liquid.h"
+
 // matrixf_data_ludecomp_A [size: 8 x 8]
 float matrixf_data_ludecomp_A[] = {
     0.936903119087 /* ( 0, 0) */,

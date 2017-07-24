@@ -46,8 +46,8 @@ void autotest_resamp_crcf()
     unsigned int y_len = (unsigned int) ceilf(1.1 * nx * r) + 4;
 
     // arrays
-    float complex x[nx];
-    float complex y[y_len];
+    liquid_float_complex x[nx];
+    liquid_float_complex y[y_len];
 
     // create resampler
     resamp_crcf q = resamp_crcf_create(r,m,bw,As,npfb);
@@ -90,8 +90,8 @@ void autotest_resamp_crcf()
     // run FFT and ensure that carrier has moved and that image
     // frequencies and distortion have been adequately suppressed
     unsigned int nfft = 1 << liquid_nextpow2(ny);
-    float complex yfft[nfft];   // fft input
-    float complex Yfft[nfft];   // fft output
+    liquid_float_complex yfft[nfft];   // fft input
+    liquid_float_complex Yfft[nfft];   // fft output
     for (i=0; i<nfft; i++)
         yfft[i] = i < ny ? y[i] : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);
@@ -192,8 +192,8 @@ void autotest_resamp_crcf_output_block()
     unsigned int ny = y_len - 1;
 
     // arrays
-    float complex x[nx];
-    float complex y[y_len];
+    liquid_float_complex x[nx];
+    liquid_float_complex y[y_len];
 
     // set magic value
     y[y_len - 1] = magic;
@@ -234,8 +234,8 @@ void autotest_resamp_crcf_output_block()
     // run FFT and ensure that carrier has moved and that image
     // frequencies and distortion have been adequately suppressed
     unsigned int nfft = 1 << liquid_nextpow2(uy);
-    float complex yfft[nfft];   // fft input
-    float complex Yfft[nfft];   // fft output
+    liquid_float_complex yfft[nfft];   // fft input
+    liquid_float_complex Yfft[nfft];   // fft output
     for (i=0; i<nfft; i++)
         yfft[i] = i < uy ? y[i] : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);

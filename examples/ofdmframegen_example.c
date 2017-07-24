@@ -36,8 +36,8 @@ int main() {
     fprintf(fid,"x = zeros(1,frame_len);\n");
 
     unsigned int i;
-    float complex X[num_subcarriers];   // channelized symbols
-    float complex x[frame_len];         // time-domain samples
+    liquid_float_complex X[num_subcarriers];   // channelized symbols
+    liquid_float_complex x[frame_len];         // time-domain samples
 
     for (i=0; i<num_subcarriers; i++) {
         X[i] = i==4 ? 0.707f + _Complex_I*0.707f : 0.0f;

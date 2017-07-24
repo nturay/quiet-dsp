@@ -74,7 +74,7 @@ void autotest_fbuffer_static()
 //
 void autotest_cfbuffer_static()
 {
-    SBUFFER_AUTOTEST_DEFINE_API(BUFFER_MANGLE_CFLOAT, float complex)
+    SBUFFER_AUTOTEST_DEFINE_API(BUFFER_MANGLE_CFLOAT, liquid_float_complex)
 }
 
 

@@ -103,11 +103,11 @@ void autotest_cbufferf()
 }
 
 
-// complex float complexing point
+// complex liquid_float_complexing point
 void autotest_cbuffercf()
 {
     // input array of values
-    float complex v[] = {1.0 - 1.0 * _Complex_I,
+    liquid_float_complex v[] = {1.0 - 1.0 * _Complex_I,
                          2.0 + 2.0 * _Complex_I,
                          3.0 - 3.0 * _Complex_I,
                          4.0 + 4.0 * _Complex_I,
@@ -117,11 +117,11 @@ void autotest_cbuffercf()
                          8.0 + 8.0 * _Complex_I};
 
     // output test arrays
-    float complex test1[] = {1.0 - 1.0 * _Complex_I,
+    liquid_float_complex test1[] = {1.0 - 1.0 * _Complex_I,
                              2.0 + 2.0 * _Complex_I,
                              3.0 - 3.0 * _Complex_I,
                              4.0 + 4.0 * _Complex_I};
-    float complex test2[] = {3.0 - 3.0 * _Complex_I,
+    liquid_float_complex test2[] = {3.0 - 3.0 * _Complex_I,
                              4.0 + 4.0 * _Complex_I,
                              1.0 - 1.0 * _Complex_I,
                              2.0 + 2.0 * _Complex_I,
@@ -131,13 +131,13 @@ void autotest_cbuffercf()
                              6.0 + 6.0 * _Complex_I,
                              7.0 - 7.0 * _Complex_I,
                              8.0 + 8.0 * _Complex_I};
-    float complex test3[] = {3.0 - 3.0 * _Complex_I,
+    liquid_float_complex test3[] = {3.0 - 3.0 * _Complex_I,
                              4.0 + 4.0 * _Complex_I,
                              5.0 - 5.0 * _Complex_I,
                              6.0 + 6.0 * _Complex_I,
                              7.0 - 7.0 * _Complex_I,
                              8.0 + 8.0 * _Complex_I};
-    float complex test4[] = {3.0 - 3.0 * _Complex_I,
+    liquid_float_complex test4[] = {3.0 - 3.0 * _Complex_I,
                              4.0 + 4.0 * _Complex_I,
                              5.0 - 5.0 * _Complex_I,
                              6.0 + 6.0 * _Complex_I,
@@ -146,7 +146,7 @@ void autotest_cbuffercf()
                              1.0 - 1.0 * _Complex_I,
                              2.0 + 2.0 * _Complex_I,
                              3.0 - 3.0 * _Complex_I};
-    float complex *r;           // output read pointer
+    liquid_float_complex *r;           // output read pointer
     unsigned int num_requested; // number of samples requested
     unsigned int num_read;      // number of samples read
 
@@ -162,7 +162,7 @@ void autotest_cbuffercf()
     num_requested = 4;
     cbuffercf_read(q, num_requested, &r, &num_read);
     CONTEND_EQUALITY(num_read,4);
-    CONTEND_SAME_DATA(r,test1,4*sizeof(float complex));
+    CONTEND_SAME_DATA(r,test1,4*sizeof(liquid_float_complex));
 
     // part 3: release two elements, write 8 more, read 10
     cbuffercf_release(q, 2);
@@ -172,7 +172,7 @@ void autotest_cbuffercf()
     num_requested = 10;
     cbuffercf_read(q, num_requested, &r, &num_read);
     CONTEND_EQUALITY(num_read,10);
-    CONTEND_SAME_DATA(r,test2,10*sizeof(float complex));
+    CONTEND_SAME_DATA(r,test2,10*sizeof(liquid_float_complex));
 
     // part 4: pop single element from buffer
     CONTEND_EQUALITY( cbuffercf_size(q), 10    );
@@ -188,7 +188,7 @@ void autotest_cbuffercf()
     num_requested = 10;
     cbuffercf_read(q, num_requested, &r, &num_read);
     CONTEND_EQUALITY(num_read,6);
-    CONTEND_SAME_DATA(r,test3,6*sizeof(float complex));
+    CONTEND_SAME_DATA(r,test3,6*sizeof(liquid_float_complex));
 
     // part 6: test pushing multiple elements
     cbuffercf_push(q, 1.0 - 1.0 * _Complex_I);
@@ -198,7 +198,7 @@ void autotest_cbuffercf()
     num_requested = 10;
     cbuffercf_read(q, num_requested, &r, &num_read);
     CONTEND_EQUALITY(num_read,9);
-    CONTEND_SAME_DATA(r,test4,9*sizeof(float complex));
+    CONTEND_SAME_DATA(r,test4,9*sizeof(liquid_float_complex));
 
     // part 7: add one more element; buffer should be full
     CONTEND_EXPRESSION( cbuffercf_is_full(q)==0 );

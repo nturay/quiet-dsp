@@ -45,9 +45,9 @@ int main() {
     unsigned int i;
 
     // allocate memory for data arrays
-    float complex x[num_samples];   // input
-    float complex y0[num_samples];  // output (fftfilt)
-    float complex y1[num_samples];  // output (firfilt)
+    liquid_float_complex x[num_samples];   // input
+    liquid_float_complex y0[num_samples];  // output (fftfilt)
+    liquid_float_complex y1[num_samples];  // output (firfilt)
 
     // generate input signal (noise)
     for (i=0; i<num_samples; i++)
@@ -75,7 +75,7 @@ int main() {
             "re{fir}", "re{fft}", "re{err}",
             "im{fir}", "im{fft}", "im{err}");
     for (i=0; i<num_samples; i++) {
-        float complex e = y0[i] - y1[i];
+        liquid_float_complex e = y0[i] - y1[i];
         printf("  %6u : %8.5f : %8.5f (%8.5f), %8.5f : %8.5f (%8.5f)\n",
                 i,
                 crealf(y0[i]), crealf(y1[i]), crealf(e),

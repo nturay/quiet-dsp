@@ -41,11 +41,11 @@ struct firpfbch_s {
     unsigned int m;
     float beta;
     float dt;
-    float complex * x;  // time-domain buffer
-    float complex * X;  // freq-domain buffer
+    liquid_float_complex * x;  // time-domain buffer
+    liquid_float_complex * X;  // freq-domain buffer
 
     // run|state buffers
-    float complex * X_prime;    // freq-domain buffer (analysis
+    liquid_float_complex * X_prime;    // freq-domain buffer (analysis
                                 // filter bank)
 
     // filter
@@ -146,9 +146,9 @@ firpfbch firpfbch_create(unsigned int _num_channels,
 
     // allocate memory for buffers
     // TODO : use fftw_malloc if HAVE_FFTW3_H
-    c->x = (float complex*) malloc((c->num_channels)*sizeof(float complex));
-    c->X = (float complex*) malloc((c->num_channels)*sizeof(float complex));
-    c->X_prime = (float complex*) malloc((c->num_channels)*sizeof(float complex));
+    c->x = (liquid_float_complex*) malloc((c->num_channels)*sizeof(liquid_float_complex));
+    c->X = (liquid_float_complex*) malloc((c->num_channels)*sizeof(liquid_float_complex));
+    c->X_prime = (liquid_float_complex*) malloc((c->num_channels)*sizeof(liquid_float_complex));
     firpfbch_clear(c);
 
     // create fft plan
@@ -206,19 +206,19 @@ void firpfbch_get_filter_taps(firpfbch _c,
 // SYNTHESIZER
 //
 
-void firpfbch_synthesizer_execute(firpfbch _c, float complex * _x, float complex * _y)
+void firpfbch_synthesizer_execute(firpfbch _c, liquid_float_complex * _x, liquid_float_complex * _y)
 {
     unsigned int i;
 
     // copy samples into ifft input buffer _c->X
-    memmove(_c->X, _x, (_c->num_channels)*sizeof(float complex));
+    memmove(_c->X, _x, (_c->num_channels)*sizeof(liquid_float_complex));
 
     // execute inverse fft, store in buffer _c->x
     FFT_EXECUTE(_c->fft);
 
     // push samples into filter bank and execute, putting
     // samples into output buffer _y
-    float complex * r;
+    liquid_float_complex * r;
     for (i=0; i<_c->num_channels; i++) {
         WINDOW(_push)(_c->w[i], _c->x[i]);
         WINDOW(_read)(_c->w[i], &r);
@@ -233,7 +233,7 @@ void firpfbch_synthesizer_execute(firpfbch _c, float complex * _x, float complex
 // ANALYZER
 //
 
-void firpfbch_analyzer_execute(firpfbch _c, float complex * _x, float complex * _y)
+void firpfbch_analyzer_execute(firpfbch _c, liquid_float_complex * _x, liquid_float_complex * _y)
 {
     unsigned int i;
     for (i=0; i<_c->num_channels; i++)
@@ -246,7 +246,7 @@ void firpfbch_analyzer_execute(firpfbch _c, float complex * _x, float complex * 
     firpfbch_analyzer_saverunstate(_c);
 }
 
-void firpfbch_analyzer_push(firpfbch _c, float complex _x)
+void firpfbch_analyzer_push(firpfbch _c, liquid_float_complex _x)
 {
     // push sample into the buffer at filter_index
     WINDOW(_push)(_c->w[_c->filter_index], _x);
@@ -255,7 +255,7 @@ void firpfbch_analyzer_push(firpfbch _c, float complex _x)
     _c->filter_index = (_c->filter_index+_c->num_channels-1) % _c->num_channels;
 }
 
-void firpfbch_analyzer_run(firpfbch _c, float complex * _y)
+void firpfbch_analyzer_run(firpfbch _c, liquid_float_complex * _y)
 {
     // NOTE: The analyzer is different from the synthesizer in
     //       that the invocation of the commutator results in a
@@ -265,13 +265,13 @@ void firpfbch_analyzer_run(firpfbch _c, float complex * _y)
     //       the remaining filters are executed.
 
     // restore saved IDFT input state X from X_prime
-    memmove(_c->X, _c->X_prime, (_c->num_channels)*sizeof(float complex));
+    memmove(_c->X, _c->X_prime, (_c->num_channels)*sizeof(liquid_float_complex));
 
     unsigned int i, b;
     unsigned int k = _c->filter_index;
 
     // push first value and compute output
-    float complex * r;
+    liquid_float_complex * r;
     WINDOW(_read)(_c->w[k], &r);
     DOTPROD(_execute)(_c->dp[0], r, &(_c->X[0]));
 
@@ -279,7 +279,7 @@ void firpfbch_analyzer_run(firpfbch _c, float complex * _y)
     FFT_EXECUTE(_c->fft);
 
     // copy results to output buffer
-    memmove(_y, _c->x, (_c->num_channels)*sizeof(float complex));
+    memmove(_y, _c->x, (_c->num_channels)*sizeof(liquid_float_complex));
 
     // push remaining samples into filter bank and execute in
     // *reverse* order, putting result into the inverse DFT
@@ -301,7 +301,7 @@ void firpfbch_analyzer_run(firpfbch _c, float complex * _y)
 // IDFT input buffer X into the temporary buffer X_prime
 void firpfbch_analyzer_saverunstate(firpfbch _c)
 {
-    memmove(_c->X_prime, _c->X, (_c->num_channels)*sizeof(float complex));
+    memmove(_c->X_prime, _c->X, (_c->num_channels)*sizeof(liquid_float_complex));
 }
 
 // clear the run state of the filter bank

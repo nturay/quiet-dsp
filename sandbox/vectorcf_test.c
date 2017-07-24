@@ -17,7 +17,7 @@ int main()
     
     //
     unsigned int i;
-    float complex v[n];
+    liquid_float_complex v[n];
     for (i=0; i<n; i++)
         v[i] = cexpf(_Complex_I*(float)i);
 

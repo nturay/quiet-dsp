@@ -26,6 +26,8 @@
 
 #include <complex.h>
 
+#include "liquid.h"
+
 // matrixf_data_gramschmidt_A [size: 4 x 3]
 float matrixf_data_gramschmidt_A[] = {
     1.000000000000 /* ( 0, 0) */,

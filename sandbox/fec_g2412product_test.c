@@ -136,7 +136,7 @@ int main(int argc, char*argv[])
     float nstd  = powf(10.0f, -SNRdB/20.0f);
     modem mod = modem_create(LIQUID_MODEM_BPSK);
     for (i=0; i<576; i++) {
-        float complex v;
+        liquid_float_complex v;
         unsigned int  s;
         modem_modulate(mod, msg_enc[i], &v);
         v += nstd*(randnf() + randnf()*_Complex_I) * M_SQRT1_2;

@@ -79,11 +79,11 @@ int main(int argc, char*argv[])
     float nstd = powf(10.0f, -SNRdB/20.0f);
 
     // arrays
-    float complex seq[num_sync_symbols];    // synchronization pattern (symbols)
-    float complex s0[k*num_sync_symbols];   // synchronization pattern (samples)
-    float complex x[num_samples];           // transmitted signal
-    float complex y[num_samples];           // received signal
-    float complex rxy[num_samples];         // pre-demod correlation output
+    liquid_float_complex seq[num_sync_symbols];    // synchronization pattern (symbols)
+    liquid_float_complex s0[k*num_sync_symbols];   // synchronization pattern (samples)
+    liquid_float_complex x[num_samples];           // transmitted signal
+    liquid_float_complex y[num_samples];           // received signal
+    liquid_float_complex rxy[num_samples];         // pre-demod correlation output
     float dphi_hat[num_samples];            // carrier offset estimate
 
     // create transmit/receive interpolator/decimator
@@ -91,7 +91,7 @@ int main(int argc, char*argv[])
 
     // generate synchronization pattern (BPSK) and interpolate
     for (i=0; i<num_sync_symbols + 2*m; i++) {
-        float complex sym = 0.0f;
+        liquid_float_complex sym = 0.0f;
     
         if (i < num_sync_symbols) {
             sym = rand() % 2 ? -1.0f : 1.0f;
@@ -107,7 +107,7 @@ int main(int argc, char*argv[])
 
     // interpolate input
     for (i=0; i<num_symbols; i++) {
-        float complex sym = i < num_sync_symbols ? seq[i] : 0.0f;
+        liquid_float_complex sym = i < num_sync_symbols ? seq[i] : 0.0f;
 
         firinterp_crcf_execute(interp, sym, &x[k*i]);
     }

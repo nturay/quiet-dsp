@@ -128,8 +128,8 @@ int main(int argc, char*argv[])
     // allocate memory for full frame (with noise)
     unsigned int frame_len = gmskframegen_getframelen(fg);
     unsigned int num_samples = (frame_len * k) + 800;
-    float complex x[num_samples];
-    float complex y[num_samples];
+    liquid_float_complex x[num_samples];
+    liquid_float_complex y[num_samples];
 
     // 
     // generate frame

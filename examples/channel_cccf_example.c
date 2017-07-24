@@ -90,9 +90,9 @@ int main(int argc, char*argv[])
     // derived/fixed values
     unsigned int num_samples = num_symbols*k;
 
-    float complex x[num_samples];    // input (interpolated) samples
-    float complex y[num_samples];    // channel output samples
-    float complex sym_out[num_symbols + 64];// synchronized symbols
+    liquid_float_complex x[num_samples];    // input (interpolated) samples
+    liquid_float_complex y[num_samples];    // channel output samples
+    liquid_float_complex sym_out[num_symbols + 64];// synchronized symbols
 
     // 
     // generate input sequence using symbol stream generator

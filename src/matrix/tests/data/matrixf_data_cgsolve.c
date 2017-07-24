@@ -26,6 +26,8 @@
 
 #include <complex.h>
 
+#include "liquid.h"
+
 // matrixf_data_cgsolve_A [size: 8 x 8]
 float matrixf_data_cgsolve_A[] = {
    12.722920400000 /* ( 0, 0) */,

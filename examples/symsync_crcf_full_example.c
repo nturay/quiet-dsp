@@ -134,11 +134,11 @@ int main(int argc, char*argv[]) {
 
     unsigned int num_samples = k*num_symbols;
     unsigned int num_samples_resamp = (unsigned int) ceilf(num_samples*r*1.1f) + 4;
-    float complex s[num_symbols];           // data symbols
-    float complex x[num_samples];           // interpolated samples
-    float complex y[num_samples_resamp];    // resampled data (resamp_crcf)
-    float complex z[k_out*num_symbols + 64];// synchronized samples
-    float complex sym_out[num_symbols + 64];// synchronized symbols
+    liquid_float_complex s[num_symbols];           // data symbols
+    liquid_float_complex x[num_samples];           // interpolated samples
+    liquid_float_complex y[num_samples_resamp];    // resampled data (resamp_crcf)
+    liquid_float_complex z[k_out*num_symbols + 64];// synchronized samples
+    liquid_float_complex sym_out[num_symbols + 64];// synchronized symbols
 
     for (i=0; i<num_symbols; i++) {
         if (random_data) {

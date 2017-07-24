@@ -51,7 +51,7 @@ void nco_crcf_pll_test(int          _type,
     // run loop
     unsigned int i;
     float phase_error;
-    float complex r, v;
+    liquid_float_complex r, v;
     for (i=0; i<_num_iterations; i++) {
         // received complex signal
         nco_crcf_cexpf(nco_tx,&r);

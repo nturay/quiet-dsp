@@ -59,9 +59,9 @@ void autotest_firpfbch_crcf_analysis()
     firfilt_crcf f = firfilt_crcf_create(h, h_len);
 
     // allocate memory for arrays
-    float complex y[num_samples];                   // time-domain input
-    float complex Y0[num_symbols][num_channels];    // channelized output
-    float complex Y1[num_symbols][num_channels];    // channelized output
+    liquid_float_complex y[num_samples];                   // time-domain input
+    liquid_float_complex Y0[num_symbols][num_channels];    // channelized output
+    liquid_float_complex Y1[num_symbols][num_channels];    // channelized output
 
     // generate input sequence (complex noise)
     ms = msequence_create_default(7);

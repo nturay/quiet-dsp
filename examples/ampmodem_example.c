@@ -79,7 +79,7 @@ int main(int argc, char*argv[])
 
     unsigned int i;
     float x[num_samples];
-    float complex y[num_samples];
+    liquid_float_complex y[num_samples];
     float z[num_samples];
 
     // generate 'audio' signal

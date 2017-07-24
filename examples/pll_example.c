@@ -28,9 +28,9 @@ int main() {
 
     //
     float theta[n];         // input phase
-    float complex x[n];     // input sinusoid
+    liquid_float_complex x[n];     // input sinusoid
     float phi[n];           // output phase
-    float complex y[n];     // output sinusoid
+    liquid_float_complex y[n];     // output sinusoid
 
     // generate iir loop filter object
     iirfilt_rrrf H = iirfilt_rrrf_create_pll(wn, zeta, K);

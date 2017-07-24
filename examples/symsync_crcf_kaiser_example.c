@@ -95,16 +95,16 @@ int main(int argc, char*argv[])
 
     // derived values
     unsigned int num_samples = k*num_symbols;
-    float complex x[num_samples];           // interpolated samples
-    float complex y[num_samples];           // received signal (with noise)
+    liquid_float_complex x[num_samples];           // interpolated samples
+    liquid_float_complex y[num_samples];           // received signal (with noise)
     float         tau_hat[num_samples];     // instantaneous timing offset estimate
-    float complex sym_out[num_symbols + 64];// synchronized symbols
+    liquid_float_complex sym_out[num_symbols + 64];// synchronized symbols
 
     // create sequence of Nyquist-interpolated QPSK symbols
     firinterp_crcf interp = firinterp_crcf_create_prototype(ftype,k,m,beta,tau);
     for (i=0; i<num_symbols; i++) {
         // generate random QPSK symbol
-        float complex s = ( rand() % 2 ? M_SQRT1_2 : -M_SQRT1_2 ) +
+        liquid_float_complex s = ( rand() % 2 ? M_SQRT1_2 : -M_SQRT1_2 ) +
                           ( rand() % 2 ? M_SQRT1_2 : -M_SQRT1_2 ) * _Complex_I;
 
         // interpolate symbol

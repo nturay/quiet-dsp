@@ -35,7 +35,7 @@ int main() {
         fprintf(fid,"h(%3u) = %12.8e;\n", i+1, h[i]);
 
     // generate complex fading envelope
-    float complex x, y;
+    liquid_float_complex x, y;
     float yi, yq;
     float s = sqrtf((omega*K)/(K+1));
     float sig = sqrtf(0.5f*omega/(K+1));

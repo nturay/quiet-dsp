@@ -37,10 +37,10 @@
 
 // gmskframegen
 void gmskframegen_encode_header( gmskframegen _q, const unsigned char * _header);
-void gmskframegen_write_preamble(gmskframegen _q, float complex * _y);
-void gmskframegen_write_header(  gmskframegen _q, float complex * _y);
-void gmskframegen_write_payload( gmskframegen _q, float complex * _y);
-void gmskframegen_write_tail(    gmskframegen _q, float complex * _y);
+void gmskframegen_write_preamble(gmskframegen _q, liquid_float_complex * _y);
+void gmskframegen_write_header(  gmskframegen _q, liquid_float_complex * _y);
+void gmskframegen_write_payload( gmskframegen _q, liquid_float_complex * _y);
+void gmskframegen_write_tail(    gmskframegen _q, liquid_float_complex * _y);
 
 
 // gmskframe object structure
@@ -294,7 +294,7 @@ unsigned int gmskframegen_getframelen(gmskframegen _q)
 
 // write sample to output buffer
 int gmskframegen_write_samples(gmskframegen _q,
-                               float complex * _y)
+                               liquid_float_complex * _y)
 {
     switch (_q->state) {
     case STATE_PREAMBLE:
@@ -376,7 +376,7 @@ void gmskframegen_encode_header(gmskframegen          _q,
 }
 
 void gmskframegen_write_preamble(gmskframegen    _q,
-                                 float complex * _y)
+                                 liquid_float_complex * _y)
 {
     unsigned char bit = msequence_advance(_q->ms_preamble);
     gmskmod_modulate(_q->mod, bit, _y);
@@ -398,7 +398,7 @@ void gmskframegen_write_preamble(gmskframegen    _q,
 }
 
 void gmskframegen_write_header(gmskframegen    _q,
-                               float complex * _y)
+                               liquid_float_complex * _y)
 {
     div_t d = div(_q->symbol_counter, 8);
     unsigned int byte_index = d.quot;
@@ -417,7 +417,7 @@ void gmskframegen_write_header(gmskframegen    _q,
 }
 
 void gmskframegen_write_payload(gmskframegen    _q,
-                                float complex * _y)
+                                liquid_float_complex * _y)
 {
     div_t d = div(_q->symbol_counter, 8);
     unsigned int byte_index = d.quot;
@@ -436,7 +436,7 @@ void gmskframegen_write_payload(gmskframegen    _q,
 }
 
 void gmskframegen_write_tail(gmskframegen    _q,
-                             float complex * _y)
+                             liquid_float_complex * _y)
 {
     unsigned char bit = rand() % 2;
     gmskmod_modulate(_q->mod, bit, _y);

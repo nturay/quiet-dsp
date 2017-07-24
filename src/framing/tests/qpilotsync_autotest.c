@@ -59,10 +59,10 @@ void qpilotsync_test(modulation_scheme _ms,
 
     // allocate arrays
     unsigned char payload_sym_tx[_payload_len]; // transmitted payload symbols
-    float complex payload_tx    [_payload_len]; // transmitted payload samples
-    float complex frame_tx      [frame_len];    // transmitted frame samples
-    float complex frame_rx      [frame_len];    // received frame samples
-    float complex payload_rx    [_payload_len]; // received payload samples
+    liquid_float_complex payload_tx    [_payload_len]; // transmitted payload samples
+    liquid_float_complex frame_tx      [frame_len];    // transmitted frame samples
+    liquid_float_complex frame_rx      [frame_len];    // received frame samples
+    liquid_float_complex payload_rx    [_payload_len]; // received payload samples
     unsigned char payload_sym_rx[_payload_len]; // received payload symbols
 
     // create modem objects for payload

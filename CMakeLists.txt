@@ -1028,6 +1028,7 @@ set(autotest_ALL_SOURCES
 set(autotest_SOURCES
     autotest/autotest.c
     autotest/autotestlib.c
+    autotest/null_autotest.c
     ${autotest_ALL_SOURCES}
     ${autotest_EXTRA_SOURCES}
     )

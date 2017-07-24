@@ -97,7 +97,7 @@ void benchmark_flexframesync(
     // generate the frame
     flexframegen_assemble(fg, header, payload, payload_len);
     unsigned int frame_len = flexframegen_getframelen(fg);
-    float complex frame[frame_len];
+    liquid_float_complex frame[frame_len];
     int frame_complete = 0;
     while (!frame_complete) {
         frame_complete = flexframegen_write_samples(fg, frame, frame_len);

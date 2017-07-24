@@ -28,7 +28,7 @@
 
 #define NCO(name)   LIQUID_CONCAT(nco_crcf,name)
 #define T           float
-#define TC          float complex
+#define TC          liquid_float_complex
 
 #define SIN         sinf
 #define COS         cosf

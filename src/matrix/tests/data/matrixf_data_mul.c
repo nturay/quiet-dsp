@@ -26,6 +26,8 @@
 
 #include <complex.h>
 
+#include "liquid.h"
+
 // matrixf_data_mul_x [size: 5 x 4]
 float matrixf_data_mul_x[] = {
    -0.348304957151 /* ( 0, 0) */,

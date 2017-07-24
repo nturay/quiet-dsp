@@ -48,7 +48,7 @@ struct ofdmframegen_s {
     // tapering/trasition
     unsigned int taper_len; // number of samples in tapering window/overlap
     float * taper;          // tapering window
-    float complex *postfix; // overlapping symbol buffer
+    liquid_float_complex *postfix; // overlapping symbol buffer
 
     // constants
     unsigned int M_null;    // number of null subcarriers
@@ -62,16 +62,16 @@ struct ofdmframegen_s {
 
     // transform object
     FFT_PLAN ifft;          // ifft object
-    float complex * X;      // frequency-domain buffer
-    float complex * x;      // time-domain buffer
+    liquid_float_complex * X;      // frequency-domain buffer
+    liquid_float_complex * x;      // time-domain buffer
 
     // PLCP short
-    float complex * S0;     // short sequence (frequency)
-    float complex * s0;     // short sequence (time)
+    liquid_float_complex * S0;     // short sequence (frequency)
+    liquid_float_complex * s0;     // short sequence (time)
 
     // PLCP long
-    float complex * S1;     // long sequence (frequency)
-    float complex * s1;     // long sequence (time)
+    liquid_float_complex * S1;     // long sequence (frequency)
+    liquid_float_complex * s1;     // long sequence (time)
 
     // pilot sequence
     msequence ms_pilot;
@@ -133,21 +133,21 @@ ofdmframegen ofdmframegen_create(unsigned int    _M,
     unsigned int i;
 
     // allocate memory for transform objects
-    q->X = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->x = (float complex*) malloc((q->M)*sizeof(float complex));
+    q->X = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->x = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
     q->ifft = FFT_CREATE_PLAN(q->M, q->X, q->x, FFT_DIR_BACKWARD, FFT_METHOD);
 
     // allocate memory for PLCP arrays
-    q->S0 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->s0 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->S1 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->s1 = (float complex*) malloc((q->M)*sizeof(float complex));
+    q->S0 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->s0 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->S1 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->s1 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
     ofdmframe_init_S0(q->p, q->M, q->S0, q->s0, &q->M_S0);
     ofdmframe_init_S1(q->p, q->M, q->S1, q->s1, &q->M_S1);
 
     // create tapering window and transition buffer
     q->taper   = (float*)         malloc(q->taper_len * sizeof(float));
-    q->postfix = (float complex*) malloc(q->taper_len * sizeof(float complex));
+    q->postfix = (liquid_float_complex*) malloc(q->taper_len * sizeof(liquid_float_complex));
     for (i=0; i<q->taper_len; i++) {
         float t = ((float)i + 0.5f) / (float)(q->taper_len);
         float g = sinf(M_PI_2*t);
@@ -235,7 +235,7 @@ void ofdmframegen_reset(ofdmframegen _q)
 //  |        M + cp_len      |        M + cp_len      |
 //
 void ofdmframegen_write_S0a(ofdmframegen    _q,
-                            float complex * _y)
+                            liquid_float_complex * _y)
 {
     unsigned int i;
     unsigned int k;
@@ -250,7 +250,7 @@ void ofdmframegen_write_S0a(ofdmframegen    _q,
 }
 
 void ofdmframegen_write_S0b(ofdmframegen _q,
-                            float complex * _y)
+                            liquid_float_complex * _y)
 {
     unsigned int i;
     unsigned int k;
@@ -260,14 +260,14 @@ void ofdmframegen_write_S0b(ofdmframegen _q,
     }
 
     // copy postfix (first 'taper_len' samples of s0 symbol)
-    memmove(_q->postfix, _q->s0, _q->taper_len*sizeof(float complex));
+    memmove(_q->postfix, _q->s0, _q->taper_len*sizeof(liquid_float_complex));
 }
 
 void ofdmframegen_write_S1(ofdmframegen _q,
-                           float complex * _y)
+                           liquid_float_complex * _y)
 {
     // copy S1 symbol to output, adding cyclic prefix and tapering window
-    memmove(_q->x, _q->s1, (_q->M)*sizeof(float complex));
+    memmove(_q->x, _q->s1, (_q->M)*sizeof(liquid_float_complex));
     ofdmframegen_gensymbol(_q, _y);
 }
 
@@ -277,8 +277,8 @@ void ofdmframegen_write_S1(ofdmframegen _q,
 //  _x      :   input symbols, [size: _M x 1]
 //  _y      :   output samples, [size: _M x 1]
 void ofdmframegen_writesymbol(ofdmframegen    _q,
-                              float complex * _x,
-                              float complex * _y)
+                              liquid_float_complex * _x,
+                              liquid_float_complex * _y)
 {
     // move frequency data to internal buffer
     unsigned int i;
@@ -312,7 +312,7 @@ void ofdmframegen_writesymbol(ofdmframegen    _q,
 
 // write tail to output
 void ofdmframegen_writetail(ofdmframegen    _q,
-                            float complex * _buffer)
+                            liquid_float_complex * _buffer)
 {
     // write tail to output, applying tapering window
     unsigned int i;
@@ -343,11 +343,11 @@ void ofdmframegen_writetail(ofdmframegen    _q,
 //
 //  _buffer         :   output sample buffer [size: (_q->M + _q->cp_len) x 1]
 void ofdmframegen_gensymbol(ofdmframegen    _q,
-                            float complex * _buffer)
+                            liquid_float_complex * _buffer)
 {
     // copy input symbol with cyclic prefix to output symbol
-    memmove( &_buffer[0],          &_q->x[_q->M-_q->cp_len], _q->cp_len*sizeof(float complex));
-    memmove( &_buffer[_q->cp_len], &_q->x[               0], _q->M    * sizeof(float complex));
+    memmove( &_buffer[0],          &_q->x[_q->M-_q->cp_len], _q->cp_len*sizeof(liquid_float_complex));
+    memmove( &_buffer[_q->cp_len], &_q->x[               0], _q->M    * sizeof(liquid_float_complex));
     
     // apply tapering window to over-lapping regions
     unsigned int i;
@@ -357,6 +357,6 @@ void ofdmframegen_gensymbol(ofdmframegen    _q,
     }
 
     // copy post-fix to output (first 'taper_len' samples of input symbol)
-    memmove(_q->postfix, _q->x, _q->taper_len*sizeof(float complex));
+    memmove(_q->postfix, _q->x, _q->taper_len*sizeof(liquid_float_complex));
 }
 

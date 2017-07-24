@@ -64,7 +64,7 @@ void autotest_flexframesync()
 
     // generate the frame
     int frame_complete = 0;
-    float complex buf[2];
+    liquid_float_complex buf[2];
     while (!frame_complete) {
         // write samples to buffer
         frame_complete = flexframegen_write_samples(fg, buf, 2);

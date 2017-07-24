@@ -15,7 +15,7 @@ int main() {
 
     // generate polynomial
     float p[6] = {6,11,-33,-33,11,6};
-    float complex roots[n-1];
+    liquid_float_complex roots[n-1];
 
     // print polynomial
     printf("polynomial:\n");

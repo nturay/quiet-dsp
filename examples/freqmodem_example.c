@@ -49,7 +49,7 @@ int main(int argc, char*argv[])
 
     unsigned int i;
     float         m[num_samples];       // message signal
-    float complex r[num_samples];       // received signal (complex baseband)
+    liquid_float_complex r[num_samples];       // received signal (complex baseband)
     float         y[num_samples];       // demodulator output
 
     // generate message signal (sum of sines)

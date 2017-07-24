@@ -37,8 +37,8 @@ int main() {
     unsigned int i;
 
     // allocate memory for data arrays
-    float complex x[n];
-    float complex y[n];
+    liquid_float_complex x[n];
+    liquid_float_complex y[n];
 
     // generate input signal (noisy sine wave with decaying amplitude)
     for (i=0; i<n; i++) {
@@ -51,7 +51,7 @@ int main() {
 
     // compute response
     unsigned int nfft=512;
-    float complex H[nfft];
+    liquid_float_complex H[nfft];
     for (i=0; i<nfft; i++) {
         float freq = 0.5f * (float)i / (float)nfft;
         iirfilt_crcf_freqresponse(q, freq, &H[i]);

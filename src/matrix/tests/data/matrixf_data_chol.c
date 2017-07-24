@@ -26,6 +26,8 @@
 
 #include <complex.h>
 
+#include "liquid.h"
+
 // matrixf_data_chol_L [size: 4 x 4]
 float matrixf_data_chol_L[] = {
     1.010000000000 /* ( 0, 0) */,

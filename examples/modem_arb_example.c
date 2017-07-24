@@ -55,7 +55,7 @@ int main(int argc, char*argv[])
     unsigned int M = 1<<bps;    // constellation size
 
     // initialize constellation table
-    float complex constellation[M];
+    liquid_float_complex constellation[M];
     // initialize constellation (spiral)
     for (i=0; i<M; i++) {
         float r   = (float)i / logf((float)M) + 4.0f;
@@ -70,7 +70,7 @@ int main(int argc, char*argv[])
     modem_print(mod);
 
     // run simulation
-    float complex x[n];
+    liquid_float_complex x[n];
     unsigned int num_errors = 0;
 
     // run simple BER simulation

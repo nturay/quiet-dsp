@@ -32,7 +32,7 @@ int main() {
     float phi    = 0.0f;    // phase of sinusoidal frequency drift
     float dphi   = 0.003f;  // frequency of sinusoidal frequency drift
 
-    float complex x[nfft];
+    liquid_float_complex x[nfft];
     char ascii[nfft+1];
     ascii[nfft] = '\0'; // append null character to end of string
     float nstd = powf(10.0f,noise_floor/20.0f);  // noise standard deviation

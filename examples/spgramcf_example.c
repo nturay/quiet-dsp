@@ -41,7 +41,7 @@ int main() {
         iirfilt_rrrf_execute(filter, randnf(), &v);
 
         // filter off negative image (gain of 2)
-        float complex y = 0;
+        liquid_float_complex y = 0;
         firhilbf_r2c_execute(ht, v, &y);
 
         // scale and add noise

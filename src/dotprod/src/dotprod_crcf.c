@@ -28,8 +28,8 @@
 #include "liquid.internal.h"
 
 #define DOTPROD(name)   LIQUID_CONCAT(dotprod_crcf,name)
-#define TO              float complex
+#define TO              liquid_float_complex
 #define TC              float
-#define TI              float complex
+#define TI              liquid_float_complex
 
 #include "dotprod.c"

@@ -51,11 +51,11 @@ int main() {
     firpfbch_crcf qs = firpfbch_crcf_create(LIQUID_SYNTHESIZER, num_channels, p, h);
     firpfbch_crcf qa = firpfbch_crcf_create(LIQUID_ANALYZER,    num_channels, p, g);
 
-    float complex x[num_samples];                   // random input (noise)
-    float complex Y0[num_symbols][num_channels];    // channelized output (filterbank)
-    float complex Y1[num_symbols][num_channels];    // channelized output
-    float complex z0[num_samples];                  // time-domain output (filterbank)
-    float complex z1[num_samples];                  // time-domain output
+    liquid_float_complex x[num_samples];                   // random input (noise)
+    liquid_float_complex Y0[num_symbols][num_channels];    // channelized output (filterbank)
+    liquid_float_complex Y1[num_symbols][num_channels];    // channelized output
+    liquid_float_complex z0[num_samples];                  // time-domain output (filterbank)
+    liquid_float_complex z1[num_samples];                  // time-domain output
 
     // generate input sequence (complex noise)
     for (i=0; i<num_samples; i++)
@@ -122,7 +122,7 @@ int main() {
     for (i=0; i<num_samples; i++)
         z1[i] = 0.0f;
 
-    float complex y_hat;
+    liquid_float_complex y_hat;
     for (i=0; i<num_channels; i++) {
         // reset filter
         firfilt_crcf_reset(fs);
@@ -190,7 +190,7 @@ int main() {
 
 
     float mse_analyzer[num_channels];
-    float complex d;
+    liquid_float_complex d;
     for (i=0; i<num_channels; i++) {
         mse_analyzer[i] = 0.0f;
         for (j=0; j<num_symbols; j++) {

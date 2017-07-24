@@ -52,8 +52,8 @@ int main(int argc, char*argv[])
     unsigned int i;
 
     // allocate arrays
-    float complex x[  num_samples]; // input array
-    float complex y[2*num_samples]; // output array
+    liquid_float_complex x[  num_samples]; // input array
+    liquid_float_complex y[2*num_samples]; // output array
 
     // generate input
     unsigned int w_len = num_samples - 2*m; // window length

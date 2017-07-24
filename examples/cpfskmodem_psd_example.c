@@ -69,10 +69,10 @@ int main(int argc, char*argv[])
     cpfskmod mod_3 = cpfskmod_create(bps, h, k, m, beta, LIQUID_CPFSK_GMSK);
 
     // buffers
-    float complex buf_0[k];
-    float complex buf_1[k];
-    float complex buf_2[k];
-    float complex buf_3[k];
+    liquid_float_complex buf_0[k];
+    liquid_float_complex buf_1[k];
+    liquid_float_complex buf_2[k];
+    liquid_float_complex buf_3[k];
 
     // create PSD estimators
     // spectral periodogram options

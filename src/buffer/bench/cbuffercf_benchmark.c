@@ -58,8 +58,8 @@ void cbuffercf_bench(struct rusage *     _start,
     cbuffercf q = cbuffercf_create(_n);
 
     // 
-    float complex   v[_write_size]; // array for writing
-    float complex * r;              // read pointer
+    liquid_float_complex   v[_write_size]; // array for writing
+    liquid_float_complex * r;              // read pointer
     unsigned int num_requested;     // number of elements requested
     unsigned int num_read;          // number of elements read
 
