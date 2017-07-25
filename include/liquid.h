@@ -90,14 +90,8 @@ int liquid_libversion_number(void);
 #endif
 //#   define LIQUID_DEFINE_COMPLEX(R,C) typedef R C[2]
 
-#ifndef _MSC_VER
 LIQUID_DEFINE_COMPLEX(float,  liquid_float_complex);
 LIQUID_DEFINE_COMPLEX(double, liquid_double_complex);
-#elif _MSC_VER >= 1900
-#include <complex.h>
-typedef _Fcomplex liquid_float_complex;
-typedef _Dcomplex liquid_double_complex;
-#endif
 
 // 
 // MODULE : agc (automatic gain control)
