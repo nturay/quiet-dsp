@@ -34,7 +34,9 @@
 
 #ifdef __cplusplus
 #define LIQUID_BUILD_CPLUSPLUS
-#include <cmath>
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
 #endif
 
 // Configuration file
@@ -64,6 +66,7 @@ static inline double conj(double d) { return d; }
 static const liquid_float_complex _Complex_I(0, 1);
 #endif
 
+#include <cmath>
 #else
 #include <math.h>
 #endif
