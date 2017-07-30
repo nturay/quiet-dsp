@@ -28,7 +28,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <complex.h>
+
 
 // compute complex phase rotation: x[i] = exp{ j theta[i] }
 //  _theta  :   input primitive array [size: _n x 1]

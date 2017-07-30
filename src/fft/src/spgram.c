@@ -30,7 +30,7 @@
 
 #include <assert.h>
 
-#include <complex.h>
+
 #include "liquid.internal.h"
 
 struct SPGRAM(_s) {

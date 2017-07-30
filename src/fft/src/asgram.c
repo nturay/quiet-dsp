@@ -29,7 +29,7 @@
 #include <string.h>
 
 
-#include <complex.h>
+
 #include "liquid.internal.h"
 
 struct ASGRAM(_s) {

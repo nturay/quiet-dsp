@@ -24,7 +24,7 @@
 // Complex floating-point dot product
 //
 
-#include <complex.h>
+
 #include "liquid.internal.h"
 
 #define DOTPROD(name)   LIQUID_CONCAT(dotprod_crcf,name)

@@ -24,7 +24,7 @@
 // firfilt_cccf_data_h4x8.c: autotest firfilt data
 //
 
-#include <complex.h>
+
 
 #include "liquid.h"
 

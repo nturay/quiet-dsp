@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-#include <complex.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 

@@ -24,7 +24,7 @@
 // Complex floating-point channel
 //
 
-#include <complex.h>
+
 #include "liquid.internal.h"
 
 // naming extensions (useful for print statements)

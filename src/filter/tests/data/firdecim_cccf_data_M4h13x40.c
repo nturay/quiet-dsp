@@ -24,7 +24,7 @@
 // firdecim_cccf_data_M4h13x40.c: autotest firdecim data
 //
 
-#include <complex.h>
+
 
 #include "liquid.h"
 

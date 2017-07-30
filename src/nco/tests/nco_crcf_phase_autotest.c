@@ -21,7 +21,7 @@
  */
 
 #include <stdlib.h>
-#include <complex.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 

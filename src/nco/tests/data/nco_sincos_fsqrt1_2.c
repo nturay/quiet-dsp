@@ -24,7 +24,7 @@
 // autotest nco sincos data for f=0.707106781187
 //
 
-#include <complex.h>
+
 
 #include "liquid.h"
 

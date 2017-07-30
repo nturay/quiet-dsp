@@ -24,7 +24,7 @@
 // autotest fft data for 6-point transform
 //
 
-#include <complex.h>
+
 
 #include "liquid.h"
 
