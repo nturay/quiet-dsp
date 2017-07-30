@@ -39,7 +39,6 @@
 // Configuration file
 #include "config.h"
 
-#include <complex.h>
 #include "liquid.h"
 
 #ifdef __cplusplus
