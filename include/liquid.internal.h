@@ -59,7 +59,9 @@ static inline double cabs(liquid_double_complex d) { return std::abs(d); }
 static inline float conjf(float f) { return f; }
 static inline double conj(double d) { return d; }
 
-static liquid_float_complex _Complex_I(0, 1);
+#ifndef _MSC_VER
+static const liquid_float_complex _Complex_I(0, 1);
+#endif
 
 #include <cmath>
 #else
