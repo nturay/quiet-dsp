@@ -64,12 +64,6 @@ static const liquid_float_complex _Complex_I(0, 1);
 #endif
 
 #include <cmath>
-#ifndef M_SQRT1_2
-static const double M_SQRT1_2 std::M_SQRT1_2;
-#endif
-#ifndef M_PI
-static const double M_PI std::M_PI;
-#endif
 #else
 #include <math.h>
 #endif
