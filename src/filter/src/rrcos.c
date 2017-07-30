@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "liquid.internal.h"
+
 // Design root-Nyquist raised-cosine filter
 //  _k      : samples/symbol
 //  _m      : symbol delay

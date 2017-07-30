@@ -181,7 +181,7 @@ void CHANNEL(_add_multipath)(CHANNEL()    _q,
         for (i=1; i<_q->h_len; i++) {
             float vi = msequence_generate_symbol(ms, 8) / 256.0f - 0.5f;
             float vq = msequence_generate_symbol(ms, 8) / 256.0f - 0.5f;
-            _q->h[i] = (vi + _Complex_I*vq) * 0.5f;
+            _q->h[i] = (vi + (TC)_Complex_I*vq) * 0.5f;
         }
         msequence_destroy(ms);
     } else {
@@ -264,7 +264,7 @@ void CHANNEL(_execute)(CHANNEL() _q,
     // apply AWGN if enabled
     if (_q->enabled_awgn) {
         r *= _q->gamma;
-        r += _q->nstd * ( randnf() + _Complex_I*randnf() ) * (TC)(M_SQRT1_2);
+        r += _q->nstd * ( randnf() + (TC)_Complex_I*randnf() ) * (TC)(M_SQRT1_2);
     }
 
     // set output value
