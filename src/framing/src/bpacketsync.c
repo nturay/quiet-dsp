@@ -36,6 +36,12 @@
 
 #define DEBUG_BPACKETSYNC   0
 
+enum state {
+    BPACKETSYNC_STATE_SEEKPN=0,     // seek p/n sequence
+    BPACKETSYNC_STATE_RXHEADER,     // receive header data
+    BPACKETSYNC_STATE_RXPAYLOAD     // receive payload data
+};
+
 // bpacketsync object structure
 struct bpacketsync_s {
     // options
@@ -73,11 +79,7 @@ struct bpacketsync_s {
     bsequence brx;          // binary received sequence
 
     // status variables
-    enum {
-        BPACKETSYNC_STATE_SEEKPN=0,     // seek p/n sequence
-        BPACKETSYNC_STATE_RXHEADER,     // receive header data
-        BPACKETSYNC_STATE_RXPAYLOAD     // receive payload data
-    } state;
+    enum state state;
 
     // counters
     unsigned int num_bytes_received;

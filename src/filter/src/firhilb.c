@@ -40,7 +40,7 @@
 
 struct FIRHILB(_s) {
     T * h;                  // filter coefficients
-    T complex * hc;         // filter coefficients (complex)
+    TC * hc;         // filter coefficients (complex)
     unsigned int h_len;     // length of filter
     float As;               // filter stop-band attenuation [dB]
 
@@ -81,7 +81,7 @@ FIRHILB() FIRHILB(_create)(unsigned int _m,
     // set filter length and allocate memory for coefficients
     q->h_len = 4*(q->m) + 1;
     q->h     = (T *)         malloc((q->h_len)*sizeof(T));
-    q->hc    = (T complex *) malloc((q->h_len)*sizeof(T complex));
+    q->hc    = (TC *) malloc((q->h_len)*sizeof(TC));
 
     // allocate memory for quadrature filter component
     q->hq_len = 2*(q->m);
@@ -94,7 +94,7 @@ FIRHILB() FIRHILB(_create)(unsigned int _m,
     unsigned int i;
     for (i=0; i<q->h_len; i++) {
         float t = (float)i - (float)(q->h_len-1)/2.0f;
-        q->hc[i] = q->h[i] * cexpf(_Complex_I*0.5f*M_PI*t);
+        q->hc[i] = q->h[i] * cexpf(_Complex_I*(T)(0.5f*M_PI*t));
         q->h[i]  = cimagf(q->hc[i]);
     }
 
@@ -169,7 +169,7 @@ void FIRHILB(_reset)(FIRHILB() _q)
 //  _y      :   complex-valued output sample
 void FIRHILB(_r2c_execute)(FIRHILB()   _q,
                            T           _x,
-                           T complex * _y)
+                           TC * _y)
 {
     T * r;  // buffer read pointer
     T yi;   // in-phase component
@@ -213,7 +213,7 @@ void FIRHILB(_r2c_execute)(FIRHILB()   _q,
 //  _y      :   complex-valued input sample
 //  _x      :   real-valued output sample
 void FIRHILB(_c2r_execute)(FIRHILB() _q,
-                           T complex _x,
+                           TC _x,
                            T *       _y)
 {
     *_y = crealf(_x);
@@ -225,7 +225,7 @@ void FIRHILB(_c2r_execute)(FIRHILB() _q,
 //  _y      :   complex-valued output sample
 void FIRHILB(_decim_execute)(FIRHILB()   _q,
                              T *         _x,
-                             T complex * _y)
+                             TC * _y)
 {
     T * r;  // buffer read pointer
     T yi;   // in-phase component
@@ -252,7 +252,7 @@ void FIRHILB(_decim_execute)(FIRHILB()   _q,
 void FIRHILB(_decim_execute_block)(FIRHILB()    _q,
                                    T *          _x,
                                    unsigned int _n,
-                                   T complex *  _y)
+                                   TC *  _y)
 {
     unsigned int i;
 
@@ -265,7 +265,7 @@ void FIRHILB(_decim_execute_block)(FIRHILB()    _q,
 //  _y      :   complex-valued input sample
 //  _x      :   real-valued output array [size: 2 x 1]
 void FIRHILB(_interp_execute)(FIRHILB() _q,
-                              T complex _x,
+                              TC _x,
                               T *       _y)
 {
     T * r;  // buffer read pointer
@@ -288,7 +288,7 @@ void FIRHILB(_interp_execute)(FIRHILB() _q,
 //  _n      :   number of *input* samples
 //  _y      :   real-valued output array [size: 2*_n x 1]
 void FIRHILB(_interp_execute_block)(FIRHILB()    _q,
-                                    T complex *  _x,
+                                    TC *  _x,
                                     unsigned int _n,
                                     T *          _y)
 {

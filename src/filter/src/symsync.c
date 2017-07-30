@@ -208,7 +208,7 @@ SYMSYNC() SYMSYNC(_create)(unsigned int _k,
 //  _m      : symbol delay
 //  _beta   : rolloff factor (0 < beta <= 1)
 //  _M      : number of filters in the bank
-SYMSYNC() SYMSYNC(_create_rnyquist)(int          _type,
+SYMSYNC() SYMSYNC(_create_rnyquist)(liquid_firfilt_type          _type,
                                     unsigned int _k,
                                     unsigned int _m,
                                     float        _beta,

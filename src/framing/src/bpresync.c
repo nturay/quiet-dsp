@@ -95,7 +95,7 @@ BPRESYNC() BPRESYNC(_create)(TC *         _v,
         _q->dphi[i] = (float)i / (float)(_q->m-1)*_dphi_max;
         unsigned int k;
         for (k=0; k<_q->n; k++) {
-            TC v_prime = _v[k] * cexpf(-_Complex_I*k*_q->dphi[i]);
+            TC v_prime = _v[k] * cexpf(-_Complex_I*(float)k*_q->dphi[i]);
             bsequence_push(_q->sync_i[i], crealf(v_prime)>0);
             bsequence_push(_q->sync_q[i], cimagf(v_prime)>0);
         }
@@ -173,12 +173,12 @@ void BPRESYNC(_correlatex)(BPRESYNC()      _q,
     // non-conjugated
     int rxy_i0 = rxy_ii - rxy_qq;
     int rxy_q0 = rxy_iq + rxy_qi;
-    *_rxy0 = (rxy_i0 + rxy_q0 * _Complex_I) * _q->n_inv;
+    *_rxy0 = ((float)rxy_i0 + (float)rxy_q0 * _Complex_I) * _q->n_inv;
 
     // conjugated
     int rxy_i1 = rxy_ii + rxy_qq;
     int rxy_q1 = rxy_iq - rxy_qi;
-    *_rxy1 = (rxy_i1 + rxy_q1 * _Complex_I) * _q->n_inv;
+    *_rxy1 = ((float)rxy_i1 + (float)rxy_q1 * _Complex_I) * _q->n_inv;
 }
 
 /* push input sample into pre-demod synchronizer            */

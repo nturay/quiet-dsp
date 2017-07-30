@@ -123,7 +123,7 @@ void TVMPCH(_push)(TVMPCH() _q,
     // update coefficients
     unsigned int i;
     for (i=0; i<_q->h_len-1; i++)
-        _q->h[i] = _q->alpha*_q->h[i] + _q->beta*(randnf() + _Complex_I*randnf()) * _q->std * M_SQRT1_2;
+        _q->h[i] = _q->alpha*_q->h[i] + _q->beta*(randnf() + _Complex_I*randnf()) * _q->std * (TC)(M_SQRT1_2);
 
     // push sample into window buffer
     WINDOW(_push)(_q->w, _x);

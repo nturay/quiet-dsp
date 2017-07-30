@@ -62,6 +62,12 @@ void framesync64_execute_rxpreamble(framesync64   _q,
 void framesync64_execute_rxpayload(framesync64   _q,
                                    liquid_float_complex _x);
 
+enum state {
+    FRAMESYNC64_STATE_DETECTFRAME=0,    // detect frame (seek p/n sequence)
+    FRAMESYNC64_STATE_RXPREAMBLE,       // receive p/n sequence
+    FRAMESYNC64_STATE_RXPAYLOAD,        // receive payload data
+};
+
 // framesync64 object structure
 struct framesync64_s {
     // callback
@@ -101,11 +107,7 @@ struct framesync64_s {
     int           payload_valid;    // did payload pass crc?
     
     // status variables
-    enum {
-        FRAMESYNC64_STATE_DETECTFRAME=0,    // detect frame (seek p/n sequence)
-        FRAMESYNC64_STATE_RXPREAMBLE,       // receive p/n sequence
-        FRAMESYNC64_STATE_RXPAYLOAD,        // receive payload data
-    }            state;
+    enum state state;
     unsigned int preamble_counter;  // counter: num of p/n syms received
     unsigned int payload_counter;   // counter: num of payload syms received
 
@@ -133,8 +135,8 @@ framesync64 framesync64_create(framesync_callback _callback,
     // generate p/n sequence
     msequence ms = msequence_create(7, 0x0089, 1);
     for (i=0; i<64; i++) {
-        q->preamble_pn[i]  = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2);
-        q->preamble_pn[i] += (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2)*_Complex_I;
+        q->preamble_pn[i]  = (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2);
+        q->preamble_pn[i] += (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2)*_Complex_I;
     }
     msequence_destroy(ms);
 
@@ -158,9 +160,9 @@ framesync64 framesync64_create(framesync_callback _callback,
     q->mixer = nco_crcf_create(LIQUID_NCO);
     
     // create payload demodulator/decoder object
-    int check      = LIQUID_CRC_24;
-    int fec0       = LIQUID_FEC_NONE;
-    int fec1       = LIQUID_FEC_GOLAY2412;
+    crc_scheme check      = LIQUID_CRC_24;
+    fec_scheme fec0       = LIQUID_FEC_NONE;
+    fec_scheme fec1       = LIQUID_FEC_GOLAY2412;
     int mod_scheme = LIQUID_MODEM_QPSK;
     q->dec         = qpacketmodem_create();
     qpacketmodem_configure(q->dec, 72, check, fec0, fec1, mod_scheme);
@@ -280,7 +282,7 @@ void framesync64_execute_seekpn(framesync64   _q,
                                 liquid_float_complex _x)
 {
     // push through pre-demod synchronizer
-    liquid_float_complex * v = qdetector_cccf_execute(_q->detector, _x);
+    liquid_float_complex *v = (liquid_float_complex*)qdetector_cccf_execute(_q->detector, _x);
 
     // check if frame has been detected
     if (v != NULL) {

@@ -106,13 +106,15 @@ FIRINTERP() FIRINTERP(_create_kaiser)(unsigned int _M,
     liquid_firdes_kaiser(h_len, fc, _As, 0.0f, hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
-    TC hc[h_len];
+    TC *hc = (TC*)malloc(h_len * sizeof(TC));
     unsigned int i;
     for (i=0; i<h_len; i++)
         hc[i] = hf[i];
     
     // return interpolator object
-    return FIRINTERP(_create)(_M, hc, 2*_M*_m);
+    FIRINTERP() obj = FIRINTERP(_create)(_M, hc, 2*_M*_m);
+    free(hc);
+    return obj;
 }
 
 // create prototype (root-)Nyquist interpolator
@@ -121,7 +123,7 @@ FIRINTERP() FIRINTERP(_create_kaiser)(unsigned int _M,
 //  _m      :   filter delay (symbols),  _m > 0
 //  _beta   :   excess bandwidth factor, _beta < 1
 //  _dt     :   fractional sample delay, _dt in (-1, 1)
-FIRINTERP() FIRINTERP(_create_prototype)(int          _type,
+FIRINTERP() FIRINTERP(_create_prototype)(liquid_firfilt_type          _type,
                                          unsigned int _k,
                                          unsigned int _m,
                                          float        _beta,
@@ -149,12 +151,14 @@ FIRINTERP() FIRINTERP(_create_prototype)(int          _type,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC hc[h_len];
+    TC *hc = (TC*)malloc(h_len * sizeof(TC));
     for (i=0; i<h_len; i++)
         hc[i] = h[i];
 
     // return interpolator object
-    return FIRINTERP(_create)(_k, hc, h_len);
+    FIRINTERP() obj = FIRINTERP(_create)(_k, hc, h_len);
+    free(hc);
+    return obj;
 }
 
 // destroy interpolator object

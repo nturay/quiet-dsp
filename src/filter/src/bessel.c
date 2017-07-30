@@ -136,9 +136,9 @@ void fpoly_bessel_roots_orchard(unsigned int _n,
                                 liquid_float_complex * _roots)
 {
     // initialize arrays
-    liquid_float_complex r0[_n];       // roots of L_{k-2}
-    liquid_float_complex r1[_n];       // roots of L_{k-1}
-    liquid_float_complex r_hat[_n];    // roots of L_{k}
+    liquid_float_complex *r0 = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));       // roots of L_{k-2}
+    liquid_float_complex *r1 = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));       // roots of L_{k-1}
+    liquid_float_complex *r_hat = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));    // roots of L_{k}
 
     unsigned int i, j;
     unsigned int p, L;
@@ -161,13 +161,13 @@ void fpoly_bessel_roots_orchard(unsigned int _n,
                 r_hat[0] = 2*crealf(r1[0]) - crealf(r0[0]);
             } else {
                 // even order
-                r_hat[0] = 2*r1[0] - conjf(r0[0]);
+                r_hat[0] = 2.0f*r1[0] - conjf(r0[0]);
             }
 
             // linear extrapolation of roots of L_{k-2} and L_{k-1} for
             // new root estimate in L_{k}
             for (j=1; j<L; j++)
-                r_hat[j] = 2*r1[j-p] - r0[j-1];
+                r_hat[j] = 2.0f*r1[j-p] - r0[j-1];
 
             for (j=0; j<L; j++) {
                 float x = crealf(r_hat[j]);
@@ -196,6 +196,10 @@ void fpoly_bessel_roots_orchard(unsigned int _n,
     // if order is odd, copy single real root last
     if (p)
         _roots[_n-1] = r_hat[0];
+
+    free(r_hat);
+    free(r1);
+    free(r0);
 }
 
 // from [Orchard:1965]

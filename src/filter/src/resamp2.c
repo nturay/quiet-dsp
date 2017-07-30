@@ -277,12 +277,12 @@ void RESAMP2(_analyzer_execute)(RESAMP2() _q,
     TO y1;      // filter branch
 
     // compute filter branch
-    WINDOW(_push)(_q->w1, 0.5*_x[0]);
+    WINDOW(_push)(_q->w1, (T)0.5*_x[0]);
     WINDOW(_read)(_q->w1, &r);
     DOTPROD(_execute)(_q->dp, r, &y1);
 
     // compute delay branch
-    WINDOW(_push)(_q->w0, 0.5*_x[1]);
+    WINDOW(_push)(_q->w0, (T)0.5*_x[1]);
     WINDOW(_index)(_q->w0, _q->m-1, &y0);
 
     // set return value

@@ -102,7 +102,7 @@ FFT(plan) FFT(_create_plan_mixed_radix)(unsigned int _nfft,
     
     T d = (q->direction == LIQUID_FFT_FORWARD) ? -1.0 : 1.0;
     for (i=0; i<q->nfft; i++)
-        q->data.mixedradix.twiddle[i] = cexpf(_Complex_I*d*2*M_PI*(T)i / (T)(q->nfft));
+        q->data.mixedradix.twiddle[i] = cexpf(_Complex_I*d*(T)(2*M_PI*i) / (T)(q->nfft));
 
     return q;
 }

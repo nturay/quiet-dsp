@@ -95,7 +95,7 @@ FFT(plan) FFT(_create_plan_rader)(unsigned int _nfft,
     // (use newly-created FFT plan of length nfft-1)
     T d = (q->direction == LIQUID_FFT_FORWARD) ? -1.0 : 1.0;
     for (i=0; i<q->nfft-1; i++)
-        q->data.rader.x_prime[i] = cexpf(_Complex_I*d*2*M_PI*q->data.rader.seq[i]/(T)(q->nfft));
+        q->data.rader.x_prime[i] = cexpf(_Complex_I*d*(T)(2*M_PI*q->data.rader.seq[i])/(T)(q->nfft));
     FFT(_execute)(q->data.rader.fft);
 
     // copy result to R

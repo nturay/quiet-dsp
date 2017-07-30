@@ -92,7 +92,7 @@ EQLMS() EQLMS(_create)(T *          _h,
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
 //  _dt     :   fractional sample delay, 0 <= _dt < 1
-EQLMS() EQLMS(_create_rnyquist)(int          _type,
+EQLMS() EQLMS(_create_rnyquist)(liquid_firfilt_type _type,
                                 unsigned int _k,
                                 unsigned int _m,
                                 float        _beta,
@@ -121,12 +121,14 @@ EQLMS() EQLMS(_create_rnyquist)(int          _type,
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     // and scale by samples/symbol
     unsigned int i;
-    T hc[h_len];
+    T * hc = (T*) malloc(h_len*sizeof(T));
     for (i=0; i<h_len; i++)
         hc[i] = h[i] / (float)_k;
 
     // return equalizer object
-    return EQLMS(_create)(hc, h_len);
+    EQLMS() obj = EQLMS(_create)(hc, h_len);
+    free(hc);
+    return obj;
 }
 
 // create LMS EQ initialized with low-pass filter
@@ -150,12 +152,14 @@ EQLMS() EQLMS(_create_lowpass)(unsigned int _h_len,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    T hc[_h_len];
+    T * hc = (T*) malloc(_h_len*sizeof(T));
     for (i=0; i<_h_len; i++)
         hc[i] = h[i];
 
     // return equalizer object
-    return EQLMS(_create)(hc, _h_len);
+    EQLMS() obj = EQLMS(_create)(hc, _h_len);
+    free(hc);
+    return obj;
 }
 
 // re-create least mean-squares (LMS) equalizer object

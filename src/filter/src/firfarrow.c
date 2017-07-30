@@ -278,7 +278,7 @@ void FIRFARROW(_freqresponse)(FIRFARROW() _q,
     liquid_float_complex H = 0.0f;
 
     for (i=0; i<_q->h_len; i++)
-        H += _q->h[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
+        H += _q->h[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i));
 
     // set return value
     *_H = H;

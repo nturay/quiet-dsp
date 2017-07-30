@@ -98,7 +98,7 @@ fec_scheme liquid_getopt_str2fec(const char * _str)
     unsigned int i;
     for (i=0; i<LIQUID_FEC_NUM_SCHEMES; i++) {
         if (strcmp(_str,fec_scheme_str[i][0])==0) {
-            return i;
+            return (fec_scheme)i;
         }
     }
 

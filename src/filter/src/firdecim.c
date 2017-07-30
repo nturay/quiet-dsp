@@ -108,13 +108,15 @@ FIRDECIM() FIRDECIM(_create_kaiser)(unsigned int _M,
     liquid_firdes_kaiser(h_len, fc, _As, 0.0f, hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
-    TC hc[h_len];
+    TC *hc = (TC*)malloc(h_len * sizeof(TC));
     unsigned int i;
     for (i=0; i<h_len; i++)
         hc[i] = hf[i];
     
     // return decimator object
-    return FIRDECIM(_create)(_M, hc, 2*_M*_m);
+    FIRDECIM() obj = FIRDECIM(_create)(_M, hc, 2*_M*_m);
+    free(hc);
+    return obj;
 }
 
 // create square-root Nyquist decimator
@@ -123,7 +125,7 @@ FIRDECIM() FIRDECIM(_create_kaiser)(unsigned int _M,
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
 //  _dt     :   fractional sample delay, 0 <= _dt < 1
-FIRDECIM() FIRDECIM(_create_prototype)(int          _type,
+FIRDECIM() FIRDECIM(_create_prototype)(liquid_firfilt_type          _type,
                                        unsigned int _M,
                                        unsigned int _m,
                                        float        _beta,
@@ -151,12 +153,14 @@ FIRDECIM() FIRDECIM(_create_prototype)(int          _type,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC hc[h_len];
+    TC *hc = (TC*)malloc(h_len * sizeof(TC));
     for (i=0; i<h_len; i++)
         hc[i] = h[i];
 
     // return decimator object
-    return FIRDECIM(_create)(_M, hc, h_len);
+    FIRDECIM() obj = FIRDECIM(_create)(_M, hc, h_len);
+    free(hc);
+    return obj;
 }
 
 // destroy decimator object

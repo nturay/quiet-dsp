@@ -264,7 +264,7 @@ void CHANNEL(_execute)(CHANNEL() _q,
     // apply AWGN if enabled
     if (_q->enabled_awgn) {
         r *= _q->gamma;
-        r += _q->nstd * ( randnf() + _Complex_I*randnf() ) * M_SQRT1_2;
+        r += _q->nstd * ( randnf() + _Complex_I*randnf() ) * (TC)(M_SQRT1_2);
     }
 
     // set output value

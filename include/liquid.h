@@ -23,7 +23,9 @@
 #define __LIQUID_H__
 
 #ifdef __cplusplus
+#ifndef LIQUID_BUILD_CPLUSPLUS
 extern "C" {
+#endif // LIQUID_BUILD_CPLUSPLUS
 #   define LIQUID_USE_COMPLEX_H 0
 #else
 #   define LIQUID_USE_COMPLEX_H 1
@@ -7025,9 +7027,9 @@ void liquid_vectorf_add(float *      _a,
                         float *      _c);
 #endif
 
-#ifdef __cplusplus
+#if defined __cplusplus && !defined LIQUID_BUILD_CPLUSPLUS
 } //extern "C"
-#endif // __cplusplus
+#endif // __cplusplus && !LIQUID_BUILD_CPLUSPLUS
 
 #endif // __LIQUID_H__
 

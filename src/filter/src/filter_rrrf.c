@@ -72,7 +72,6 @@
 #include "firfarrow.c"
 #include "firfilt.c"
 #include "firinterp.c"
-#include "firhilb.c"
 #include "firpfb.c"
 #include "iirdecim.c"
 #include "iirfilt.c"
@@ -83,3 +82,7 @@
 #include "resamp.c"
 #include "resamp2.c"
 #include "symsync.c"
+
+#undef TC
+#define TC              liquid_float_complex
+#include "firhilb.c"

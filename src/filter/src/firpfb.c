@@ -71,7 +71,7 @@ FIRPFB() FIRPFB(_create)(unsigned int _M,
     // generate bank of sub-samped filters
     // length of each sub-sampled filter
     unsigned int h_sub_len = _h_len / q->num_filters;
-    TC h_sub[h_sub_len];
+    TC *h_sub = (TC*)malloc(h_sub_len * sizeof(TC));
     unsigned int i, n;
     for (i=0; i<q->num_filters; i++) {
         for (n=0; n<h_sub_len; n++) {
@@ -94,6 +94,7 @@ FIRPFB() FIRPFB(_create)(unsigned int _M,
 
     // reset object and return
     FIRPFB(_reset)(q);
+    free(h_sub);
     return q;
 }
 
@@ -129,12 +130,14 @@ FIRPFB() FIRPFB(_create_kaiser)(unsigned int _M,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC Hc[H_len];
+    TC *Hc = (TC*)malloc(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         Hc[i] = Hf[i];
 
     // return filterbank object
-    return FIRPFB(_create)(_M, Hc, H_len);
+    FIRPFB() obj = FIRPFB(_create)(_M, Hc, H_len);
+    free(Hc);
+    return obj;
 }
 
 // create square-root Nyquist filterbank
@@ -143,7 +146,7 @@ FIRPFB() FIRPFB(_create_kaiser)(unsigned int _M,
 //  _k      :   samples/symbol _k > 1
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
-FIRPFB() FIRPFB(_create_rnyquist)(int          _type,
+FIRPFB() FIRPFB(_create_rnyquist)(liquid_firfilt_type          _type,
                                   unsigned int _M,
                                   unsigned int _k,
                                   unsigned int _m,
@@ -171,12 +174,14 @@ FIRPFB() FIRPFB(_create_rnyquist)(int          _type,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC Hc[H_len];
+    TC *Hc = (TC*)malloc(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         Hc[i] = Hf[i];
 
     // return filterbank object
-    return FIRPFB(_create)(_M, Hc, H_len);
+    FIRPFB() obj = FIRPFB(_create)(_M, Hc, H_len);
+    free(Hc);
+    return obj;
 }
 
 // create firpfb derivative square-root Nyquist filterbank
@@ -185,7 +190,7 @@ FIRPFB() FIRPFB(_create_rnyquist)(int          _type,
 //  _k      :   samples/symbol _k > 1
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
-FIRPFB() FIRPFB(_create_drnyquist)(int          _type,
+FIRPFB() FIRPFB(_create_drnyquist)(liquid_firfilt_type          _type,
                                    unsigned int _M,
                                    unsigned int _k,
                                    unsigned int _m,
@@ -231,12 +236,14 @@ FIRPFB() FIRPFB(_create_drnyquist)(int          _type,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     // and apply scaling factor for normalized response
-    TC Hc[H_len];
+    TC *Hc = (TC*)malloc(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         Hc[i] = dHf[i] * 0.06f / HdH_max;
 
     // return filterbank object
-    return FIRPFB(_create)(_M, Hc, H_len);
+    FIRPFB() obj = FIRPFB(_create)(_M, Hc, H_len);
+    free(Hc);
+    return obj;
 }
 
 
@@ -259,7 +266,7 @@ FIRPFB() FIRPFB(_recreate)(FIRPFB()     _q,
     }
 
     // re-create each dotprod object
-    TC h_sub[_q->h_sub_len];
+    TC *h_sub = (TC*)malloc(_q->h_sub_len*sizeof(TC));
     unsigned int i, n;
     for (i=0; i<_q->num_filters; i++) {
         for (n=0; n<_q->h_sub_len; n++) {
@@ -269,6 +276,7 @@ FIRPFB() FIRPFB(_recreate)(FIRPFB()     _q,
 
         _q->dp[i] = DOTPROD(_recreate)(_q->dp[i],h_sub,_q->h_sub_len);
     }
+    free(h_sub);
     return _q;
 }
 

@@ -1,4 +1,4 @@
-project(liquid-dsp C)
+project(liquid-dsp C CXX)
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -941,6 +941,7 @@ set(liquid_SOURCES
     ${utility_SOURCES}
     ${vector_SOURCES}
     )
+set_source_files_properties(${liquid_SOURCES} PROPERTIES LANGUAGE CXX)
 
 if (NOT LIQUID_BUILD_SHARED AND NOT LIQUID_BUILD_STATIC)
     message(FATAL_ERROR "Please, define LIQUID_BUILD_SHARED and/or LIQUID_BUILD_STATIC.")

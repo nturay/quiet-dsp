@@ -1,0 +1,27 @@
+version: '{build}'
+
+build:
+    verbosity: detailed
+
+branches:
+    only:
+        - win
+
+environment:
+    matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+          COMPILER: cl.exe
+          MSVC_BAT: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat
+          MSVC_BAT_ARCH: x86
+          GENERATOR: "Visual Studio 14 2015 Win64"
+          APPVEYOR_SAVE_CACHE_ON_ERROR: true
+
+before_build:
+    - if DEFINED MSVC_BAT call "%MSVC_BAT%" %MSVC_BAT_ARCH%
+    - cd %APPVEYOR_BUILD_FOLDER%
+
+build_script:
+    - mkdir build
+    - cd build
+    - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release ..
+    - cmake --build . --config Release

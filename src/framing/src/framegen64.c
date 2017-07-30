@@ -59,16 +59,16 @@ framegen64 framegen64_create()
     // generate pn sequence
     msequence ms = msequence_create(7, 0x0089, 1);
     for (i=0; i<64; i++) {
-        q->pn_sequence[i]  = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2);
-        q->pn_sequence[i] += (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2)*_Complex_I;
+        q->pn_sequence[i]  = (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2);
+        q->pn_sequence[i] += (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2)*_Complex_I;
     }
     msequence_destroy(ms);
 
     // create payload encoder/modulator object
-    int check      = LIQUID_CRC_24;
-    int fec0       = LIQUID_FEC_NONE;
-    int fec1       = LIQUID_FEC_GOLAY2412;
-    int mod_scheme = LIQUID_MODEM_QPSK;
+    crc_scheme check      = LIQUID_CRC_24;
+    fec_scheme fec0       = LIQUID_FEC_NONE;
+    fec_scheme fec1       = LIQUID_FEC_GOLAY2412;
+    int mod_scheme        = LIQUID_MODEM_QPSK;
     q->enc         = qpacketmodem_create();
     qpacketmodem_configure(q->enc, 72, check, fec0, fec1, mod_scheme);
     //qpacketmodem_print(q->enc);

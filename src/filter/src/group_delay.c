@@ -48,8 +48,8 @@ float fir_group_delay(float * _h,
     liquid_float_complex t0=0.0f;
     liquid_float_complex t1=0.0f;
     for (i=0; i<_n; i++) {
-        t0 += _h[i] * cexpf(_Complex_I*2*M_PI*_fc*i) * i;
-        t1 += _h[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
+        t0 += _h[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i)) * (float)i;
+        t1 += _h[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i));
     }
 
     return crealf(t0/t1);
@@ -102,8 +102,8 @@ float iir_group_delay(float * _b,
     liquid_float_complex t1=0.0f;
     liquid_float_complex c0;
     for (i=0; i<nc; i++) {
-        c0  = c[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
-        t0 += c0*i;
+        c0  = c[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i));
+        t0 += c0*(float)i;
         t1 += c0;
     }
 

@@ -38,7 +38,7 @@
 FFT(plan) FFT(_create_plan_r2r_1d)(unsigned int _nfft,
                                    T *          _x,
                                    T *          _y,
-                                   int          _type,
+                                   liquid_fft_type          _type,
                                    int          _flags)
 {
     // allocate plan and initialize all internal arrays to NULL

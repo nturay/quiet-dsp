@@ -122,13 +122,15 @@ FIRFILT() FIRFILT(_create_kaiser)(unsigned int _n,
     liquid_firdes_kaiser(_n, _fc, _As, _mu, hf);
 
     // copy coefficients to type-specific array
-    TC h[_n];
+    TC *h = (TC*)malloc(_n * sizeof(TC));
     unsigned int i;
     for (i=0; i<_n; i++)
         h[i] = (TC) hf[i];
 
     // 
-    return FIRFILT(_create)(h, _n);
+    FIRFILT() obj = FIRFILT(_create)(h, _n);
+    free(h);
+    return obj;
 }
 
 // create from square-root Nyquist prototype
@@ -137,7 +139,7 @@ FIRFILT() FIRFILT(_create_kaiser)(unsigned int _n,
 //  _m      : filter delay [symbols], _m > 0
 //  _beta   : rolloff factor, 0 < beta <= 1
 //  _mu     : fractional sample offset,-0.5 < _mu < 0.5
-FIRFILT() FIRFILT(_create_rnyquist)(int          _type,
+FIRFILT() FIRFILT(_create_rnyquist)(liquid_firfilt_type          _type,
                                     unsigned int _k,
                                     unsigned int _m,
                                     float        _beta,
@@ -162,12 +164,14 @@ FIRFILT() FIRFILT(_create_rnyquist)(int          _type,
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC hc[h_len];
+    TC *hc = (TC*)malloc(h_len * sizeof(TC));
     for (i=0; i<h_len; i++)
         hc[i] = hf[i];
 
     // return filter object and return
-    return FIRFILT(_create)(hc, h_len);
+    FIRFILT() obj = FIRFILT(_create)(hc, h_len);
+    free(hc);
+    return obj;
 }
 
 // create rectangular filter prototype
@@ -186,12 +190,14 @@ FIRFILT() FIRFILT(_create_rect)(unsigned int _n)
         hf[i] = 1.0f;
 
     // copy coefficients to type-specific array
-    TC h[_n];
+    TC *h = (TC*)malloc(_n * sizeof(TC));
     for (i=0; i<_n; i++)
         h[i] = (TC) hf[i];
 
     // return filter object and return
-    return FIRFILT(_create)(h, _n);
+    FIRFILT() obj = FIRFILT(_create)(h, _n);
+    free(h);
+    return obj;
 }
 
 // re-create firfilt object
@@ -377,7 +383,7 @@ void FIRFILT(_freqresponse)(FIRFILT()       _q,
 
     // compute dot product between coefficients and exp{ 2 pi fc {0..n-1} }
     for (i=0; i<_q->h_len; i++)
-        H += _q->h[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
+        H += _q->h[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i));
 
     // apply scaling
     H *= _q->scale;
