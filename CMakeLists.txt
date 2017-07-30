@@ -150,6 +150,10 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
     set(_EXTRA_C_FLAGS "${_EXTRA_C_FLAGS} -ffast-math")
 endif ()
 
+if (MSVC)
+    set(_EXTRA_C_FLAGS "/wd4003")
+endif (MSVC)
+
 #
 # MODULE : agc - automatic gain control
 #
