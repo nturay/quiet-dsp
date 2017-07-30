@@ -74,7 +74,7 @@ void liquid_print_fec_schemes()
     printf("          ");
     for (i=0; i<LIQUID_FEC_NUM_SCHEMES; i++) {
 #if !LIBFEC_ENABLED
-        if ( fec_scheme_is_convolutional(i) || fec_scheme_is_reedsolomon(i) )
+        if ( fec_scheme_is_convolutional((fec_scheme)i) || fec_scheme_is_reedsolomon((fec_scheme)i) )
             continue;
 #endif
         printf("%s", fec_scheme_str[i][0]);
@@ -374,11 +374,11 @@ unsigned int fec_rs_get_enc_msg_len(unsigned int _dec_msg_len,
     div_t d;
 
     // compute the number of blocks in the full message sequence
-    d = div(_dec_msg_len, _kk);
+    d = div((int)_dec_msg_len, (int)_kk);
     unsigned int num_blocks = d.quot + (d.rem==0 ? 0 : 1);
 
     // compute the length of each decoded block
-    d = div(_dec_msg_len, num_blocks);
+    d = div((int)_dec_msg_len, (int)num_blocks);
     unsigned int dec_block_len = d.quot + (d.rem == 0 ? 0 : 1);
 
     // compute the encoded block length
