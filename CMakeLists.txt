@@ -274,6 +274,7 @@ set(dotprod_BENCHMARKS_SOURCES
     src/dotprod/bench/sumsqcf_benchmark.c
     )
 
+if (NOT MSVC)
 if (LIQUID_SIMDOVERRIDE)
     set(dotprod_SOURCES ${dotprod_C_SOURCES})
 elseif (HAVE_SSE41 AND HAVE_SMMINTRIN_H)
@@ -290,6 +291,7 @@ elseif (HAVE_NEON OR HAVE_NEON64)
 else ()
     set(dotprod_SOURCES ${dotprod_C_SOURCES})
 endif ()
+endif (NOT MSVC)
 
 #
 # MODULE : equalization
