@@ -291,6 +291,8 @@ elseif (HAVE_NEON OR HAVE_NEON64)
 else ()
     set(dotprod_SOURCES ${dotprod_C_SOURCES})
 endif ()
+else (NOT MSVC)
+    set(dotprod_SOURCES ${dotprod_C_SOURCES})
 endif (NOT MSVC)
 
 #
