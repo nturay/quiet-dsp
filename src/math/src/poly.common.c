@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 T POLY(_val)(T * _p, unsigned int _k, T _x)
 {

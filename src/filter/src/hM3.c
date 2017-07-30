@@ -29,7 +29,7 @@
 //      the Software-Defined Radio Forum, 2005
 //
 
-#include <math.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

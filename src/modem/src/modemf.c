@@ -24,7 +24,7 @@
 // modemf.c : linear modem API, floating-point (single precision)
 //
 
-#include <math.h>
+
 #include <stdint.h>
 #include "liquid.internal.h"
 

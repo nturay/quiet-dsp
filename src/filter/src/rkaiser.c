@@ -28,7 +28,7 @@
 //      Filter Banks," 1993, Prentice Hall, Section 3.2.1
 //
 
-#include <math.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 

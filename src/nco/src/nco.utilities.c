@@ -26,7 +26,7 @@
 // Numerically-controlled oscillator (nco) utilities
 //
 
-#include <math.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 

@@ -24,7 +24,7 @@
 // Matrix Q/R decomposition method definitions
 //
 
-#include <math.h>
+
 #include "liquid.internal.h"
 
 #define DEBUG_MATRIX_QRDECOMP 1

@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #define DEBUG_SYMTRACK           0
 #define DEBUG_SYMTRACK_PRINT     0

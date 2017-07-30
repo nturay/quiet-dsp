@@ -29,7 +29,7 @@
 //      Manuscript, August, 1994.
 //
 
-#include <math.h>
+
 #include <string.h>
 
 #include "liquid.internal.h"

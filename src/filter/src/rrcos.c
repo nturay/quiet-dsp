@@ -24,7 +24,7 @@
 // Design root raised-cosine filter
 //
 
-#include <math.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 

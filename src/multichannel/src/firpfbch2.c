@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 
 // firpfbch2 object structure definition
 struct FIRPFBCH2(_s) {

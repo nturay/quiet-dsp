@@ -24,7 +24,7 @@
 // Matrix Gram-Schmidt Orthonormalization
 //
 
-#include <math.h>
+
 #include "liquid.internal.h"
 
 #define DEBUG_MATRIX_GRAMSCHMIDT 0

@@ -24,7 +24,7 @@
 // Least mean-squares (LMS) equalizer
 //
 
-#include <math.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

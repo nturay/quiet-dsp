@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <complex.h>
-#include <math.h>
+
 #include <assert.h>
 #include <string.h>
 

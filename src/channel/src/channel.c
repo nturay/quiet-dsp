@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <math.h>
+
 
 // portable structured channel object
 struct CHANNEL(_s) {

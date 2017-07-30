@@ -22,7 +22,7 @@
 
 #include <sys/resource.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "liquid.h"
 
 #define EQRLS_CCCF_TRAIN_BENCH_API(N)   \

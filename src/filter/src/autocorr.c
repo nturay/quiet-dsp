@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <math.h>
+
 
 // defined:
 //  AUTOCORR()      name-mangling macro

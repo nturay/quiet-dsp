@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 // forward declaration of internal single source object and methods
 typedef struct QSOURCE(_s) * QSOURCE();
