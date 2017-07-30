@@ -60,6 +60,10 @@ static inline float conjf(float f) { return f; }
 static inline double conj(double d) { return d; }
 
 static liquid_float_complex _Complex_I(0, 1);
+
+#include <cmath>
+#else
+#include <math.h>
 #endif
 
 #if defined HAVE_FEC_H && defined HAVE_LIBFEC

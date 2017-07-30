@@ -79,12 +79,10 @@ int liquid_libversion_number(void);
  * define complex type compatible with the C++ complex standard,
  * otherwise resort to defining binary compatible array.
  */
-#if LIQUID_USE_COMPLEX_H==1 && !defined _MSC_VER
+#if LIQUID_USE_COMPLEX_H==1 && !defined LIQUID_BUILD_CPLUSPLUS
 #   include <complex.h>
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef R _Complex C
-#elif defined _GLIBCXX_COMPLEX || defined _LIBCPP_COMPLEX
-#   define LIQUID_DEFINE_COMPLEX(R,C) typedef std::complex<R> C
-#elif defined _MSC_VER && _MSC_VER >= 1900
+#elif defined _GLIBCXX_COMPLEX || defined _LIBCPP_COMPLEX || defined LIQUID_BUILD_CPLUSPLUS
 #   include <complex>
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef std::complex<R> C
 #else
