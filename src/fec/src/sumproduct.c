@@ -62,11 +62,11 @@ int fec_sumproduct(unsigned int    _m,
 
     // internal variables
     unsigned int num_iterations = 0;
-    float Lq[_m*_n];
-    float Lr[_m*_n];
-    float Lc[_n];
-    float LQ[_n];
-    unsigned char parity[_m];
+    float *Lq = (float*)malloc(_m*_n*sizeof(float));
+    float *Lr = (float*)malloc(_m*_n*sizeof(float));
+    float *Lc = (float*)malloc(_n*sizeof(float));
+    float *LQ = (float*)malloc(_n*sizeof(float));
+    unsigned char *parity = (unsigned char*)malloc(_m*sizeof(unsigned char));
     unsigned int i;
     unsigned int j;
     int parity_pass;
@@ -106,6 +106,11 @@ int fec_sumproduct(unsigned int    _m,
             continue_running = 0;
     }
 
+    free(Lq);
+    free(Lr);
+    free(Lc);
+    free(LQ);
+    free(parity);
     return parity_pass;
 }
 

@@ -103,7 +103,7 @@ FIRDECIM() FIRDECIM(_create_kaiser)(unsigned int _M,
 
     // compute filter coefficients (floating point precision)
     unsigned int h_len = 2*_M*_m + 1;
-    float hf[h_len];
+    float *hf = (float*)malloc(h_len*sizeof(float));
     float fc = 0.5f / (float) (_M);
     liquid_firdes_kaiser(h_len, fc, _As, 0.0f, hf);
 
@@ -115,6 +115,7 @@ FIRDECIM() FIRDECIM(_create_kaiser)(unsigned int _M,
     
     // return decimator object
     FIRDECIM() obj = FIRDECIM(_create)(_M, hc, 2*_M*_m);
+    free(hf);
     free(hc);
     return obj;
 }
@@ -148,7 +149,7 @@ FIRDECIM() FIRDECIM(_create_prototype)(liquid_firfilt_type          _type,
 
     // generate square-root Nyquist filter
     unsigned int h_len = 2*_M*_m + 1;
-    float h[h_len];
+    float *h = (float*)malloc(h_len*sizeof(float));
     liquid_firdes_prototype(_type,_M,_m,_beta,_dt,h);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
@@ -159,6 +160,7 @@ FIRDECIM() FIRDECIM(_create_prototype)(liquid_firfilt_type          _type,
 
     // return decimator object
     FIRDECIM() obj = FIRDECIM(_create)(_M, hc, h_len);
+    free(h);
     free(hc);
     return obj;
 }

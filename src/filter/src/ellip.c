@@ -93,12 +93,13 @@ void ellipkf(float _k,
         float L = -logf(0.25f*kp);
         K = L + 0.25f*(L-1)*kp*kp;
     } else {
-        float v[_n];
+        float *v = (float*)malloc(_n*sizeof(float));
         landenf(_k,_n,v);
         K = M_PI * 0.5f;
         unsigned int i;
         for (i=0; i<_n; i++)
             K *= (1 + v[i]);
+        free(v);
     }
 
     if (_k < kmin) {
@@ -107,12 +108,13 @@ void ellipkf(float _k,
         float L = -logf(_k*0.25f);
         Kp = L + 0.25f*(L-1)*_k*_k;
     } else {
-        float vp[_n];
+        float *vp = (float*)malloc(_n*sizeof(float));
         landenf(kp,_n,vp);
         Kp = M_PI * 0.5f;
         unsigned int i;
         for (i=0; i<_n; i++)
             Kp *= (1 + vp[i]);
+        free(vp);
     }
 
     // set return values
@@ -176,12 +178,13 @@ liquid_float_complex ellip_cdf(liquid_float_complex _u,
                         unsigned int _n)
 {
     liquid_float_complex wn = ccosf(_u*(float)M_PI*0.5f);
-    float v[_n];
+    float *v = (float*)malloc(_n*sizeof(float));
     landenf(_k,_n,v);
     unsigned int i;
     for (i=_n; i>0; i--) {
         wn = (1 + v[i-1])*wn / (1.0f + v[i-1]*wn*wn);
     }
+    free(v);
     return wn;
 }
 
@@ -197,12 +200,13 @@ liquid_float_complex ellip_snf(liquid_float_complex _u,
                         unsigned int _n)
 {
     liquid_float_complex wn = csinf(_u*(float)M_PI*0.5f);
-    float v[_n];
+    float *v = (float*)malloc(_n*sizeof(float));
     landenf(_k,_n,v);
     unsigned int i;
     for (i=_n; i>0; i--) {
         wn = (1 + v[i-1])*wn / (1.0f + v[i-1]*wn*wn);
     }
+    free(v);
     return wn;
 }
 
@@ -218,7 +222,7 @@ liquid_float_complex ellip_acdf(liquid_float_complex _w,
                          float _k,
                          unsigned int _n)
 {
-    float v[_n];
+    float *v = (float*)malloc(_n*sizeof(float));
     landenf(_k,_n,v);
     float v1;
 
@@ -238,6 +242,7 @@ liquid_float_complex ellip_acdf(liquid_float_complex _w,
     ellipkf(_k, _n, &K, &Kp);
     float R = Kp / K;
 #endif
+    free(v);
     return u;
 }
 
@@ -330,7 +335,7 @@ void ellip_azpkf(unsigned int _n,
 
     unsigned int L = (unsigned int)(floorf(N/2.0f)); // 2
     unsigned int r = ((unsigned int)N) % 2;
-    float u[L];
+    float *u = (float*)malloc(L*sizeof(float));
     unsigned int i;
     for (i=0; i<L; i++) {
         float t = (float)i + 1.0f;
@@ -399,6 +404,7 @@ void ellip_azpkf(unsigned int _n,
     free(pa);
     free(za);
     free(zeta);
+    free(u);
 }
 
 

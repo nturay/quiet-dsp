@@ -291,13 +291,15 @@ float FIRFARROW(_groupdelay)(FIRFARROW() _q,
                              float _fc)
 {
     // copy coefficients to be in correct order
-    float h[_q->h_len];
+    float *h = (float*)malloc(_q->h_len*sizeof(float));
     unsigned int i;
     unsigned int n = _q->h_len;
     for (i=0; i<n; i++)
         h[i] = crealf(_q->h[i]);
 
-    return fir_group_delay(h, n, _fc);
+    float delay = fir_group_delay(h, n, _fc);
+    free(h);
+    return delay;
 }
 
 
