@@ -213,9 +213,9 @@ flexframesync flexframesync_create(framesync_callback _callback,
 
     // create payload demodulator/decoder object
     q->payload_dec_len = 64;
-    int check      = LIQUID_CRC_24;
-    int fec0       = LIQUID_FEC_NONE;
-    int fec1       = LIQUID_FEC_GOLAY2412;
+    crc_scheme check      = LIQUID_CRC_24;
+    fec_scheme fec0       = LIQUID_FEC_NONE;
+    fec_scheme fec1       = LIQUID_FEC_GOLAY2412;
     int mod_scheme = LIQUID_MODEM_BPSK;
     q->payload_decoder = qpacketmodem_create();
     qpacketmodem_configure(q->payload_decoder, q->payload_dec_len, check, fec0, fec1, mod_scheme);
@@ -433,7 +433,7 @@ void flexframesync_execute_seekpn(flexframesync _q,
                                   liquid_float_complex _x)
 {
     // push through pre-demod synchronizer
-    liquid_float_complex * v = qdetector_cccf_execute(_q->detector, _x);
+    liquid_float_complex * v = (liquid_float_complex*) qdetector_cccf_execute(_q->detector, _x);
 
     // check if frame has been detected
     if (v == NULL)
@@ -702,11 +702,11 @@ void flexframesync_decode_header(flexframesync _q)
     }
 
     // re-create payload demodulator for phase-locked loop
-    _q->payload_demod = modem_recreate(_q->payload_demod, mod_scheme);
+    _q->payload_demod = modem_recreate(_q->payload_demod, (modulation_scheme)mod_scheme);
 
     // reconfigure payload demodulator/decoder
     qpacketmodem_configure(_q->payload_decoder,
-                           payload_dec_len, check, fec0, fec1, mod_scheme);
+                           payload_dec_len, (crc_scheme)check, (fec_scheme)fec0, (fec_scheme)fec1, mod_scheme);
 
     // set length appropriately
     _q->payload_sym_len = qpacketmodem_get_frame_len(_q->payload_decoder);

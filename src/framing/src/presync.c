@@ -87,16 +87,16 @@ PRESYNC() PRESYNC(_create)(TC *         _v,
     _q->sync_q = (DOTPROD()*) malloc( _q->m*sizeof(DOTPROD()) );
 
     // buffer
-    T vi_prime[_n];
-    T vq_prime[_n];
+    T *vi_prime = (T*) alloca((_n)*sizeof(T));
+    T *vq_prime = (T*) alloca((_n)*sizeof(T));
     for (i=0; i<_q->m; i++) {
 
         // generate signal with frequency offset
         _q->dphi[i] = (float)i / (float)(_q->m-1)*_dphi_max;
         unsigned int k;
         for (k=0; k<_q->n; k++) {
-            vi_prime[k] = REAL( _v[k] * cexpf(-_Complex_I*k*_q->dphi[i]) );
-            vq_prime[k] = IMAG( _v[k] * cexpf(-_Complex_I*k*_q->dphi[i]) );
+            vi_prime[k] = REAL( _v[k] * cexpf(-_Complex_I*(T)(k*_q->dphi[i])) );
+            vq_prime[k] = IMAG( _v[k] * cexpf(-_Complex_I*(T)(k*_q->dphi[i])) );
         }
 
         _q->sync_i[i] = DOTPROD(_create)(vi_prime, _q->n);

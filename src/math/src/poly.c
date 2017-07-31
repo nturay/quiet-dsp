@@ -30,7 +30,7 @@
 #define POLY(name)      LIQUID_CONCAT(poly,   name)
 #define POLY_NAME       "poly"
 #define T               double
-#define TC              double complex
+#define TC              liquid_double_complex
 
 #define T_COMPLEX       1
 #define TI_COMPLEX      1

@@ -66,6 +66,11 @@ static ofdmflexframegenprops_s ofdmflexframesyncprops_header_default = {
     OFDMFLEXFRAME_H_MOD,
 };
 
+enum state {
+    OFDMFLEXFRAMESYNC_STATE_HEADER, // extract header
+    OFDMFLEXFRAMESYNC_STATE_PAYLOAD // extract payload symbols
+};
+
 struct ofdmflexframesync_s {
     unsigned int M;         // number of subcarriers
     unsigned int cp_len;    // cyclic prefix length
@@ -124,10 +129,7 @@ struct ofdmflexframesync_s {
 
     // counters/states
     unsigned int symbol_counter;        // received symbol number
-    enum {
-        OFDMFLEXFRAMESYNC_STATE_HEADER, // extract header
-        OFDMFLEXFRAMESYNC_STATE_PAYLOAD // extract payload symbols
-    } state;
+    enum state state;
     unsigned int header_symbol_index;   // number of header symbols received
     unsigned int payload_symbol_index;  // number of payload symbols received
     unsigned int payload_buffer_index;  // bit-level index of payload (pack array)
@@ -257,7 +259,7 @@ void ofdmflexframesync_set_header_len(ofdmflexframesync _q,
 {
     _q->header_user_len = _len;
     _q->header_dec_len = OFDMFLEXFRAME_H_DEC + _q->header_user_len;
-    _q->header = realloc(_q->header, _q->header_dec_len*sizeof(unsigned char));
+    _q->header = (unsigned char*) realloc(_q->header, _q->header_dec_len*sizeof(unsigned char));
 
     if (_q->p_header) {
         packetizer_destroy(_q->p_header);
@@ -275,14 +277,14 @@ void ofdmflexframesync_set_header_len(ofdmflexframesync _q,
         div_t bps_d = div(_q->header_enc_len*8, bps);
         _q->header_sym_len = bps_d.quot + (bps_d.rem ? 1 : 0);
     }
-    _q->header_enc = realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
+    _q->header_enc = (unsigned char*) realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
 
-    _q->header_mod = realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
+    _q->header_mod = (unsigned char*) realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
     // create header objects
     if (_q->mod_header) {
         modem_destroy(_q->mod_header);
     }
-    _q->mod_header = modem_create(_q->header_props.mod_scheme);
+    _q->mod_header = modem_create((modulation_scheme)_q->header_props.mod_scheme);
 }
 
 void ofdmflexframesync_decode_header_soft(ofdmflexframesync _q,
@@ -622,7 +624,7 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
         // configure modem
         if (mod_scheme != _q->ms_payload) {
             // set new properties
-            _q->ms_payload  = mod_scheme;
+            _q->ms_payload  = (modulation_scheme)mod_scheme;
             _q->bps_payload = modulation_types[mod_scheme].bps;
 
             // recreate modem (destroy/create)
@@ -631,9 +633,9 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
 
         // set new packetizer properties
         _q->payload_len = payload_len;
-        _q->check       = check;
-        _q->fec0        = fec0;
-        _q->fec1        = fec1;
+        _q->check       = (crc_scheme)check;
+        _q->fec0        = (fec_scheme)fec0;
+        _q->fec1        = (fec_scheme)fec1;
         
         // recreate packetizer object
         _q->p_payload = packetizer_recreate(_q->p_payload,

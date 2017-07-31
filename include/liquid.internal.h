@@ -53,6 +53,7 @@ static inline float cabsf(liquid_float_complex f) { return std::abs(f); }
 static inline liquid_float_complex ccosf(liquid_float_complex f) { return std::cos(f); }
 static inline liquid_float_complex csinf(liquid_float_complex f) { return std::sin(f); }
 static inline liquid_float_complex csqrtf(liquid_float_complex f) { return std::sqrt(f); }
+static inline float cargf(liquid_float_complex f) { return std::arg(f); }
 
 static inline liquid_double_complex conj(liquid_double_complex d) { return std::conj(d); }
 static inline double creal(liquid_double_complex d) { return std::real(d); }

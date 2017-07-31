@@ -42,6 +42,12 @@ void gmskframegen_write_header(  gmskframegen _q, liquid_float_complex * _y);
 void gmskframegen_write_payload( gmskframegen _q, liquid_float_complex * _y);
 void gmskframegen_write_tail(    gmskframegen _q, liquid_float_complex * _y);
 
+enum state {
+    STATE_PREAMBLE,         // preamble
+    STATE_HEADER,           // header
+    STATE_PAYLOAD,          // payload (frame)
+    STATE_TAIL,             // tail symbols
+};
 
 // gmskframe object structure
 struct gmskframegen_s {
@@ -77,12 +83,7 @@ struct gmskframegen_s {
     unsigned char * payload_enc;// encoded payload
 
     // framing state
-    enum {
-        STATE_PREAMBLE,         // preamble
-        STATE_HEADER,           // header
-        STATE_PAYLOAD,          // payload (frame)
-        STATE_TAIL,             // tail symbols
-    } state;
+    enum state state;
     int frame_assembled;        // frame assembled flag
     int frame_complete;         // frame completed flag
     unsigned int symbol_counter;//

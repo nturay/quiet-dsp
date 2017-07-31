@@ -90,7 +90,7 @@ SYMSTREAM() SYMSTREAM(_create_linear)(int          _ftype,
     q->mod_scheme  = _ms;
 
     // modulator
-    q->mod = MODEM(_create)(q->mod_scheme);
+    q->mod = MODEM(_create)((modulation_scheme)q->mod_scheme);
 
     // interpolator
     q->interp = FIRINTERP(_create_prototype)(q->filter_type, q->k, q->m, q->beta, 0);

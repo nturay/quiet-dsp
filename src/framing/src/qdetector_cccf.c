@@ -44,6 +44,11 @@ void qdetector_cccf_execute_seek(qdetector_cccf _q,
 void qdetector_cccf_execute_align(qdetector_cccf _q,
                                   liquid_float_complex  _x);
 
+enum state {
+    QDETECTOR_STATE_SEEK,       // seek sequence
+    QDETECTOR_STATE_ALIGN,      // align sequence
+};
+
 // main object definition
 struct qdetector_cccf_s {
     unsigned int    s_len;          // template (time) length: k * (sequence_len + 2*m)
@@ -73,10 +78,7 @@ struct qdetector_cccf_s {
     float           dphi_hat;       // carrier frequency offset estimate
     float           phi_hat;        // carrier phase offset estimate
 
-    enum {
-        QDETECTOR_STATE_SEEK,       // seek sequence
-        QDETECTOR_STATE_ALIGN,      // align sequence
-    }               state;          // execution state
+    enum state      state;          // execution state
     int             frame_detected; // frame detected?
 };
 
@@ -575,7 +577,7 @@ void qdetector_cccf_execute_align(qdetector_cccf _q,
     //       be more computationally complex
     liquid_float_complex metric = 0;
     for (i=0; i<_q->s_len; i++)
-        metric += _q->buf_time_0[i] * cexpf(-_Complex_I*_q->dphi_hat*i);
+        metric += _q->buf_time_0[i] * cexpf(-_Complex_I*(float)(_q->dphi_hat*i));
     //printf("metric : %12.8f <%12.8f>\n", cabsf(metric), cargf(metric));
     _q->phi_hat = cargf(metric);
 #endif

@@ -72,6 +72,13 @@ void gmskframesync_execute_rxpayload(  gmskframesync _q, liquid_float_complex _x
 // decode header
 void gmskframesync_decode_header(gmskframesync _q);
 
+enum state {
+    STATE_DETECTFRAME=0,        // detect frame (seek p/n sequence)
+    STATE_RXPREAMBLE,           // receive p/n sequence
+    STATE_RXHEADER,             // receive header data
+    STATE_RXPAYLOAD,            // receive payload data
+};
+
 // gmskframesync object structure
 struct gmskframesync_s {
 #if GMSKFRAMESYNC_PREFILTER
@@ -134,12 +141,7 @@ struct gmskframesync_s {
     int payload_valid;              // did payload pass crc?
     
     // status variables
-    enum {
-        STATE_DETECTFRAME=0,        // detect frame (seek p/n sequence)
-        STATE_RXPREAMBLE,           // receive p/n sequence
-        STATE_RXHEADER,             // receive header data
-        STATE_RXPAYLOAD,            // receive payload data
-    } state;
+    enum state state;
     unsigned int preamble_counter;  // counter: num of p/n syms received
     unsigned int header_counter;    // counter: num of header syms received
     unsigned int payload_counter;   // counter: num of payload syms received
@@ -178,7 +180,7 @@ gmskframesync gmskframesync_create(framesync_callback _callback,
     q->preamble_len = 63;
     q->preamble_pn = (float*)malloc(q->preamble_len*sizeof(float));
     q->preamble_rx = (float*)malloc(q->preamble_len*sizeof(float));
-    liquid_float_complex preamble_samples[q->preamble_len*q->k];
+    liquid_float_complex *preamble_samples = (liquid_float_complex*) alloca((q->preamble_len*q->k)*sizeof(liquid_float_complex));
     msequence ms = msequence_create(6, 0x6d, 1);
     gmskmod mod = gmskmod_create(q->k, q->m, q->BT);
 
@@ -836,9 +838,9 @@ void gmskframesync_decode_header(gmskframesync _q)
     if (_q->header_valid) {
         // set new packetizer properties
         _q->payload_dec_len = payload_dec_len;
-        _q->check           = check;
-        _q->fec0            = fec0;
-        _q->fec1            = fec1;
+        _q->check           = (crc_scheme)check;
+        _q->fec0            = (fec_scheme)fec0;
+        _q->fec1            = (fec_scheme)fec1;
         
         // recreate packetizer object
         _q->p_payload = packetizer_recreate(_q->p_payload,

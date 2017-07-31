@@ -63,7 +63,7 @@ liquid_float_complex liquid_clogf(liquid_float_complex _z)
 // complex arcsin
 liquid_float_complex liquid_casinf(liquid_float_complex _z)
 {
-    return 0.5f*M_PI - liquid_cacosf(_z);
+    return 0.5f*(float)M_PI - liquid_cacosf(_z);
 }
 
 // complex arccos

@@ -132,7 +132,7 @@ int qpacketmodem_configure(qpacketmodem _q,
     _q->payload_dec_len = _payload_len;
 
     // recreate modem object and get new bits per symbol
-    _q->mod_payload = modem_recreate(_q->mod_payload, _ms);
+    _q->mod_payload = modem_recreate(_q->mod_payload, (modulation_scheme)_ms);
     _q->bits_per_symbol = modem_get_bps(_q->mod_payload);
 
     // recreate packetizer object and compute new encoded payload length

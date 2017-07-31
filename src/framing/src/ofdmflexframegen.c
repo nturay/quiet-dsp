@@ -76,6 +76,16 @@ void ofdmflexframegenprops_init_default(ofdmflexframegenprops_s * _props)
     memmove(_props, &ofdmflexframegenprops_default, sizeof(ofdmflexframegenprops_s));
 }
 
+enum state {
+    OFDMFLEXFRAMEGEN_STATE_S0a=0,   // write S0 symbol (first)
+    OFDMFLEXFRAMEGEN_STATE_S0b,     // write S0 symbol (second)
+    OFDMFLEXFRAMEGEN_STATE_S1,      // write S1 symbol
+    OFDMFLEXFRAMEGEN_STATE_HEADER,  // write header symbols
+    OFDMFLEXFRAMEGEN_STATE_PAYLOAD, // write payload symbols
+    OFDMFLEXFRAMEGEN_STATE_TAIL,    // write tail of last symbol
+    OFDMFLEXFRAMEGEN_STATE_ZEROS    // write zeros
+};
+
 struct ofdmflexframegen_s {
     unsigned int M;         // number of subcarriers
     unsigned int cp_len;    // cyclic prefix length
@@ -124,15 +134,7 @@ struct ofdmflexframegen_s {
 
     // counters/states
     unsigned int symbol_number;         // output symbol number
-    enum {
-        OFDMFLEXFRAMEGEN_STATE_S0a=0,   // write S0 symbol (first)
-        OFDMFLEXFRAMEGEN_STATE_S0b,     // write S0 symbol (second)
-        OFDMFLEXFRAMEGEN_STATE_S1,      // write S1 symbol
-        OFDMFLEXFRAMEGEN_STATE_HEADER,  // write header symbols
-        OFDMFLEXFRAMEGEN_STATE_PAYLOAD, // write payload symbols
-        OFDMFLEXFRAMEGEN_STATE_TAIL,    // write tail of last symbol
-        OFDMFLEXFRAMEGEN_STATE_ZEROS    // write zeros
-    } state;
+    enum state state;
     int frame_assembled;                // frame assembled flag
     int frame_complete;                 // frame completed flag
     unsigned int header_symbol_index;   //
@@ -348,7 +350,7 @@ void ofdmflexframegen_set_header_len(ofdmflexframegen _q,
 {
     _q->header_user_len = _len;
     _q->header_dec_len = OFDMFLEXFRAME_H_DEC + _q->header_user_len;
-    _q->header = realloc(_q->header, _q->header_dec_len*sizeof(unsigned char));
+    _q->header = (unsigned char*) realloc(_q->header, _q->header_dec_len*sizeof(unsigned char));
 
     if (_q->p_header) {
         packetizer_destroy(_q->p_header);
@@ -358,17 +360,17 @@ void ofdmflexframegen_set_header_len(ofdmflexframegen _q,
                                      _q->header_props.fec0,
                                      _q->header_props.fec1);
     _q->header_enc_len = packetizer_get_enc_msg_len(_q->p_header);
-    _q->header_enc = realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
+    _q->header_enc = (unsigned char*) realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
 
     unsigned int bps = modulation_types[_q->header_props.mod_scheme].bps;
     div_t bps_d = div(_q->header_enc_len*8, bps);
     _q->header_sym_len = bps_d.quot + (bps_d.rem ? 1 : 0);
-    _q->header_mod = realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
+    _q->header_mod = (unsigned char*) realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
     // create header objects
     if (_q->mod_header) {
         modem_destroy(_q->mod_header);
     }
-    _q->mod_header = modem_create(_q->header_props.mod_scheme);
+    _q->mod_header = modem_create((modulation_scheme)_q->header_props.mod_scheme);
 
     // compute number of header symbols
     div_t d = div(_q->header_sym_len, _q->M_data);
@@ -512,7 +514,7 @@ void ofdmflexframegen_reconfigure(ofdmflexframegen _q)
 
     // re-create modem
     // TODO : only do this if necessary
-    _q->mod_payload = modem_recreate(_q->mod_payload, _q->props.mod_scheme);
+    _q->mod_payload = modem_recreate(_q->mod_payload, (modulation_scheme)_q->props.mod_scheme);
 
     // re-allocate memory for payload modem symbols
     unsigned int bps = modulation_types[_q->props.mod_scheme].bps;

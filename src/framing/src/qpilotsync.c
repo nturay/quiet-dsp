@@ -249,7 +249,7 @@ void qpilotsync_execute(qpilotsync      _q,
     //       be more computationally complex
     liquid_float_complex metric = 0;
     for (i=0; i<_q->num_pilots; i++)
-        metric += _q->buf_time[i] * cexpf(-_Complex_I*_q->dphi_hat*i*(float)(_q->pilot_spacing));
+        metric += _q->buf_time[i] * cexpf(-_Complex_I*_q->dphi_hat*(float)i*(float)(_q->pilot_spacing));
     //printf("metric : %12.8f <%12.8f>\n", cabsf(metric), cargf(metric));
     _q->phi_hat = cargf(metric);
     _q->g_hat   = cabsf(metric) / (float)(_q->num_pilots);
