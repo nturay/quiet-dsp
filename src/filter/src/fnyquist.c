@@ -68,7 +68,7 @@ void liquid_firdes_fnyquist(liquid_firfilt_type _type,
     // derived values
     unsigned int h_len = 2*_k*_m+1;   // filter length
 
-    float H_prime[h_len];   // frequency response of Nyquist filter (real)
+    float *H_prime = (float*)malloc(h_len*sizeof(float));   // frequency response of Nyquist filter (real)
     liquid_float_complex *H = (liquid_float_complex*)malloc(h_len * sizeof(liquid_float_complex)); // frequency response of Nyquist filter
     liquid_float_complex *h = (liquid_float_complex*)malloc(h_len * sizeof(liquid_float_complex)); // impulse response of Nyquist filter
 
@@ -102,6 +102,7 @@ void liquid_firdes_fnyquist(liquid_firfilt_type _type,
 
     free(h);
     free(H);
+    free(H_prime);
 }
 
 // Design fexp Nyquist filter

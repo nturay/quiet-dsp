@@ -229,7 +229,7 @@ void ASGRAM(_print)(ASGRAM() _q)
 {
     float maxval;
     float maxfreq;
-    char *ascii = (char*)malloc(_q->nfft+1*sizeof(char));
+    char *ascii = (char*)malloc((_q->nfft+1)*sizeof(char));
     ascii[_q->nfft] = '\0'; // append null character to end of string
         
     // execute the spectrogram

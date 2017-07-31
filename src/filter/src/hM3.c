@@ -82,7 +82,7 @@ void liquid_firdes_hM3(unsigned int _k,
                                       LIQUID_FIRDESPM_EXPWEIGHT};
 
     //unsigned int i;
-    float h[n];
+    float *h = (float*)malloc(n*sizeof(float));
     firdespm_run(n,num_bands,bands,des,weights,wtype,btype,h);
     // copy results
     memmove(_h, h, n*sizeof(float));
@@ -123,5 +123,6 @@ void liquid_firdes_hM3(unsigned int _k,
     unsigned int i;
     for (i=0; i<n; i++) e2 += _h[i]*_h[i];
     for (i=0; i<n; i++) _h[i] *= sqrtf(_k/e2);
+    free(h);
 }
 

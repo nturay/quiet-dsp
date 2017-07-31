@@ -69,8 +69,8 @@ void liquid_cplxpair(liquid_float_complex * _z,
     }
 
     // keep track of which elements have been paired
-    unsigned char paired[_n];
-    memset(paired,0,sizeof(paired));
+    unsigned char *paired = (unsigned char*)malloc(_n*sizeof(unsigned char));
+    memset(paired,0,_n*sizeof(paired));
     unsigned int num_pairs=0;
 
     unsigned int i,j,k=0;
@@ -123,6 +123,7 @@ void liquid_cplxpair(liquid_float_complex * _z,
     //  * pure-real elements are ordered by increasing
     //    value
     liquid_cplxpair_cleanup(_p, _n, num_pairs);
+    free(paired);
 }
 
 // post-process cleanup used with liquid_cplxpair
@@ -690,7 +691,7 @@ int iirdes_isstable(float * _b,
     unsigned int i;
 
     // flip denominator, left to right
-    float a_hat[_n];
+    float *a_hat = (float*)malloc(_n*sizeof(float));
     for (i=0; i<_n; i++)
         a_hat[i] = _a[_n-i-1];
 
@@ -715,6 +716,7 @@ int iirdes_isstable(float * _b,
     }
 
     free(roots);
+    free(a_hat);
     return retval;
 }
 

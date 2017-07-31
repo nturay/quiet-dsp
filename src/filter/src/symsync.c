@@ -151,7 +151,7 @@ SYMSYNC() SYMSYNC(_create)(unsigned int _k,
     q->h_len = (_h_len-1)/q->npfb;
     
     // compute derivative filter
-    TC dh[_h_len];
+    TC *dh = (TC*)malloc(_h_len*sizeof(TC));
     float hdh_max = 0.0f;
     unsigned int i;
     for (i=0; i<_h_len; i++) {
@@ -198,6 +198,7 @@ SYMSYNC() SYMSYNC(_create)(unsigned int _k,
     q->debug_q_hat = windowf_create(DEBUG_BUFFER_LEN);
 #endif
 
+    free(dh);
     // return main object
     return q;
 }
@@ -228,19 +229,22 @@ SYMSYNC() SYMSYNC(_create_rnyquist)(liquid_firfilt_type          _type,
 
     // allocate memory for filter coefficients
     unsigned int H_len = 2*_M*_k*_m + 1;
-    float Hf[H_len];
+    float *Hf = (float*)malloc(H_len*sizeof(float));
 
     // design square-root Nyquist pulse-shaping filter
     liquid_firdes_prototype(_type, _k*_M, _m, _beta, 0, Hf);
 
     // copy coefficients to type-specific array
-    TC H[H_len];
+    TC *H = (TC*)malloc(H_len*sizeof(TC));
     unsigned int i;
     for (i=0; i<H_len; i++)
         H[i] = Hf[i];
 
     // create object and return
-    return SYMSYNC(_create)(_k, _M, H, H_len);
+    SYMSYNC() obj = SYMSYNC(_create)(_k, _M, H, H_len);
+    free(H);
+    free(Hf);
+    return obj;
 }
 
 // create symsync using Kaiser filter interpolator; useful
@@ -268,7 +272,7 @@ SYMSYNC() SYMSYNC(_create_kaiser)(unsigned int _k,
 
     // allocate memory for filter coefficients
     unsigned int H_len = 2*_M*_k*_m + 1;
-    float Hf[H_len];
+    float *Hf = (float*)malloc(H_len*sizeof(float));
 
     // design interpolating filter whose bandwidth is outside the cut-off
     // frequency of input signal
@@ -280,12 +284,15 @@ SYMSYNC() SYMSYNC(_create_kaiser)(unsigned int _k,
     // copy coefficients to type-specific array, adjusting to relative
     // filter gain
     unsigned int i;
-    TC H[H_len];
+    TC *H = (TC*)malloc(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         H[i] = Hf[i] * 2.0f * fc;
 
     // create object and return
-    return SYMSYNC(_create)(_k, _M, H, H_len);
+    SYMSYNC() obj = SYMSYNC(_create)(_k, _M, H, H_len);
+    free(H);
+    free(Hf);
+    return obj;
 }
 
 // destroy symsync object, freeing all internal memory

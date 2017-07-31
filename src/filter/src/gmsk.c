@@ -119,8 +119,8 @@ void liquid_firdes_gmskrx(unsigned int _k,
     unsigned int h_len = 2*k*m+1;   // filter length
 
     // arrays
-    float ht[h_len];         // transmit filter coefficients
-    float hr[h_len];         // recieve filter coefficients
+    float *ht = (float*)malloc(h_len*sizeof(float));         // transmit filter coefficients
+    float *hr = (float*)malloc(h_len*sizeof(float));         // recieve filter coefficients
 
     // design transmit filter
     liquid_firdes_gmsktx(k,m,BT,0.0f,ht);
@@ -130,8 +130,8 @@ void liquid_firdes_gmskrx(unsigned int _k,
     //
 
     // 'internal' arrays
-    float h_primef[h_len];          // temporary buffer for real 'prototype' coefficients
-    float g_primef[h_len];          // temporary buffer for real 'gain' coefficient
+    float *h_primef = (float*)malloc(h_len*sizeof(float));          // temporary buffer for real 'prototype' coefficients
+    float *g_primef = (float*)malloc(h_len*sizeof(float));          // temporary buffer for real 'gain' coefficient
 
     liquid_float_complex *h_tx = (liquid_float_complex*)malloc(h_len * sizeof(liquid_float_complex));      // impulse response of transmit filter
     liquid_float_complex *h_prime = (liquid_float_complex*)malloc(h_len * sizeof(liquid_float_complex));   // impulse response of 'prototype' filter
@@ -199,5 +199,9 @@ void liquid_firdes_gmskrx(unsigned int _k,
     free(g_prime);
     free(h_prime);
     free(h_tx);
+    free(g_primef);
+    free(h_primef);
+    free(hr);
+    free(ht);
 }
 

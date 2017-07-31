@@ -314,9 +314,9 @@ void FIRFARROW(_genpoly)(FIRFARROW() _q)
     // TODO : shy away from 'float' and use 'TC' types
     unsigned int i, j, n=0;
     float x, mu, h0, h1;
-    float mu_vect[_q->Q+1];
-    float hp_vect[_q->Q+1];
-    float p[_q->Q];
+    float *mu_vect = (float*)malloc((_q->Q+1)*sizeof(float));
+    float *hp_vect = (float*)malloc((_q->Q+1)*sizeof(float));
+    float *p = (float*)malloc(_q->Q*sizeof(float));
     float beta = kaiser_beta_As(_q->As);
     for (i=0; i<_q->h_len; i++) {
 #if FIRFARROW_DEBUG
@@ -368,5 +368,8 @@ void FIRFARROW(_genpoly)(FIRFARROW() _q)
         _q->gamma += _q->h[i];
     _q->gamma = 1.0f / (_q->gamma);   // invert result
 
+    free(p);
+    free(hp_vect);
+    free(mu_vect);
 }
 

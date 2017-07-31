@@ -985,7 +985,7 @@ if (LIQUID_BUILD_STATIC)
         target_link_libraries(liquid-static fftw3f)
     endif ()
     set_property(TARGET liquid-static PROPERTY OUTPUT_NAME "liquid")
-    set_property(TARGET liquid-static PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS}")
+    set_property(TARGET liquid-static PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS} -Werror=vla")
 
     if (NOT LIQUID_LIBRARY)
         set(LIQUID_LIBRARY liquid-static)

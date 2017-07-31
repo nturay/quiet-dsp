@@ -82,7 +82,7 @@ float iir_group_delay(float * _b,
     // compute c = conv(b,fliplr(a))
     //         c(z) = b(z)*a(1/z)*z^(-_na)
     unsigned int nc = _na + _nb - 1;
-    float c[nc];
+    float *c = (float*)malloc(nc*sizeof(float));
     unsigned int i,j;
     for (i=0; i<nc; i++)
         c[i] = 0.0;
@@ -112,6 +112,7 @@ float iir_group_delay(float * _b,
     if (cabsf(t1)<tol)
         return 0.0f;
 
+    free(c);
     // return result, scaled by length of denominator
     return crealf(t0/t1) - (_na - 1);
 }

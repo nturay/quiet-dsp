@@ -118,7 +118,7 @@ FIRFILT() FIRFILT(_create_kaiser)(unsigned int _n,
     }
 
     // compute temporary array for holding coefficients
-    float hf[_n];
+    float *hf = (float*)malloc(_n*sizeof(float));
     liquid_firdes_kaiser(_n, _fc, _As, _mu, hf);
 
     // copy coefficients to type-specific array
@@ -129,6 +129,7 @@ FIRFILT() FIRFILT(_create_kaiser)(unsigned int _n,
 
     // 
     FIRFILT() obj = FIRFILT(_create)(h, _n);
+    free(hf);
     free(h);
     return obj;
 }
@@ -159,7 +160,7 @@ FIRFILT() FIRFILT(_create_rnyquist)(liquid_firfilt_type          _type,
 
     // generate square-root Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
-    float hf[h_len];
+    float *hf = (float*)malloc(h_len*sizeof(float));
     liquid_firdes_prototype(_type,_k,_m,_beta,_mu,hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
@@ -171,6 +172,7 @@ FIRFILT() FIRFILT(_create_rnyquist)(liquid_firfilt_type          _type,
     // return filter object and return
     FIRFILT() obj = FIRFILT(_create)(hc, h_len);
     free(hc);
+    free(hf);
     return obj;
 }
 
@@ -184,7 +186,7 @@ FIRFILT() FIRFILT(_create_rect)(unsigned int _n)
     }
 
     // create float array coefficients
-    float hf[_n];
+    float *hf = (float*)malloc(_n*sizeof(float));
     unsigned int i;
     for (i=0; i<_n; i++)
         hf[i] = 1.0f;
@@ -197,6 +199,7 @@ FIRFILT() FIRFILT(_create_rect)(unsigned int _n)
     // return filter object and return
     FIRFILT() obj = FIRFILT(_create)(h, _n);
     free(h);
+    free(hf);
     return obj;
 }
 
@@ -400,12 +403,14 @@ float FIRFILT(_groupdelay)(FIRFILT() _q,
                            float     _fc)
 {
     // copy coefficients to be in correct order
-    float h[_q->h_len];
+    float *h = (float*)malloc(_q->h_len*sizeof(float));
     unsigned int i;
     unsigned int n = _q->h_len;
     for (i=0; i<n; i++)
         h[i] = crealf(_q->h[n-i-1]);
 
-    return fir_group_delay(h, n, _fc);
+    float delay = fir_group_delay(h, n, _fc);
+    free(h);
+    return delay;
 }
 

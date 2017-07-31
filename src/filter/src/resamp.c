@@ -117,7 +117,7 @@ RESAMP() RESAMP(_create)(float        _rate,
 
     // design filter
     unsigned int n = 2*q->m*q->npfb+1;
-    float hf[n];
+    float *hf = (float*)malloc(n*sizeof(float));
     TC *h = (TC*)malloc(n*sizeof(TC));
     liquid_firdes_kaiser(n,q->fc/((float)(q->npfb)),q->As,0.0f,hf);
 
@@ -136,6 +136,7 @@ RESAMP() RESAMP(_create)(float        _rate,
     // reset object and return
     RESAMP(_reset)(q);
     free(h);
+    free(hf);
     return q;
 }
 

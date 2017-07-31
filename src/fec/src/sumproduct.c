@@ -62,8 +62,8 @@ int fec_sumproduct(unsigned int    _m,
 
     // internal variables
     unsigned int num_iterations = 0;
-    float *Lq = (float*)malloc(_m*_n*sizeof(float));
-    float *Lr = (float*)malloc(_m*_n*sizeof(float));
+    float *Lq = (float*)malloc((_m*_n)*sizeof(float));
+    float *Lr = (float*)malloc((_m*_n)*sizeof(float));
     float *Lc = (float*)malloc(_n*sizeof(float));
     float *LQ = (float*)malloc(_n*sizeof(float));
     unsigned char *parity = (unsigned char*)malloc(_m*sizeof(unsigned char));
