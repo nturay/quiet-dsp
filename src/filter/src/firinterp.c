@@ -101,21 +101,18 @@ FIRINTERP() FIRINTERP(_create_kaiser)(unsigned int _M,
 
     // compute filter coefficients (floating point precision)
     unsigned int h_len = 2*_M*_m + 1;
-    float *hf = (float*)malloc(h_len*sizeof(float));
+    float *hf = (float*) alloca(h_len*sizeof(float));
     float fc = 0.5f / (float) (_M);
     liquid_firdes_kaiser(h_len, fc, _As, 0.0f, hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
-    TC *hc = (TC*)malloc(h_len * sizeof(TC));
+    TC *hc = (TC*) alloca(h_len*sizeof(TC));
     unsigned int i;
     for (i=0; i<h_len; i++)
         hc[i] = hf[i];
     
     // return interpolator object
-    FIRINTERP() obj = FIRINTERP(_create)(_M, hc, 2*_M*_m);
-    free(hc);
-    free(hf);
-    return obj;
+    return FIRINTERP(_create)(_M, hc, 2*_M*_m);
 }
 
 // create prototype (root-)Nyquist interpolator
@@ -147,20 +144,17 @@ FIRINTERP() FIRINTERP(_create_prototype)(liquid_firfilt_type          _type,
 
     // generate Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
-    float *h = (float*)malloc(h_len*sizeof(float));
+    float *h = (float*) alloca(h_len*sizeof(float));
     liquid_firdes_prototype(_type,_k,_m,_beta,_dt,h);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC *hc = (TC*)malloc(h_len * sizeof(TC));
+    TC *hc = (TC*) alloca(h_len*sizeof(TC));
     for (i=0; i<h_len; i++)
         hc[i] = h[i];
 
     // return interpolator object
-    FIRINTERP() obj = FIRINTERP(_create)(_k, hc, h_len);
-    free(hc);
-    free(h);
-    return obj;
+    return FIRINTERP(_create)(_k, hc, h_len);
 }
 
 // destroy interpolator object

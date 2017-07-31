@@ -53,7 +53,7 @@ void liquid_lpc(float * _x,
     }
 
     // compute auto-correlation with lags
-    float *r = (float*)malloc((_p+1)*sizeof(float));    // auto-correlation array
+    float *r = (float*) alloca((_p+1)*sizeof(float));    // auto-correlation array
 
     unsigned int i;
     for (i=0; i<_p+1; i++) {
@@ -67,7 +67,6 @@ void liquid_lpc(float * _x,
 
     // solve the Toeplitz inversion using Levinson-Durbin recursion
     liquid_levinson(r,_p,_a,_g);
-    free(r);
 }
 
 
@@ -93,10 +92,10 @@ void liquid_levinson(float * _r,
     }
 
     // allocate arrays
-    float *a0 = (float*)malloc((_p+1)*sizeof(float)); // temporary coefficients array, index [n]
-    float *a1 = (float*)malloc((_p+1)*sizeof(float)); // temporary coefficients array, index [n-1]
-    float *e = (float*)malloc((_p+1)*sizeof(float));  // prediction error
-    float *k = (float*)malloc((_p+1)*sizeof(float));  // reflection coefficients
+    float *a0 = (float*) alloca((_p+1)*sizeof(float)); // temporary coefficients array, index [n]
+    float *a1 = (float*) alloca((_p+1)*sizeof(float)); // temporary coefficients array, index [n-1]
+    float *e = (float*) alloca((_p+1)*sizeof(float));  // prediction error
+    float *k = (float*) alloca((_p+1)*sizeof(float));  // reflection coefficients
 
     // initialize
     k[0] = 1.0f;
@@ -152,10 +151,5 @@ void liquid_levinson(float * _r,
     // copy results to output
     memmove(_a, a1, (_p+1)*sizeof(float));
     memmove(_e,  e, (_p+1)*sizeof(float));
-
-    free(k);
-    free(e);
-    free(a1);
-    free(a0);
 }
 

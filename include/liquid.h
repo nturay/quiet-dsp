@@ -3730,9 +3730,9 @@ void framesync64_set_csma_callbacks(framesync64             _q,
 
 // frame generator
 typedef struct {
-    unsigned int check;         // data validity check
-    unsigned int fec0;          // forward error-correction scheme (inner)
-    unsigned int fec1;          // forward error-correction scheme (outer)
+    crc_scheme check;         // data validity check
+    fec_scheme fec0;          // forward error-correction scheme (inner)
+    fec_scheme fec1;          // forward error-correction scheme (outer)
     unsigned int mod_scheme;    // modulation scheme
 } flexframegenprops_s;
 

@@ -688,7 +688,7 @@ void firdespm_iext_search(firdespm _q)
 
     // found extremal frequency indices
     unsigned int nmax = 2*_q->r + 2*_q->num_bands; // max number of extremals
-    unsigned int *found_iext = (unsigned int*)malloc(nmax*sizeof(unsigned int));
+    unsigned int *found_iext = (unsigned int*) alloca(nmax*sizeof(unsigned int));
     unsigned int num_found=0;
 
 #if 0
@@ -736,7 +736,6 @@ void firdespm_iext_search(firdespm _q)
         fprintf(stderr,"warning: firdespm_iext_search(), too few extrema found (expected %u, found %u); exiting prematurely\n",
                 _q->r+1, num_found);
         _q->num_exchanges = 0;
-        free(found_iext);
         return;
     }
 
@@ -823,8 +822,6 @@ void firdespm_iext_search(firdespm _q)
     for (i=0; i<_q->r+1; i++)
         printf("iext_new[%4u] = %4u : %16.8e\n", i, found_iext[i], _q->E[found_iext[i]]);
 #endif
-
-    free(found_iext);
 }
 
 // evaluates result to determine if Remez exchange algorithm
@@ -865,7 +862,7 @@ void firdespm_compute_taps(firdespm _q, float * _h)
 
     // evaluate Lagrange polynomial on evenly spaced points
     unsigned int p = _q->r - _q->s + 1;
-    double *G = (double*)malloc(p*sizeof(double));
+    double *G = (double*) alloca(p*sizeof(double));
     for (i=0; i<p; i++) {
         double f = (double)(i) / (double)(_q->h_len);
         double xf = cos(2*M_PI*f);
@@ -913,7 +910,6 @@ void firdespm_compute_taps(firdespm _q, float * _h)
     for (i=0; i<_q->h_len; i++)
         printf("h(%3u) = %12.8f;\n", i+1, _h[i]);
 #endif
-    free(G);
 }
 
 #if LIQUID_FIRDESPM_DEBUG

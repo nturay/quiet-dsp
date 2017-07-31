@@ -65,6 +65,13 @@ void flexframegenprops_init_default(flexframegenprops_s * _props)
     memmove(_props, &flexframegenprops_default, sizeof(flexframegenprops_s));
 }
 
+enum state {
+     STATE_PREAMBLE=0,   // write preamble p/n sequence
+     STATE_HEADER,       // write header symbols
+     STATE_PAYLOAD,      // write payload symbols
+     STATE_TAIL,         // tail symbols
+};
+
 struct flexframegen_s {
     // interpolator
     unsigned int    k;                  // interp samples/symbol (fixed at 2)
@@ -101,12 +108,7 @@ struct flexframegen_s {
     unsigned int    sample_counter;     // output sample number
     int             frame_assembled;    // frame assembled flag
     int             frame_complete;     // frame completed flag
-    enum {
-                    STATE_PREAMBLE=0,   // write preamble p/n sequence
-                    STATE_HEADER,       // write header symbols
-                    STATE_PAYLOAD,      // write payload symbols
-                    STATE_TAIL,         // tail symbols
-    }               state;              // write state
+    enum state      state;              // write state
 };
 
 flexframegen flexframegen_create(flexframegenprops_s * _fgprops)
@@ -124,8 +126,8 @@ flexframegen flexframegen_create(flexframegenprops_s * _fgprops)
     q->preamble_pn = (liquid_float_complex *) malloc(64*sizeof(liquid_float_complex));
     msequence ms = msequence_create(7, 0x0089, 1);
     for (i=0; i<64; i++) {
-        q->preamble_pn[i] = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2);
-        q->preamble_pn[i] += (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2) * _Complex_I;
+        q->preamble_pn[i] = (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2);
+        q->preamble_pn[i] += (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2) * _Complex_I;
     }
     msequence_destroy(ms);
 

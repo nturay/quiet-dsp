@@ -160,7 +160,7 @@ detector_cccf detector_cccf_create(liquid_float_complex * _s,
     q->rxy1 = (float*)        malloc((q->m)*sizeof(float));
     q->rxy  = (float*)        malloc((q->m)*sizeof(float));
     unsigned int k;
-    liquid_float_complex *sconj = (liquid_float_complex*)malloc(q->n*sizeof(liquid_float_complex));
+    liquid_float_complex *sconj = (liquid_float_complex*) alloca(q->n*sizeof(liquid_float_complex));
     for (k=0; k<q->m; k++) {
         // pre-spin sequence (slightly over-sampled in frequency)
         q->dphi[k] = ((float)k - (float)(q->m-1)/2) * q->dphi_step;
@@ -168,7 +168,6 @@ detector_cccf detector_cccf_create(liquid_float_complex * _s,
             sconj[i] = conjf(q->s[i]) * cexpf(-_Complex_I*q->dphi[k]*(float)i);
         q->dp[k] = dotprod_cccf_create(sconj, q->n);
     }
-    free(sconj);
 
     // reset state
     detector_cccf_reset(q);

@@ -555,7 +555,7 @@ float liquid_filter_energy(float *      _h,
     }
 
     // allocate memory for complex phasor
-    liquid_float_complex *expjwt = (liquid_float_complex*)malloc(_h_len*sizeof(liquid_float_complex));
+    liquid_float_complex *expjwt = (liquid_float_complex*) alloca(_h_len*sizeof(liquid_float_complex));
 
     // initialize accumulators
     float e_total = 0.0f;       // total energy
@@ -585,8 +585,6 @@ float liquid_filter_energy(float *      _h,
 
     // destroy dotprod object
     dotprod_crcf_destroy(dp);
-
-    free(expjwt);
 
     // return energy ratio
     return e_stopband / e_total;

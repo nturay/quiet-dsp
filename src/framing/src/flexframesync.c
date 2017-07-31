@@ -76,6 +76,13 @@ static flexframegenprops_s flexframesyncprops_header_default = {
    FLEXFRAME_H_MOD,
 };
 
+enum state {
+  FLEXFRAMESYNC_STATE_DETECTFRAME=0,  // detect frame (seek p/n sequence)
+  FLEXFRAMESYNC_STATE_RXPREAMBLE,     // receive p/n sequence
+  FLEXFRAMESYNC_STATE_RXHEADER,       // receive header data
+  FLEXFRAMESYNC_STATE_RXPAYLOAD,      // receive payload data
+};
+
 // flexframesync object structure
 struct flexframesync_s {
     // callback
@@ -136,12 +143,7 @@ struct flexframesync_s {
     // status variables
     unsigned int    preamble_counter;   // counter: num of p/n syms received
     unsigned int    symbol_counter;     // counter: num of symbols received
-    enum {
-        FLEXFRAMESYNC_STATE_DETECTFRAME=0,  // detect frame (seek p/n sequence)
-        FLEXFRAMESYNC_STATE_RXPREAMBLE,     // receive p/n sequence
-        FLEXFRAMESYNC_STATE_RXHEADER,       // receive header data
-        FLEXFRAMESYNC_STATE_RXPAYLOAD,      // receive payload data
-    }               state;                  // receiver state
+    enum state      state;              // receiver state
 
 #if DEBUG_FLEXFRAMESYNC
     int         debug_enabled;          // debugging enabled?
@@ -170,8 +172,8 @@ flexframesync flexframesync_create(framesync_callback _callback,
     q->preamble_rx = (liquid_float_complex*) malloc(64*sizeof(liquid_float_complex));
     msequence ms = msequence_create(7, 0x0089, 1);
     for (i=0; i<64; i++) {
-        q->preamble_pn[i] = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2);
-        q->preamble_pn[i] += (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2) * _Complex_I;
+        q->preamble_pn[i] = (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2);
+        q->preamble_pn[i] += (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2) * _Complex_I;
     }
     msequence_destroy(ms);
 

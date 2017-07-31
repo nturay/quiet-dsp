@@ -219,15 +219,15 @@ IIRFILT() IIRFILT(_create_prototype)(liquid_iirdes_filtertype _ftype,
 
     // allocate memory for filter coefficients
     unsigned int h_len = (_format == LIQUID_IIRDES_SOS) ? 3*(L+r) : N+1;
-    float *B = (float*)malloc(h_len*sizeof(float));
-    float *A = (float*)malloc(h_len*sizeof(float));
+    float *B = (float*) alloca(h_len*sizeof(float));
+    float *A = (float*) alloca(h_len*sizeof(float));
 
     // design filter (compute coefficients)
     liquid_iirdes(_ftype, _btype, _format, _order, _fc, _f0, _Ap, _As, B, A);
 
     // move coefficients to type-specific arrays (e.g. liquid_float_complex)
-    TC *Bc = (TC*)malloc(h_len*sizeof(TC));
-    TC *Ac = (TC*)malloc(h_len*sizeof(TC));
+    TC *Bc = (TC*) alloca(h_len*sizeof(TC));
+    TC *Ac = (TC*) alloca(h_len*sizeof(TC));
     unsigned int i;
     for (i=0; i<h_len; i++) {
         Bc[i] = B[i];
@@ -242,10 +242,6 @@ IIRFILT() IIRFILT(_create_prototype)(liquid_iirdes_filtertype _ftype,
         q = IIRFILT(_create)(Bc, h_len, Ac, h_len);
 
     // return filter object
-    free(Ac);
-    free(Bc);
-    free(A);
-    free(B);
     return q;
 }
 
@@ -646,13 +642,11 @@ float IIRFILT(_groupdelay)(IIRFILT() _q,
         // compute group delay from regular transfer function form
 
         // copy coefficients
-        float *b = (float*)malloc(_q->nb*sizeof(float));
-        float *a = (float*)malloc(_q->na*sizeof(float));
+        float *b = (float*) alloca(_q->nb*sizeof(float));
+        float *a = (float*) alloca(_q->na*sizeof(float));
         for (i=0; i<_q->nb; i++) b[i] = crealf(_q->b[i]);
         for (i=0; i<_q->na; i++) a[i] = crealf(_q->a[i]);
         groupdelay = iir_group_delay(b, _q->nb, a, _q->na, _fc);
-        free(a);
-        free(b);
     } else {
         // accumulate group delay from second-order sections
         for (i=0; i<_q->nsos; i++)

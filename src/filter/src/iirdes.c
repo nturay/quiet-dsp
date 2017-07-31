@@ -69,7 +69,7 @@ void liquid_cplxpair(liquid_float_complex * _z,
     }
 
     // keep track of which elements have been paired
-    unsigned char *paired = (unsigned char*)malloc(_n*sizeof(unsigned char));
+    unsigned char *paired = (unsigned char*) alloca(_n*sizeof(unsigned char));
     memset(paired,0,_n*sizeof(paired));
     unsigned int num_pairs=0;
 
@@ -123,7 +123,6 @@ void liquid_cplxpair(liquid_float_complex * _z,
     //  * pure-real elements are ordered by increasing
     //    value
     liquid_cplxpair_cleanup(_p, _n, num_pairs);
-    free(paired);
 }
 
 // post-process cleanup used with liquid_cplxpair
@@ -291,7 +290,7 @@ void iirdes_dzpk2tff(liquid_float_complex * _zd,
                      float * _a)
 {
     unsigned int i;
-    liquid_float_complex *q = (liquid_float_complex*)malloc((_n+1)*sizeof(liquid_float_complex));
+    liquid_float_complex *q = (liquid_float_complex*) alloca((_n+1)*sizeof(liquid_float_complex));
 
     // expand poles
     polycf_expandroots(_pd,_n,q);
@@ -302,8 +301,6 @@ void iirdes_dzpk2tff(liquid_float_complex * _zd,
     polycf_expandroots(_zd, _n, q);
     for (i=0; i<=_n; i++)
         _b[i] = crealf(q[_n-i]*_k);
-
-    free(q);
 }
 
 // converts discrete-time zero/pole/gain (zpk) recursive (iir)
@@ -331,11 +328,11 @@ void iirdes_dzpk2sosf(liquid_float_complex * _zd,
     float tol=1e-6f; // tolerance for conjuate pair computation
 
     // find/group complex conjugate pairs (poles)
-    liquid_float_complex *zp = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));
+    liquid_float_complex *zp = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));
     liquid_cplxpair(_zd,_n,tol,zp);
 
     // find/group complex conjugate pairs (zeros)
-    liquid_float_complex *pp = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));
+    liquid_float_complex *pp = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));
     liquid_cplxpair(_pd,_n,tol,pp);
 
     // TODO : group pole pairs with zero pairs
@@ -406,9 +403,6 @@ void iirdes_dzpk2sosf(liquid_float_complex * _zd,
         _B[3*i+1] *= k;
         _B[3*i+2] *= k;
     }
-
-    free(pp);
-    free(zp);
 }
 
 // digital z/p/k low-pass to high-pass transformation
@@ -507,8 +501,8 @@ void liquid_iirdes(liquid_iirdes_filtertype _ftype,
     unsigned int nza;
 
     // analog poles/zeros/gain
-    liquid_float_complex *pa = (liquid_float_complex*)malloc(_n * sizeof(liquid_float_complex));
-    liquid_float_complex *za = (liquid_float_complex*)malloc(_n * sizeof(liquid_float_complex));
+    liquid_float_complex *pa = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));
+    liquid_float_complex *za = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));
     liquid_float_complex ka;
     liquid_float_complex k0 = 1.0f; // nominal digital gain
 
@@ -577,8 +571,8 @@ void liquid_iirdes(liquid_iirdes_filtertype _ftype,
 
     // complex digital poles/zeros/gain
     // NOTE: allocated double the filter order to cover band-pass, band-stop cases
-    liquid_float_complex *zd = (liquid_float_complex*)malloc(2*_n * sizeof(liquid_float_complex));
-    liquid_float_complex *pd = (liquid_float_complex*)malloc(2*_n * sizeof(liquid_float_complex));
+    liquid_float_complex *zd = (liquid_float_complex*) alloca(2*_n*sizeof(liquid_float_complex));
+    liquid_float_complex *pd = (liquid_float_complex*) alloca(2*_n*sizeof(liquid_float_complex));
     liquid_float_complex kd;
     float m = iirdes_freqprewarp(_btype,_fc,_f0);
     //printf("m : %12.8f\n", m);
@@ -613,8 +607,8 @@ void liquid_iirdes(liquid_iirdes_filtertype _ftype,
         _btype == LIQUID_IIRDES_BANDSTOP)
     {
         // allocate memory for transformed zeros, poles
-        liquid_float_complex *zd1 = (liquid_float_complex*)malloc(2*_n * sizeof(liquid_float_complex));
-        liquid_float_complex *pd1 = (liquid_float_complex*)malloc(2*_n * sizeof(liquid_float_complex));
+        liquid_float_complex *zd1 = (liquid_float_complex*) alloca(2*_n*sizeof(liquid_float_complex));
+        liquid_float_complex *pd1 = (liquid_float_complex*) alloca(2*_n*sizeof(liquid_float_complex));
 
         // run zeros, poles low-pass -> band-pass trasform
         iirdes_dzpk_lp2bp(zd, pd,   // low-pass prototype zeros, poles
@@ -634,8 +628,6 @@ void liquid_iirdes(liquid_iirdes_filtertype _ftype,
         r  = _n % 2;    //  r is now zero
         L  = (_n-r)/2;  //  L is now the original value of _n
 #endif
-        free(pd1);
-        free(zd1);
     }
 
     if (_format == LIQUID_IIRDES_TF) {
@@ -668,11 +660,6 @@ void liquid_iirdes(liquid_iirdes_filtertype _ftype,
 #endif
 
     }
-
-    free(pd);
-    free(zd);
-    free(za);
-    free(pa);
 }
 
 // checks stability of iir filter
@@ -691,12 +678,12 @@ int iirdes_isstable(float * _b,
     unsigned int i;
 
     // flip denominator, left to right
-    float *a_hat = (float*)malloc(_n*sizeof(float));
+    float *a_hat = (float*) alloca(_n*sizeof(float));
     for (i=0; i<_n; i++)
         a_hat[i] = _a[_n-i-1];
 
     // compute poles (roots of denominator)
-    liquid_float_complex *roots = (liquid_float_complex*)malloc((_n-1) * sizeof(liquid_float_complex));
+    liquid_float_complex *roots = (liquid_float_complex*) alloca((_n-1)*sizeof(liquid_float_complex));
     polyf_findroots_bairstow(a_hat, _n, roots);
 
 #if 0
@@ -707,17 +694,12 @@ int iirdes_isstable(float * _b,
 #endif
 
     // compute magnitude of poles
-    int retval = 1;
     for (i=0; i<_n-1; i++) {
         if (cabsf(roots[i]) > 1.0) {
-            retval = 0;
-            break;
+            return 0;
         }
     }
-
-    free(roots);
-    free(a_hat);
-    return retval;
+    return 1;
 }
 
 

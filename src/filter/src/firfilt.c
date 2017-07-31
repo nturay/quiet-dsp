@@ -118,20 +118,17 @@ FIRFILT() FIRFILT(_create_kaiser)(unsigned int _n,
     }
 
     // compute temporary array for holding coefficients
-    float *hf = (float*)malloc(_n*sizeof(float));
+    float *hf = (float*) alloca(_n*sizeof(float));
     liquid_firdes_kaiser(_n, _fc, _As, _mu, hf);
 
     // copy coefficients to type-specific array
-    TC *h = (TC*)malloc(_n * sizeof(TC));
+    TC *h = (TC*) alloca(_n*sizeof(TC));
     unsigned int i;
     for (i=0; i<_n; i++)
         h[i] = (TC) hf[i];
 
     // 
-    FIRFILT() obj = FIRFILT(_create)(h, _n);
-    free(hf);
-    free(h);
-    return obj;
+    return FIRFILT(_create)(h, _n);
 }
 
 // create from square-root Nyquist prototype
@@ -160,20 +157,17 @@ FIRFILT() FIRFILT(_create_rnyquist)(liquid_firfilt_type          _type,
 
     // generate square-root Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
-    float *hf = (float*)malloc(h_len*sizeof(float));
+    float *hf = (float*) alloca(h_len*sizeof(float));
     liquid_firdes_prototype(_type,_k,_m,_beta,_mu,hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC *hc = (TC*)malloc(h_len * sizeof(TC));
+    TC *hc = (TC*) alloca(h_len*sizeof(TC));
     for (i=0; i<h_len; i++)
         hc[i] = hf[i];
 
     // return filter object and return
-    FIRFILT() obj = FIRFILT(_create)(hc, h_len);
-    free(hc);
-    free(hf);
-    return obj;
+    return FIRFILT(_create)(hc, h_len);
 }
 
 // create rectangular filter prototype
@@ -186,21 +180,18 @@ FIRFILT() FIRFILT(_create_rect)(unsigned int _n)
     }
 
     // create float array coefficients
-    float *hf = (float*)malloc(_n*sizeof(float));
+    float *hf = (float*) alloca(_n*sizeof(float));
     unsigned int i;
     for (i=0; i<_n; i++)
         hf[i] = 1.0f;
 
     // copy coefficients to type-specific array
-    TC *h = (TC*)malloc(_n * sizeof(TC));
+    TC *h = (TC*) alloca(_n*sizeof(TC));
     for (i=0; i<_n; i++)
         h[i] = (TC) hf[i];
 
     // return filter object and return
-    FIRFILT() obj = FIRFILT(_create)(h, _n);
-    free(h);
-    free(hf);
-    return obj;
+    return FIRFILT(_create)(h, _n);
 }
 
 // re-create firfilt object
@@ -403,14 +394,12 @@ float FIRFILT(_groupdelay)(FIRFILT() _q,
                            float     _fc)
 {
     // copy coefficients to be in correct order
-    float *h = (float*)malloc(_q->h_len*sizeof(float));
+    float *h = (float*) alloca(_q->h_len*sizeof(float));
     unsigned int i;
     unsigned int n = _q->h_len;
     for (i=0; i<n; i++)
         h[i] = crealf(_q->h[n-i-1]);
 
-    float delay = fir_group_delay(h, n, _fc);
-    free(h);
-    return delay;
+    return fir_group_delay(h, n, _fc);
 }
 

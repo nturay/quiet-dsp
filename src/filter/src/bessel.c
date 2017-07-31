@@ -136,9 +136,9 @@ void fpoly_bessel_roots_orchard(unsigned int _n,
                                 liquid_float_complex * _roots)
 {
     // initialize arrays
-    liquid_float_complex *r0 = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));       // roots of L_{k-2}
-    liquid_float_complex *r1 = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));       // roots of L_{k-1}
-    liquid_float_complex *r_hat = (liquid_float_complex*)malloc(_n*sizeof(liquid_float_complex));    // roots of L_{k}
+    liquid_float_complex *r0 = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));       // roots of L_{k-2}
+    liquid_float_complex *r1 = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));       // roots of L_{k-1}
+    liquid_float_complex *r_hat = (liquid_float_complex*) alloca(_n*sizeof(liquid_float_complex));    // roots of L_{k}
 
     unsigned int i, j;
     unsigned int p, L;
@@ -196,10 +196,6 @@ void fpoly_bessel_roots_orchard(unsigned int _n,
     // if order is odd, copy single real root last
     if (p)
         _roots[_n-1] = r_hat[0];
-
-    free(r_hat);
-    free(r1);
-    free(r0);
 }
 
 // from [Orchard:1965]
