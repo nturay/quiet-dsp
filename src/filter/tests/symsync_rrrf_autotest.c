@@ -70,10 +70,10 @@ void symsync_rrrf_test(unsigned int _k,
     unsigned int i;
 
     // allocate arrays
-    float s[num_symbols];           // data symbols
-    float x[num_samples];           // interpolated samples
-    float y[num_samples_resamp];    // resampled data (resamp_rrrf)
-    float z[num_symbols + 64];      // synchronized symbols
+    float *s = (float*) alloca((num_symbols)*sizeof(float));           // data symbols
+    float *x = (float*) alloca((num_samples)*sizeof(float));           // interpolated samples
+    float *y = (float*) alloca((num_samples_resamp)*sizeof(float));    // resampled data (resamp_rrrf)
+    float *z = (float*) alloca((num_symbols + 64)*sizeof(float));      // synchronized symbols
 
     // generate pseudo-random BPSK symbols
     // NOTE: by using an m-sequence generator this sequence will be identical

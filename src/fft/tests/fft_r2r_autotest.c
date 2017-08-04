@@ -37,7 +37,7 @@ void fft_r2r_test(float *      _x,
 
     unsigned int i;
 
-    float y[_n];
+    float *y = (float*) alloca((_n)*sizeof(float));
 
     // compute real even/odd FFT
     fftplan q = fft_create_plan_r2r_1d(_n, _x, y, _kind, _flags);

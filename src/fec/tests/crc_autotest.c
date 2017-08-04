@@ -81,7 +81,7 @@ void validate_crc(crc_scheme _check,
     unsigned int i;
 
     // generate pseudo-random data
-    unsigned char data[_n];
+    unsigned char *data = (unsigned char*) alloca((_n)*sizeof(unsigned char));
     msequence ms = msequence_create_default(9);
     for (i=0; i<_n; i++)
         data[i] = msequence_generate_symbol(ms,8);
@@ -94,7 +94,7 @@ void validate_crc(crc_scheme _check,
     CONTEND_EXPRESSION(crc_validate_message(_check, data, _n, key));
 
     //
-    unsigned char data_corrupt[_n];
+    unsigned char *data_corrupt = (unsigned char*) alloca((_n)*sizeof(unsigned char));
     unsigned int j;
     for (i=0; i<_n; i++) {
         for (j=0; j<8; j++) {

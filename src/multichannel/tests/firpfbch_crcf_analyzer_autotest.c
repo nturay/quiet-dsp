@@ -46,7 +46,7 @@ void autotest_firpfbch_crcf_analysis()
     //        For the sake of consistency, use pseudo-random values
     //        chosen from m-sequences
     unsigned int h_len = p*num_channels;
-    float h[h_len];
+    float *h = (float*) alloca((h_len)*sizeof(float));
     msequence ms = msequence_create_default(6);
     for (i=0; i<h_len; i++)
         h[i] = (float)msequence_generate_symbol(ms, 2) - 1.5f; // (-1.5, -0.5, 0.5, 1.5)

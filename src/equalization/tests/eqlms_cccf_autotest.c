@@ -49,11 +49,11 @@ void autotest_eqlms_cccf_blind()
 
     // create channel filter
     liquid_float_complex h[5] = {
-        { 1.00f,  0.00f},
-        { 0.00f, -0.01f},
-        {-0.11f,  0.02f},
-        { 0.02f,  0.01f},
-        {-0.09f, -0.04f} };
+        liquid_float_complex( 1.00f,  0.00f),
+        liquid_float_complex( 0.00f, -0.01f),
+        liquid_float_complex(-0.11f,  0.02f),
+        liquid_float_complex( 0.02f,  0.01f),
+        liquid_float_complex(-0.09f, -0.04f) };
     firfilt_cccf fchannel = firfilt_cccf_create(h,5);
 
     // arrays

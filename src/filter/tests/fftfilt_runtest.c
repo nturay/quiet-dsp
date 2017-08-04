@@ -57,7 +57,7 @@ void fftfilt_rrrf_test(float *      _h,
     fftfilt_rrrf q = fftfilt_rrrf_create(_h, _h_len, n);
 
     // allocate memory for output
-    float y_test[n*num_blocks];
+    float *y_test = (float*) alloca((n*num_blocks)*sizeof(float));
 
     unsigned int i;
 

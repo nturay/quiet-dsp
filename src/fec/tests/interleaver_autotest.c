@@ -31,9 +31,9 @@
 void interleaver_test_hard(unsigned int _n)
 {
     unsigned int i;
-    unsigned char x[_n];
-    unsigned char y[_n];
-    unsigned char z[_n];
+    unsigned char *x = (unsigned char*) alloca((_n)*sizeof(unsigned char));
+    unsigned char *y = (unsigned char*) alloca((_n)*sizeof(unsigned char));
+    unsigned char *z = (unsigned char*) alloca((_n)*sizeof(unsigned char));
 
     for (i=0; i<_n; i++)
         x[i] = rand() & 0xFF;
@@ -56,9 +56,9 @@ void interleaver_test_hard(unsigned int _n)
 void interleaver_test_soft(unsigned int _n)
 {
     unsigned int i;
-    unsigned char x[8*_n];
-    unsigned char y[8*_n];
-    unsigned char z[8*_n];
+    unsigned char *x = (unsigned char*) alloca((8*_n)*sizeof(unsigned char));
+    unsigned char *y = (unsigned char*) alloca((8*_n)*sizeof(unsigned char));
+    unsigned char *z = (unsigned char*) alloca((8*_n)*sizeof(unsigned char));
 
     for (i=0; i<8*_n; i++)
         x[i] = rand() & 0xFF;

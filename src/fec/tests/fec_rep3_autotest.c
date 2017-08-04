@@ -34,8 +34,8 @@ void autotest_rep3_codec()
 
     // create arrays
     unsigned int n_enc = fec_get_enc_msg_length(fs,n);
-    unsigned char msg_dec[n];
-    unsigned char msg_enc[n_enc];
+    unsigned char *msg_dec = (unsigned char*) alloca((n)*sizeof(unsigned char));
+    unsigned char *msg_enc = (unsigned char*) alloca((n_enc)*sizeof(unsigned char));
 
     // create object
     fec q = fec_create(fs,NULL);

@@ -222,7 +222,7 @@ void autotest_cbufferf_flow()
     int success = 1;
 
     // temporary buffer to write samples before sending to cbuffer
-    float write_buffer[max_size];
+    float *write_buffer = (float*) alloca((max_size)*sizeof(float));
 
     // create new circular buffer
     cbufferf q = cbufferf_create_max(max_size, max_read);

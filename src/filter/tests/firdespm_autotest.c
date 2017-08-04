@@ -73,7 +73,7 @@ void autotest_firdespm_bandpass_n24()
     };
 
     // Create filter
-    float h[n];
+    float *h = (float*) alloca((n)*sizeof(float));
     firdespm_run(n,num_bands,bands,des,weights,NULL,btype,h);
 
     // Ensure data are equal
@@ -136,7 +136,7 @@ void autotest_firdespm_bandpass_n32()
     };
 
     // Create filter
-    float h[n];
+    float *h = (float*) alloca((n)*sizeof(float));
     firdespm_run(n,num_bands,bands,des,weights,NULL,btype,h);
 
     // Ensure data are equal

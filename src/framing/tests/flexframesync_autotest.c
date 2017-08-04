@@ -53,7 +53,7 @@ void autotest_flexframesync()
     
     // initialize header and payload
     unsigned char header[14] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-    unsigned char payload[_payload_len];
+    unsigned char *payload = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char));
     for (i=0; i<_payload_len; i++)
         payload[i] = rand() & 0xff;
     

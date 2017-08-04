@@ -57,9 +57,9 @@ void fec_test_codec(fec_scheme _fs, unsigned int _n, void * _opts)
 
     // create arrays
     unsigned int n_enc = fec_get_enc_msg_length(_fs,_n);
-    unsigned char msg[_n];          // original message
-    unsigned char msg_enc[n_enc];   // encoded message
-    unsigned char msg_dec[_n];      // decoded message
+    unsigned char *msg = (unsigned char*) alloca((_n)*sizeof(unsigned char));          // original message
+    unsigned char *msg_enc = (unsigned char*) alloca((n_enc)*sizeof(unsigned char));   // encoded message
+    unsigned char *msg_dec = (unsigned char*) alloca((_n)*sizeof(unsigned char));      // decoded message
 
     // initialze message
     unsigned int i;
