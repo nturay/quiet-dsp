@@ -78,7 +78,7 @@ qpilotsync qpilotsync_create(unsigned int _payload_len,
     q->pilot_spacing = _pilot_spacing;
 
     // derived values
-    div_t d = div(q->payload_len,(q->pilot_spacing - 1));
+    div_t d = div((int)q->payload_len,(int)(q->pilot_spacing - 1));
     q->num_pilots = d.quot + (d.rem ? 1 : 0);
     q->frame_len  = q->payload_len + q->num_pilots;
 

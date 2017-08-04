@@ -143,7 +143,7 @@ int qpacketmodem_configure(qpacketmodem _q,
     _q->payload_bit_len = 8*_q->payload_enc_len;
 
     // number of symbols in encoded payload
-    div_t d = div(_q->payload_bit_len, _q->bits_per_symbol);
+    div_t d = div((int)_q->payload_bit_len, (int)_q->bits_per_symbol);
     _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
 
     // encoded payload array (leave room for soft-decision decoding)

@@ -274,7 +274,7 @@ void ofdmflexframesync_set_header_len(ofdmflexframesync _q,
     } else {
         _q->header_enc_len = packetizer_get_enc_msg_len(_q->p_header);
         unsigned int bps = modulation_types[_q->header_props.mod_scheme].bps;
-        div_t bps_d = div(_q->header_enc_len*8, bps);
+        div_t bps_d = div((int)_q->header_enc_len*8, (int)bps);
         _q->header_sym_len = bps_d.quot + (bps_d.rem ? 1 : 0);
     }
     _q->header_enc = (unsigned char*) realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
@@ -647,12 +647,12 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
         // re-compute payload encoded message length
         if (_q->payload_soft) {
             _q->payload_enc_len = 8*packetizer_get_enc_msg_len(_q->p_payload);
-            div_t d = div(_q->payload_enc_len, _q->bps_payload);
+            div_t d = div((int)_q->payload_enc_len, (int)_q->bps_payload);
             _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
         } else {
             _q->payload_enc_len = packetizer_get_enc_msg_len(_q->p_payload);
             // re-compute number of modulated payload symbols
-            div_t d = div(8*_q->payload_enc_len, _q->bps_payload);
+            div_t d = div((int)8*_q->payload_enc_len, (int)_q->bps_payload);
             _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
         }
 

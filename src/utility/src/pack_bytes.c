@@ -209,7 +209,7 @@ void liquid_pack_bytes(unsigned char * _sym_in,
                        unsigned int _sym_out_len,
                        unsigned int * _num_written)
 {
-    div_t d = div(_sym_in_len,8);
+    div_t d = div((int)_sym_in_len,(int)8);
     unsigned int req__sym_out_len = d.quot;
     req__sym_out_len += ( d.rem > 0 ) ? 1 : 0;
     if ( _sym_out_len < req__sym_out_len ) {

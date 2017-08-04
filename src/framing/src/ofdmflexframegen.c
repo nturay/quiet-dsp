@@ -363,7 +363,7 @@ void ofdmflexframegen_set_header_len(ofdmflexframegen _q,
     _q->header_enc = (unsigned char*) realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
 
     unsigned int bps = modulation_types[_q->header_props.mod_scheme].bps;
-    div_t bps_d = div(_q->header_enc_len*8, bps);
+    div_t bps_d = div((int)_q->header_enc_len*8, (int)bps);
     _q->header_sym_len = bps_d.quot + (bps_d.rem ? 1 : 0);
     _q->header_mod = (unsigned char*) realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
     // create header objects
@@ -373,7 +373,7 @@ void ofdmflexframegen_set_header_len(ofdmflexframegen _q,
     _q->mod_header = modem_create((modulation_scheme)_q->header_props.mod_scheme);
 
     // compute number of header symbols
-    div_t d = div(_q->header_sym_len, _q->M_data);
+    div_t d = div((int)_q->header_sym_len, (int)_q->M_data);
     _q->num_symbols_header = d.quot + (d.rem ? 1 : 0);
 }
 
@@ -518,13 +518,13 @@ void ofdmflexframegen_reconfigure(ofdmflexframegen _q)
 
     // re-allocate memory for payload modem symbols
     unsigned int bps = modulation_types[_q->props.mod_scheme].bps;
-    div_t d = div(8*_q->payload_enc_len, bps);
+    div_t d = div((int)8*_q->payload_enc_len, (int)bps);
     _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
     _q->payload_mod = (unsigned int*)realloc(_q->payload_mod,
                                               _q->payload_mod_len*sizeof(unsigned int));
 
     // re-compute number of payload OFDM symbols
-    d = div(_q->payload_mod_len, _q->M_data);
+    d = div((int)_q->payload_mod_len, (int)_q->M_data);
     _q->num_symbols_payload = d.quot + (d.rem ? 1 : 0);
 }
 
