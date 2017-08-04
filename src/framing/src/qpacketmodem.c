@@ -72,7 +72,7 @@ qpacketmodem qpacketmodem_create()
     q->payload_bit_len = 8*q->payload_enc_len;
 
     // number of symbols in encoded payload
-    div_t d = div(q->payload_bit_len, q->bits_per_symbol);
+    div_t d = div((int)q->payload_bit_len, (int)q->bits_per_symbol);
     q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
 
     // soft demodulator uses one byte to represent each soft bit
