@@ -92,7 +92,7 @@ EQLMS() EQLMS(_create)(T *          _h,
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
 //  _dt     :   fractional sample delay, 0 <= _dt < 1
-EQLMS() EQLMS(_create_rnyquist)(liquid_firfilt_type _type,
+EQLMS() EQLMS(_create_rnyquist)(int          _type,
                                 unsigned int _k,
                                 unsigned int _m,
                                 float        _beta,
@@ -116,7 +116,7 @@ EQLMS() EQLMS(_create_rnyquist)(liquid_firfilt_type _type,
     // generate square-root Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
     float *h = (float*)alloca(h_len*sizeof(float));
-    liquid_firdes_prototype(_type,_k,_m,_beta,_dt,h);
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_k,_m,_beta,_dt,h);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     // and scale by samples/symbol

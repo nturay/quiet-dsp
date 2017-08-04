@@ -65,7 +65,7 @@ void crandnf(liquid_float_complex * _y)
 
     u2 = randf();
 
-    *_y = sqrtf(-2*logf(u1)) * cexpf(_Complex_I*2*M_PI*u2);
+    *_y = sqrtf(-2*logf(u1)) * cexpf(_Complex_I*(float)(2*M_PI)*u2);
 }
 
 // Internal complex Gauss (inline)

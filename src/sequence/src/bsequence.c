@@ -297,8 +297,8 @@ void bsequence_create_ccodes(bsequence _qa, bsequence _qb)
 
     // generate two temporary arrays
     unsigned int num_bytes = _qa->num_bits / 8;
-    unsigned char a[num_bytes];
-    unsigned char b[num_bytes];
+    unsigned char *a = (unsigned char*) alloca(num_bytes*sizeof(unsigned char));
+    unsigned char *b = (unsigned char*) alloca(num_bytes*sizeof(unsigned char));
 
     memset(a, 0x00, num_bytes);
     memset(b, 0x00, num_bytes);

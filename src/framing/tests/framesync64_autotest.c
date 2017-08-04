@@ -72,12 +72,12 @@ void autotest_framesync64()
 
     // generate the frame
     unsigned int frame_len = LIQUID_FRAME64_LEN;
-    liquid_float_complex frame[frame_len];
+    liquid_float_complex *frame = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));
     framegen64_execute(fg, header, payload, frame);
 
     // add some noise
     for (i=0; i<frame_len; i++)
-        frame[i] += 0.01f*(randnf() + _Complex_I*randnf()) * M_SQRT1_2;
+        frame[i] += 0.01f*(randnf() + _Complex_I*randnf()) * (float)M_SQRT1_2;
 
     // try to find the frame
     framesync64_execute(fs, frame, frame_len);

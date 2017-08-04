@@ -54,7 +54,7 @@ void autotest_compand_cfloat() {
     float mu=255.0f;
     unsigned int n=30;
 
-    liquid_float_complex dx = 2*(0.707f +0.707f* _Complex_I)/(float)(n);
+    liquid_float_complex dx = 2.0f*(0.707f +0.707f* _Complex_I)/(float)(n);
     liquid_float_complex y;
     liquid_float_complex z;
     float tol = 1e-6f;

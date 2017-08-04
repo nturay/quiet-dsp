@@ -107,45 +107,45 @@ void autotest_cbufferf()
 void autotest_cbuffercf()
 {
     // input array of values
-    liquid_float_complex v[] = {1.0 - 1.0 * _Complex_I,
-                         2.0 + 2.0 * _Complex_I,
-                         3.0 - 3.0 * _Complex_I,
-                         4.0 + 4.0 * _Complex_I,
-                         5.0 - 5.0 * _Complex_I,
-                         6.0 + 6.0 * _Complex_I,
-                         7.0 - 7.0 * _Complex_I,
-                         8.0 + 8.0 * _Complex_I};
+    liquid_float_complex v[] = {1.0f - 1.0f * _Complex_I,
+                         2.0f + 2.0f * _Complex_I,
+                         3.0f - 3.0f * _Complex_I,
+                         4.0f + 4.0f * _Complex_I,
+                         5.0f - 5.0f * _Complex_I,
+                         6.0f + 6.0f * _Complex_I,
+                         7.0f - 7.0f * _Complex_I,
+                         8.0f + 8.0f * _Complex_I};
 
     // output test arrays
-    liquid_float_complex test1[] = {1.0 - 1.0 * _Complex_I,
-                             2.0 + 2.0 * _Complex_I,
-                             3.0 - 3.0 * _Complex_I,
-                             4.0 + 4.0 * _Complex_I};
-    liquid_float_complex test2[] = {3.0 - 3.0 * _Complex_I,
-                             4.0 + 4.0 * _Complex_I,
-                             1.0 - 1.0 * _Complex_I,
-                             2.0 + 2.0 * _Complex_I,
-                             3.0 - 3.0 * _Complex_I,
-                             4.0 + 4.0 * _Complex_I,
-                             5.0 - 5.0 * _Complex_I,
-                             6.0 + 6.0 * _Complex_I,
-                             7.0 - 7.0 * _Complex_I,
-                             8.0 + 8.0 * _Complex_I};
-    liquid_float_complex test3[] = {3.0 - 3.0 * _Complex_I,
-                             4.0 + 4.0 * _Complex_I,
-                             5.0 - 5.0 * _Complex_I,
-                             6.0 + 6.0 * _Complex_I,
-                             7.0 - 7.0 * _Complex_I,
-                             8.0 + 8.0 * _Complex_I};
-    liquid_float_complex test4[] = {3.0 - 3.0 * _Complex_I,
-                             4.0 + 4.0 * _Complex_I,
-                             5.0 - 5.0 * _Complex_I,
-                             6.0 + 6.0 * _Complex_I,
-                             7.0 - 7.0 * _Complex_I,
-                             8.0 + 8.0 * _Complex_I,
-                             1.0 - 1.0 * _Complex_I,
-                             2.0 + 2.0 * _Complex_I,
-                             3.0 - 3.0 * _Complex_I};
+    liquid_float_complex test1[] = {1.0f - 1.0f * _Complex_I,
+                             2.0f + 2.0f * _Complex_I,
+                             3.0f - 3.0f * _Complex_I,
+                             4.0f + 4.0f * _Complex_I};
+    liquid_float_complex test2[] = {3.0f - 3.0f * _Complex_I,
+                             4.0f + 4.0f * _Complex_I,
+                             1.0f - 1.0f * _Complex_I,
+                             2.0f + 2.0f * _Complex_I,
+                             3.0f - 3.0f * _Complex_I,
+                             4.0f + 4.0f * _Complex_I,
+                             5.0f - 5.0f * _Complex_I,
+                             6.0f + 6.0f * _Complex_I,
+                             7.0f - 7.0f * _Complex_I,
+                             8.0f + 8.0f * _Complex_I};
+    liquid_float_complex test3[] = {3.0f - 3.0f * _Complex_I,
+                             4.0f + 4.0f * _Complex_I,
+                             5.0f - 5.0f * _Complex_I,
+                             6.0f + 6.0f * _Complex_I,
+                             7.0f - 7.0f * _Complex_I,
+                             8.0f + 8.0f * _Complex_I};
+    liquid_float_complex test4[] = {3.0f - 3.0f * _Complex_I,
+                             4.0f + 4.0f * _Complex_I,
+                             5.0f - 5.0f * _Complex_I,
+                             6.0f + 6.0f * _Complex_I,
+                             7.0f - 7.0f * _Complex_I,
+                             8.0f + 8.0f * _Complex_I,
+                             1.0f - 1.0f * _Complex_I,
+                             2.0f + 2.0f * _Complex_I,
+                             3.0f - 3.0f * _Complex_I};
     liquid_float_complex *r;           // output read pointer
     unsigned int num_requested; // number of samples requested
     unsigned int num_read;      // number of samples read
@@ -191,9 +191,9 @@ void autotest_cbuffercf()
     CONTEND_SAME_DATA(r,test3,6*sizeof(liquid_float_complex));
 
     // part 6: test pushing multiple elements
-    cbuffercf_push(q, 1.0 - 1.0 * _Complex_I);
-    cbuffercf_push(q, 2.0 + 2.0 * _Complex_I);
-    cbuffercf_push(q, 3.0 - 3.0 * _Complex_I);
+    cbuffercf_push(q, 1.0f - 1.0f * _Complex_I);
+    cbuffercf_push(q, 2.0f + 2.0f * _Complex_I);
+    cbuffercf_push(q, 3.0f - 3.0f * _Complex_I);
     // cbuffer: {3 4 5 6 7 8 1 2 3}
     num_requested = 10;
     cbuffercf_read(q, num_requested, &r, &num_read);
@@ -202,7 +202,7 @@ void autotest_cbuffercf()
 
     // part 7: add one more element; buffer should be full
     CONTEND_EXPRESSION( cbuffercf_is_full(q)==0 );
-    cbuffercf_push(q, 1.0 - 1.0 * _Complex_I);
+    cbuffercf_push(q, 1.0f - 1.0f * _Complex_I);
     // cbuffer: {3 4 5 6 7 8 1 2 3 1}
     CONTEND_EXPRESSION( cbuffercf_is_full(q)==1 );
 

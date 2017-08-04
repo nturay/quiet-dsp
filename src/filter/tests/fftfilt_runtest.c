@@ -105,7 +105,7 @@ void fftfilt_crcf_test(float *         _h,
     fftfilt_crcf q = fftfilt_crcf_create(_h, _h_len, n);
 
     // allocate memory for output
-    liquid_float_complex y_test[n*num_blocks];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((n*num_blocks)*sizeof(liquid_float_complex));
 
     unsigned int i;
 
@@ -155,7 +155,7 @@ void fftfilt_cccf_test(liquid_float_complex * _h,
     fftfilt_cccf q = fftfilt_cccf_create(_h, _h_len, n);
 
     // allocate memory for output
-    liquid_float_complex y_test[n*num_blocks];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((n*num_blocks)*sizeof(liquid_float_complex));
 
     unsigned int i;
 

@@ -38,7 +38,7 @@ void nco_crcf_phase_test(float _theta,
                          float _tol)
 {
     // create object
-    nco_crcf nco = nco_crcf_create(_type);
+    nco_crcf nco = nco_crcf_create((liquid_ncotype)_type);
 
     // set phase
     nco_crcf_set_phase(nco, _theta);
@@ -186,8 +186,8 @@ void autotest_nco_mixing() {
         nco_crcf_sincos(p, &nco_q, &nco_i);
 
         // mix back to zero phase
-        complex float nco_cplx_in = nco_i + _Complex_I*nco_q;
-        complex float nco_cplx_out;
+        liquid_float_complex nco_cplx_in = nco_i + _Complex_I*nco_q;
+        liquid_float_complex nco_cplx_out;
         nco_crcf_mix_down(p, nco_cplx_in, &nco_cplx_out);
 
         // assert mixer output is correct

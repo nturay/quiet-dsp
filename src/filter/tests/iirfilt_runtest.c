@@ -45,7 +45,7 @@ void iirfilt_rrrf_test(float *      _b,
     iirfilt_rrrf q = iirfilt_rrrf_create(_b, _h_len, _a, _h_len);
 
     // allocate memory for output
-    float y_test[_y_len];
+    float *y_test = (float*) alloca((_y_len)*sizeof(float));
 
     unsigned int i;
     // compute output
@@ -81,7 +81,7 @@ void iirfilt_crcf_test(float *         _b,
     iirfilt_crcf q = iirfilt_crcf_create(_b, _h_len, _a, _h_len);
 
     // allocate memory for output
-    liquid_float_complex y_test[_y_len];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((_y_len)*sizeof(liquid_float_complex));
 
     unsigned int i;
     // compute output
@@ -118,7 +118,7 @@ void iirfilt_cccf_test(liquid_float_complex * _b,
     iirfilt_cccf q = iirfilt_cccf_create(_b, _h_len, _a, _h_len);
 
     // allocate memory for output
-    liquid_float_complex y_test[_y_len];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((_y_len)*sizeof(liquid_float_complex));
 
     unsigned int i;
     // compute output

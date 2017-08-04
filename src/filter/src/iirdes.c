@@ -70,7 +70,7 @@ void liquid_cplxpair(liquid_float_complex * _z,
 
     // keep track of which elements have been paired
     unsigned char *paired = (unsigned char*) alloca(_n*sizeof(unsigned char));
-    memset(paired,0,_n*sizeof(paired));
+    memset(paired,0,_n*sizeof(unsigned char));
     unsigned int num_pairs=0;
 
     unsigned int i,j,k=0;

@@ -43,9 +43,9 @@ void autotest_flexframesync()
     flexframegenprops_s fgprops;
     flexframegenprops_init_default(&fgprops);
     fgprops.mod_scheme  = _ms;
-    fgprops.check       = _check;
-    fgprops.fec0        = _fec0;
-    fgprops.fec1        = _fec1;
+    fgprops.check       = (crc_scheme)_check;
+    fgprops.fec0        = (fec_scheme)_fec0;
+    fgprops.fec1        = (fec_scheme)_fec1;
     flexframegen fg = flexframegen_create(&fgprops);
 
     // create flexframesync object

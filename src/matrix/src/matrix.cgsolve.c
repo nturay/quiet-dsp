@@ -66,11 +66,14 @@ void MATRIX(_cgsolve)(T *          _A,
     //  3. residual tolerance
 
     // allocate memory for arrays
-    T x0[_n], x1[_n];   // iterative vector x (solution estimate)
-    T d0[_n], d1[_n];   // iterative vector d
-    T r0[_n], r1[_n];   // iterative vector r (step direction)
-    T q[_n];            // A * d0
-    T Ax1[_n];          // A * x1
+    T *x0 = (T*) alloca((_n)*sizeof(T));
+    T *x1 = (T*) alloca((_n)*sizeof(T));   // iterative vector x (solution estimate)
+    T *d0 = (T*) alloca((_n)*sizeof(T));
+    T *d1 = (T*) alloca((_n)*sizeof(T));   // iterative vector d
+    T *r0 = (T*) alloca((_n)*sizeof(T));
+    T *r1 = (T*) alloca((_n)*sizeof(T));   // iterative vector r (step direction)
+    T *q = (T*) alloca((_n)*sizeof(T));            // A * d0
+    T *Ax1 = (T*) alloca((_n)*sizeof(T));          // A * x1
 
     // scalars
     T delta_init;       // b^T * b0

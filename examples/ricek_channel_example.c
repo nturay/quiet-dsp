@@ -17,6 +17,7 @@
 #include <getopt.h>
 
 #include "liquid.h"
+#include "examples.h"
 
 #define OUTPUT_FILENAME "ricek_channel_example.m"
 
@@ -78,7 +79,7 @@ int main(int argc, char*argv[])
     liquid_float_complex * y = (liquid_float_complex*) malloc(num_samples*sizeof(liquid_float_complex));
 
     // generate Doppler filter coefficients
-    float h[h_len];
+    float *h = (float*) alloca((h_len)*sizeof(float));
     liquid_firdes_doppler(h_len, fd, K, theta, h);
 
     // normalize filter coefficients such that output Gauss random

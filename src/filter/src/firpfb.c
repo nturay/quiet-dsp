@@ -143,7 +143,7 @@ FIRPFB() FIRPFB(_create_kaiser)(unsigned int _M,
 //  _k      :   samples/symbol _k > 1
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
-FIRPFB() FIRPFB(_create_rnyquist)(liquid_firfilt_type          _type,
+FIRPFB() FIRPFB(_create_rnyquist)(int          _type,
                                   unsigned int _M,
                                   unsigned int _k,
                                   unsigned int _m,
@@ -167,7 +167,7 @@ FIRPFB() FIRPFB(_create_rnyquist)(liquid_firfilt_type          _type,
     // generate square-root Nyquist filter
     unsigned int H_len = 2*_M*_k*_m + 1;
     float *Hf = (float*) alloca(H_len*sizeof(float));
-    liquid_firdes_prototype(_type,_M*_k,_m,_beta,0,Hf);
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_M*_k,_m,_beta,0,Hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
@@ -185,7 +185,7 @@ FIRPFB() FIRPFB(_create_rnyquist)(liquid_firfilt_type          _type,
 //  _k      :   samples/symbol _k > 1
 //  _m      :   filter delay (symbols), _m > 0
 //  _beta   :   excess bandwidth factor, 0 < _beta < 1
-FIRPFB() FIRPFB(_create_drnyquist)(liquid_firfilt_type          _type,
+FIRPFB() FIRPFB(_create_drnyquist)(int          _type,
                                    unsigned int _M,
                                    unsigned int _k,
                                    unsigned int _m,
@@ -209,7 +209,7 @@ FIRPFB() FIRPFB(_create_drnyquist)(liquid_firfilt_type          _type,
     // generate square-root Nyquist filter
     unsigned int H_len = 2*_M*_k*_m + 1;
     float *Hf = (float*) alloca(H_len*sizeof(float));
-    liquid_firdes_prototype(_type,_M*_k,_m,_beta,0,Hf);
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_M*_k,_m,_beta,0,Hf);
     
     // compute derivative filter
     float *dHf = (float*) alloca(H_len*sizeof(float));

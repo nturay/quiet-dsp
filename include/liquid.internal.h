@@ -32,11 +32,11 @@
 #ifndef __LIQUID_INTERNAL_H__
 #define __LIQUID_INTERNAL_H__
 
-#ifdef __cplusplus
-#define LIQUID_BUILD_CPLUSPLUS
 #ifdef _MSC_VER
-#define _USE_MATH_DEFINES
+#ifndef LIQUID_BUILD_CPLUSPLUS
+#define LIQUID_BUILD_CPLUSPLUS
 #endif
+#define _USE_MATH_DEFINES
 #endif
 
 // Configuration file
@@ -44,7 +44,9 @@
 
 #include "liquid.h"
 
-#ifdef __cplusplus
+#ifdef LIQUID_BUILD_CPLUSPLUS
+#ifndef _LIQUID_COMPLEX_WRAPPERS
+#define _LIQUID_COMPLEX_WRAPPERS
 static inline liquid_float_complex cexpf(liquid_float_complex f) { return std::exp(f); }
 static inline liquid_float_complex conjf(liquid_float_complex f) { return std::conj(f); }
 static inline float crealf(liquid_float_complex f) { return std::real(f); }
@@ -64,6 +66,7 @@ static inline float conjf(float f) { return f; }
 static inline double conj(double d) { return d; }
 
 static const liquid_float_complex _Complex_I(0.0f, 1.0f);
+#endif
 
 #include <cmath>
 #else
@@ -791,7 +794,13 @@ LIQUID_FFT_DEFINE_INTERNAL_API(LIQUID_FFT_MANGLE_FLOAT, float, liquid_float_comp
 // Use fftw library if installed (and not overridden with configuration),
 // otherwise use internal (less efficient) fft library.
 #if HAVE_FFTW3_H && !defined LIQUID_FFTOVERRIDE
+#ifdef LIQUID_BUILD_CPLUSPLUS
+extern "C" {
+#endif
 #   include <fftw3.h>
+#ifdef LIQUID_BUILD_CPLUSPLUS
+}
+#endif
 #   define FFT_PLAN             fftwf_plan
 #   define FFT_CREATE_PLAN      fftwf_plan_dft_1d
 #   define FFT_DESTROY_PLAN     fftwf_destroy_plan

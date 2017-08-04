@@ -208,7 +208,7 @@ SYMSYNC() SYMSYNC(_create)(unsigned int _k,
 //  _m      : symbol delay
 //  _beta   : rolloff factor (0 < beta <= 1)
 //  _M      : number of filters in the bank
-SYMSYNC() SYMSYNC(_create_rnyquist)(liquid_firfilt_type          _type,
+SYMSYNC() SYMSYNC(_create_rnyquist)(int          _type,
                                     unsigned int _k,
                                     unsigned int _m,
                                     float        _beta,
@@ -231,7 +231,7 @@ SYMSYNC() SYMSYNC(_create_rnyquist)(liquid_firfilt_type          _type,
     float *Hf = (float*) alloca(H_len*sizeof(float));
 
     // design square-root Nyquist pulse-shaping filter
-    liquid_firdes_prototype(_type, _k*_M, _m, _beta, 0, Hf);
+    liquid_firdes_prototype((liquid_firfilt_type)_type, _k*_M, _m, _beta, 0, Hf);
 
     // copy coefficients to type-specific array
     TC *H = (TC*) alloca(H_len*sizeof(TC));

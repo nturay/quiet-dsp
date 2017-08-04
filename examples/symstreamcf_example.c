@@ -29,7 +29,7 @@ int main()
     spgramcf periodogram = spgramcf_create_default(nfft);
 
     unsigned int buf_len = 1024;
-    liquid_float_complex buf[buf_len];
+    liquid_float_complex *buf = (liquid_float_complex*) alloca((buf_len)*sizeof(liquid_float_complex));
 
     // create stream generator
     symstreamcf gen = symstreamcf_create_linear(ftype,k,m,beta,ms);
@@ -48,7 +48,7 @@ int main()
     printf("total samples: %u\n", total_samples);
 
     // compute power spectral density output
-    float psd[nfft];
+    float *psd = (float*) alloca((nfft)*sizeof(float));
     spgramcf_get_psd(periodogram, psd);
 
     // destroy objects

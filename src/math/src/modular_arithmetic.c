@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "liquid.h"
+#include "liquid.internal.h"
 
 // determine if number is prime (slow, simple method)
 int liquid_is_prime(unsigned int _n)

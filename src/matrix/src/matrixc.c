@@ -35,11 +35,12 @@
 
 #define T_ABS(X)        cabs(X)
 #define TP_ABS(X)       fabs(X)
+#define T_CONJ(X)       conj(X)
 
 #define MATRIX_PRINT_ELEMENT(X,R,C,r,c)     \
     printf("%7.2f+j%6.2f ",                 \
-        crealf(matrix_access(X,R,C,r,c)),   \
-        cimagf(matrix_access(X,R,C,r,c)));
+        creal(matrix_access(X,R,C,r,c)),   \
+        cimag(matrix_access(X,R,C,r,c)));
 
 #include "matrix.base.c"
 #include "matrix.cgsolve.c"

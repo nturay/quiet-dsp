@@ -64,7 +64,7 @@ FREQMOD() FREQMOD(_create)(float _kf)
     q->sincos_table     = (TC*) malloc( q->sincos_table_len*sizeof(TC) );
     unsigned int i;
     for (i=0; i<q->sincos_table_len; i++) {
-        q->sincos_table[i] = cexpf(_Complex_I*2*M_PI*(float)i / (float)(q->sincos_table_len) );
+        q->sincos_table[i] = cexpf(_Complex_I*(float)(2*M_PI*i) / (float)(q->sincos_table_len) );
     }
 
     // reset modem object

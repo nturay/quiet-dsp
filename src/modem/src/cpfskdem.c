@@ -64,6 +64,11 @@ unsigned int cpfskdem_demodulate_noncoherent(cpfskdem        _q,
                                              liquid_float_complex * _y);
 #endif
 
+enum demod_type {
+    CPFSKDEM_COHERENT=0,    // coherent demodulator
+    CPFSKDEM_NONCOHERENT    // non-coherent demodulator
+};
+
 // cpfskdem
 struct cpfskdem_s {
     // common
@@ -77,10 +82,7 @@ struct cpfskdem_s {
     unsigned int symbol_delay;  // receiver filter delay [symbols]
 
     // demodulator type
-    enum {
-        CPFSKDEM_COHERENT=0,    // coherent demodulator
-        CPFSKDEM_NONCOHERENT    // non-coherent demodulator
-    } demod_type;
+    enum demod_type demod_type;
 
     // demodulation function pointer
 #if 0

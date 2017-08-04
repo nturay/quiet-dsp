@@ -45,7 +45,7 @@ void firdecim_rrrf_test(unsigned int    _M,
     firdecim_rrrf q = firdecim_rrrf_create(_M, _h, _h_len);
 
     // allocate memory for output
-    float y_test[_y_len];
+    float *y_test = (float*) alloca((_y_len)*sizeof(float));
 
     unsigned int i;
     // compute output
@@ -81,7 +81,7 @@ void firdecim_crcf_test(unsigned int    _M,
     firdecim_crcf q = firdecim_crcf_create(_M, _h, _h_len);
 
     // allocate memory for output
-    liquid_float_complex y_test[_y_len];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((_y_len)*sizeof(liquid_float_complex));
 
     unsigned int i;
     // compute output
@@ -118,7 +118,7 @@ void firdecim_cccf_test(unsigned int    _M,
     firdecim_cccf q = firdecim_cccf_create(_M, _h, _h_len);
 
     // allocate memory for output
-    liquid_float_complex y_test[_y_len];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((_y_len)*sizeof(liquid_float_complex));
 
     unsigned int i;
     // compute output

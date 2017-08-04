@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "liquid.internal.h"
+
 // unwrap phase of array (basic)
 void liquid_unwrap_phase(float * _theta,
                          unsigned int _n)

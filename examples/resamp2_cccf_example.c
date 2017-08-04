@@ -14,6 +14,7 @@
 #include <math.h>
 
 #include "liquid.h"
+#include "examples.h"
 
 #define OUTPUT_FILENAME "resamp2_cccf_example.m"
 
@@ -25,20 +26,20 @@ int main() {
     unsigned int i;
 
     // allocate memory for data arrays
-    liquid_float_complex x [num_samples];  // input signal
-    liquid_float_complex y0[num_samples];  //
-    liquid_float_complex y1[num_samples];  //
+    liquid_float_complex *x = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));  // input signal
+    liquid_float_complex *y0 = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));  //
+    liquid_float_complex *y1 = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));  //
 
     // generate the two signals
     iirfilt_crcf lowpass = iirfilt_crcf_create_lowpass(6,0.02);
     for (i=0; i<num_samples; i++) {
         // signal at negative frequency: tone
-        liquid_float_complex x_neg = cexpf(-_Complex_I*2*M_PI*0.059f*i);
+        liquid_float_complex x_neg = cexpf(-_Complex_I*(float)(2*M_PI*0.059f*i));
 
         // signal at positive frequency: filtered noise
         liquid_float_complex v;
         iirfilt_crcf_execute(lowpass, 4*randnf(), &v);
-        liquid_float_complex x_pos = v * cexpf(_Complex_I*2*M_PI*0.073f*i);
+        liquid_float_complex x_pos = v * cexpf(_Complex_I*(float)(2*M_PI*0.073f*i));
 
         // compsite
         x[i] = (x_neg + x_pos) * hamming(i,num_samples);

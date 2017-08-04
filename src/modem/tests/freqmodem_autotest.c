@@ -38,9 +38,9 @@ void freqmodem_test(float _kf)
     freqdem dem = freqdem_create(_kf);  // demodulator
 
     // allocate arrays
-    float         m[num_samples];       // message signal
-    liquid_float_complex r[num_samples];       // received signal (complex baseband)
-    float         y[num_samples];       // demodulator output
+    float         *m = (float*) alloca((num_samples)*sizeof(float));       // message signal
+    liquid_float_complex *r = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));       // received signal (complex baseband)
+    float         *y = (float*) alloca((num_samples)*sizeof(float));       // demodulator output
 
     // generate message signal (sum of sines)
     for (i=0; i<num_samples; i++) {

@@ -38,13 +38,13 @@ void autotest_resamp2_analysis()
     unsigned int i;
 
     // allocate memory for data arrays
-    liquid_float_complex x[2*n+2*m+1]; // input signal (with delay)
-    liquid_float_complex y0[n];        // low-pass output
-    liquid_float_complex y1[n];        // high-pass output
+    liquid_float_complex *x = (liquid_float_complex*) alloca((2*n+2*m+1)*sizeof(liquid_float_complex)); // input signal (with delay)
+    liquid_float_complex *y0 = (liquid_float_complex*) alloca((n)*sizeof(liquid_float_complex));        // low-pass output
+    liquid_float_complex *y1 = (liquid_float_complex*) alloca((n)*sizeof(liquid_float_complex));        // high-pass output
 
     // generate the baseband signal
     for (i=0; i<2*n+2*m+1; i++)
-        x[i] = i < 2*n ? cexpf(_Complex_I*f0*i) + cexpf(_Complex_I*(M_PI+f1)*i) : 0.0f;
+        x[i] = i < 2*n ? cexpf(_Complex_I*f0*(float)(i)) + cexpf(_Complex_I*(float)(M_PI+f1)*(float)i) : 0.0f;
 
     // create/print the half-band resampler, with a specified
     // stopband attenuation level
@@ -114,14 +114,14 @@ void autotest_resamp2_synthesis()
     unsigned int i;
 
     // allocate memory for data arrays
-    liquid_float_complex x0[n+2*m+1];  // input signal (with delay)
-    liquid_float_complex x1[n+2*m+1];  // input signal (with delay)
-    liquid_float_complex y[2*n];       // synthesized output
+    liquid_float_complex *x0 = (liquid_float_complex*) alloca((n+2*m+1)*sizeof(liquid_float_complex));  // input signal (with delay)
+    liquid_float_complex *x1 = (liquid_float_complex*) alloca((n+2*m+1)*sizeof(liquid_float_complex));  // input signal (with delay)
+    liquid_float_complex *y = (liquid_float_complex*) alloca((2*n)*sizeof(liquid_float_complex));       // synthesized output
 
     // generate the baseband signals
     for (i=0; i<n+2*m+1; i++) {
-        x0[i] = i < 2*n ? cexpf(_Complex_I*f0*i) : 0.0f;
-        x1[i] = i < 2*n ? cexpf(_Complex_I*f1*i) : 0.0f;
+        x0[i] = i < 2*n ? cexpf(_Complex_I*f0*(float)i) : 0.0f;
+        x1[i] = i < 2*n ? cexpf(_Complex_I*f1*(float)i) : 0.0f;
     }
 
     // create/print the half-band resampler, with a specified

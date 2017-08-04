@@ -40,8 +40,8 @@ void nco_crcf_pll_test(int          _type,
                        float        _tol)
 {
     // objects
-    nco_crcf nco_tx = nco_crcf_create(_type);
-    nco_crcf nco_rx = nco_crcf_create(_type);
+    nco_crcf nco_tx = nco_crcf_create((liquid_ncotype)_type);
+    nco_crcf nco_rx = nco_crcf_create((liquid_ncotype)_type);
 
     // initialize objects
     nco_crcf_set_phase(nco_tx, _phase_offset);

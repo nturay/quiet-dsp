@@ -148,10 +148,11 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
         # No extra flags needed
     endif ()
     set(_EXTRA_C_FLAGS "${_EXTRA_C_FLAGS} -ffast-math")
+    set(CMAKE_CXX_FLAGS "-DLIQUID_BUILD_CPLUSPLUS -Werror=vla")
 endif ()
 
 if (MSVC)
-    set(_EXTRA_C_FLAGS "/wd4003")
+    set(_EXTRA_C_FLAGS "/wd4003 /DLIQUID_BUILD_CPLUSPLUS")
 endif (MSVC)
 
 #
@@ -985,7 +986,7 @@ if (LIQUID_BUILD_STATIC)
         target_link_libraries(liquid-static fftw3f)
     endif ()
     set_property(TARGET liquid-static PROPERTY OUTPUT_NAME "liquid")
-    set_property(TARGET liquid-static PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS} -Werror=vla")
+    set_property(TARGET liquid-static PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS}")
 
     if (NOT LIQUID_LIBRARY)
         set(LIQUID_LIBRARY liquid-static)
@@ -1041,6 +1042,8 @@ set(autotest_SOURCES
     ${autotest_ALL_SOURCES}
     ${autotest_EXTRA_SOURCES}
     )
+
+set_source_files_properties(${autotest_SOURCES} PROPERTIES LANGUAGE CXX)
 
 add_custom_target(autotest_include
                   COMMAND "${CMAKE_CURRENT_BINARY_DIR}/autoscript" "/" "autotest" ${autotest_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"

@@ -9,6 +9,7 @@
 #include <math.h>
 
 #include "liquid.h"
+#include "examples.h"
 
 #define OUTPUT_FILENAME "spgramcf_example.m"
 
@@ -45,7 +46,7 @@ int main() {
         firhilbf_r2c_execute(ht, v, &y);
 
         // scale and add noise
-        y = 0.5f*y + nstd * ( randnf() + _Complex_I*randnf() ) * M_SQRT1_2;
+        y = 0.5f*y + nstd * ( randnf() + _Complex_I*randnf() ) * (float)M_SQRT1_2;
 
         // push resulting sample through periodogram
         spgramcf_push(q, y);

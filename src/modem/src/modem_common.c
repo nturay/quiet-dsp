@@ -464,8 +464,8 @@ void MODEM(_demodulate_soft_table)(MODEM() _q,
     // set and initialize minimum bit values
     unsigned int i;
     unsigned int k;
-    T dmin_0[bps];
-    T dmin_1[bps];
+    T *dmin_0 = (T*) alloca(bps*sizeof(T));
+    T *dmin_1 = (T*) alloca(bps*sizeof(T));
     for (k=0; k<bps; k++) {
         dmin_0[k] = 8.0f;
         dmin_1[k] = 8.0f;
@@ -632,7 +632,7 @@ void MODEM(_demodsoft_gentab)(MODEM()      _q,
     // generate constellation
     // TODO : enforce full constellation for modulation
     unsigned int M = _q->M;  // constellation size
-    TC c[M];         // constellation
+    TC *c = (TC*) alloca((M)*sizeof(TC));         // constellation
     for (i=0; i<M; i++)
         modem_modulate(_q, i, &c[i]);
 

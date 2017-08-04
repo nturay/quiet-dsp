@@ -35,6 +35,7 @@
 
 #define T_ABS(X)        fabsf(X)
 #define TP_ABS(X)       fabsf(X)
+#define T_CONJ(X)       conjf(X)
 
 #define MATRIX_PRINT_ELEMENT(X,R,C,r,c) \
     printf("%12.7f", matrix_access(X,R,C,r,c));

@@ -30,8 +30,37 @@
 #define __LIQUID_AUTOTEST_H__
 
 #include <stdio.h>
-#include <math.h>
 #include <inttypes.h>
+#include "liquid.h"
+
+#ifdef LIQUID_BUILD_CPLUSPLUS
+#ifndef _LIQUID_COMPLEX_WRAPPERS
+#define _LIQUID_COMPLEX_WRAPPERS
+static inline liquid_float_complex cexpf(liquid_float_complex f) { return std::exp(f); }
+static inline liquid_float_complex conjf(liquid_float_complex f) { return std::conj(f); }
+static inline float crealf(liquid_float_complex f) { return std::real(f); }
+static inline float cimagf(liquid_float_complex f) { return std::imag(f); }
+static inline float cabsf(liquid_float_complex f) { return std::abs(f); }
+static inline liquid_float_complex ccosf(liquid_float_complex f) { return std::cos(f); }
+static inline liquid_float_complex csinf(liquid_float_complex f) { return std::sin(f); }
+static inline liquid_float_complex csqrtf(liquid_float_complex f) { return std::sqrt(f); }
+static inline float cargf(liquid_float_complex f) { return std::arg(f); }
+
+static inline liquid_double_complex conj(liquid_double_complex d) { return std::conj(d); }
+static inline double creal(liquid_double_complex d) { return std::real(d); }
+static inline double cimag(liquid_double_complex d) { return std::imag(d); }
+static inline double cabs(liquid_double_complex d) { return std::abs(d); }
+
+static inline float conjf(float f) { return f; }
+static inline double conj(double d) { return d; }
+
+static const liquid_float_complex _Complex_I(0.0f, 1.0f);
+#endif
+
+#include <cmath>
+#else
+#include <math.h>
+#endif
 
 // total number of checks invoked
 extern unsigned long int liquid_autotest_num_checks;
@@ -168,10 +197,10 @@ void liquid_autotest_print_array(unsigned char * _x,
 // CONTEND_DELTA
 #define TEST_DELTA(F,L,EX,X,EY,Y,ED,D)                              \
 {                                                                   \
-    if (fabs((X)-(Y))>(D))                                          \
+    if (cabsf((X)-(Y))>(D))                                         \
     {                                                               \
         liquid_autotest_failed_expr(F,L,"abs(" #X "-" #Y ")",       \
-                                    fabs(X-Y),"<",ED,D);            \
+                                    cabsf(X-Y),"<",ED,D);           \
     } else {                                                        \
         liquid_autotest_passed();                                   \
     }                                                               \

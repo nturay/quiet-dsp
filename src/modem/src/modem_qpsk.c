@@ -55,8 +55,8 @@ void MODEM(_modulate_qpsk)(MODEM()      _q,
                            TC *         _y)
 {
     // compute output sample directly from input
-    *_y  = (_sym_in & 0x01 ? -M_SQRT1_2 : M_SQRT1_2) +
-           (_sym_in & 0x02 ? -M_SQRT1_2 : M_SQRT1_2)*_Complex_I;
+    *_y  = (_sym_in & 0x01 ? (T)-M_SQRT1_2 : (T)M_SQRT1_2) +
+           (_sym_in & 0x02 ? (T)-M_SQRT1_2 : (T)M_SQRT1_2)*_Complex_I;
 }
 
 // demodulate QPSK

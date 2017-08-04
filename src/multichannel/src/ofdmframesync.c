@@ -41,6 +41,14 @@
 
 #define OFDMFRAMESYNC_ENABLE_SQUELCH    0
 
+enum state {
+    OFDMFRAMESYNC_STATE_SEEKPLCP=0,   // seek initial PLCP
+    OFDMFRAMESYNC_STATE_PLCPSHORT0,   // seek first PLCP short sequence
+    OFDMFRAMESYNC_STATE_PLCPSHORT1,   // seek second PLCP short sequence
+    OFDMFRAMESYNC_STATE_PLCPLONG,     // seek PLCP long sequence
+    OFDMFRAMESYNC_STATE_RXSYMBOLS     // receive payload symbols
+};
+
 struct ofdmframesync_s {
     unsigned int M;         // number of subcarriers
     unsigned int M2;        // number of subcarriers (divided by 2)
@@ -80,13 +88,7 @@ struct ofdmframesync_s {
     liquid_float_complex * R;      // 
 
     // receiver state
-    enum {
-        OFDMFRAMESYNC_STATE_SEEKPLCP=0,   // seek initial PLCP
-        OFDMFRAMESYNC_STATE_PLCPSHORT0,   // seek first PLCP short sequence
-        OFDMFRAMESYNC_STATE_PLCPSHORT1,   // seek second PLCP short sequence
-        OFDMFRAMESYNC_STATE_PLCPLONG,     // seek PLCP long sequence
-        OFDMFRAMESYNC_STATE_RXSYMBOLS     // receive payload symbols
-    } state;
+    enum state state;
 
     // synchronizer objects
     nco_crcf nco_rx;        // numerically-controlled oscillator
@@ -921,11 +923,11 @@ void ofdmframesync_estimate_eqgain_poly(ofdmframesync _q,
     unsigned int N = _q->M_pilot + _q->M_data;
     if (_order > N-1) _order = N-1;
     if (_order > 10)  _order = 10;
-    float x_freq[N];
-    float y_abs[N];
-    float y_arg[N];
-    float p_abs[_order+1];
-    float p_arg[_order+1];
+    float *x_freq = (float*) alloca((N)*sizeof(float));
+    float *y_abs = (float*) alloca((N)*sizeof(float));
+    float *y_arg = (float*) alloca((N)*sizeof(float));
+    float *p_abs = (float*) alloca((_order+1)*sizeof(float));
+    float *p_arg = (float*) alloca((_order+1)*sizeof(float));
 
     unsigned int n=0;
     unsigned int k;
@@ -999,8 +1001,8 @@ void ofdmframesync_rxsymbol(ofdmframesync _q)
         _q->X[i] *= _q->R[i];
 
     // polynomial curve-fit
-    float x_phase[_q->M_pilot];
-    float y_phase[_q->M_pilot];
+    float *x_phase = (float*) alloca((_q->M_pilot)*sizeof(float));
+    float *y_phase = (float*) alloca((_q->M_pilot)*sizeof(float));
     float p_phase[2];
 
     unsigned int n=0;

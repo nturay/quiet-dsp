@@ -27,12 +27,13 @@
 
 
 #include "liquid.h"
+#include "autotest/autotest.h"
 
 liquid_float_complex fft_test_x2[] = {
-   -0.442695266914 +  -1.176601139920*_Complex_I,
-    0.164300702210 +   0.941269951205*_Complex_I};
+   -0.442695266914f +  -1.176601139920f*_Complex_I,
+    0.164300702210f +   0.941269951205f*_Complex_I};
 
 liquid_float_complex fft_test_y2[] = {
-   -0.278394564704 +  -0.235331188715*_Complex_I,
-   -0.606995969123 +  -2.117871091124*_Complex_I};
+   -0.278394564704f +  -0.235331188715f*_Complex_I,
+   -0.606995969123f +  -2.117871091124f*_Complex_I};
 

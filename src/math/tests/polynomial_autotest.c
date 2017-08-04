@@ -123,9 +123,9 @@ void autotest_polyf_expandroots_11()
     float c[12];
     float c_test[12] = {39916800,
                         120543840,
-                        150917976,
-                        105258076,
-                        45995730,
+                        (float)150917976,
+                        (float)105258076,
+                        (float)45995730,
                         13339535,
                         2637558,
                         357423,
@@ -366,10 +366,10 @@ void xautotest_polycf_findroots_rand()
     unsigned int n=5;
     float tol=1e-4f;
 
-    liquid_float_complex p[n];
-    liquid_float_complex roots[n-1];
+    liquid_float_complex *p = (liquid_float_complex*) alloca((n)*sizeof(liquid_float_complex));
+    liquid_float_complex *roots = (liquid_float_complex*) alloca((n-1)*sizeof(liquid_float_complex));
 
-    liquid_float_complex p_hat[n];
+    liquid_float_complex *p_hat = (liquid_float_complex*) alloca((n)*sizeof(liquid_float_complex));
 
     unsigned int i;
     for (i=0; i<n; i++)
@@ -377,7 +377,7 @@ void xautotest_polycf_findroots_rand()
 
     polycf_findroots(p,n,roots);
 
-    liquid_float_complex roots_hat[n-1];
+    liquid_float_complex *roots_hat = (liquid_float_complex*) alloca((n-1)*sizeof(liquid_float_complex));
     // convert form...
     for (i=0; i<n-1; i++)
         roots_hat[i] = -roots[i];

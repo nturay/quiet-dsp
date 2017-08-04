@@ -72,7 +72,7 @@ void ofdmframesync_acquire_test(unsigned int _num_subcarriers,
     float dphi = 1.0f / (float)M;       // carrier frequency offset
 
     // subcarrier allocation (initialize to default)
-    unsigned char p[M];
+    unsigned char *p = (unsigned char*) alloca((M)*sizeof(unsigned char));
     ofdmframe_init_default_sctype(M, p);
 
     // derived values
@@ -82,12 +82,12 @@ void ofdmframesync_acquire_test(unsigned int _num_subcarriers,
     ofdmframegen fg = ofdmframegen_create(M, cp_len, taper_len, p);
     //ofdmframegen_print(fg);
 
-    liquid_float_complex X[M];         // original data sequence
-    liquid_float_complex X_test[M];    // recovered data sequence
+    liquid_float_complex *X = (liquid_float_complex*) alloca((M)*sizeof(liquid_float_complex));         // original data sequence
+    liquid_float_complex *X_test = (liquid_float_complex*) alloca((M)*sizeof(liquid_float_complex));    // recovered data sequence
     ofdmframesync fs = ofdmframesync_create(M,cp_len,taper_len,p,ofdmframesync_autotest_callback,(void*)X_test);
 
     unsigned int i;
-    liquid_float_complex y[num_samples];   // frame samples
+    liquid_float_complex *y = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));   // frame samples
 
     // assemble full frame
     unsigned int n=0;
@@ -106,7 +106,7 @@ void ofdmframesync_acquire_test(unsigned int _num_subcarriers,
 
     // generate data symbol (random)
     for (i=0; i<M; i++) {
-        X[i]      = cexpf(_Complex_I*2*M_PI*randf());
+        X[i]      = cexpf(_Complex_I*(float)(2*M_PI)*randf());
         X_test[i] = 0.0f;
     }
 
@@ -119,7 +119,7 @@ void ofdmframesync_acquire_test(unsigned int _num_subcarriers,
 
     // add carrier offset
     for (i=0; i<num_samples; i++)
-        y[i] *= cexpf(_Complex_I*dphi*i);
+        y[i] *= cexpf(_Complex_I*dphi*(float)i);
 
     // run receiver
     ofdmframesync_execute(fs,y,num_samples);

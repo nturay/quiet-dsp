@@ -137,7 +137,7 @@ FIRFILT() FIRFILT(_create_kaiser)(unsigned int _n,
 //  _m      : filter delay [symbols], _m > 0
 //  _beta   : rolloff factor, 0 < beta <= 1
 //  _mu     : fractional sample offset,-0.5 < _mu < 0.5
-FIRFILT() FIRFILT(_create_rnyquist)(liquid_firfilt_type          _type,
+FIRFILT() FIRFILT(_create_rnyquist)(int          _type,
                                     unsigned int _k,
                                     unsigned int _m,
                                     float        _beta,
@@ -158,7 +158,7 @@ FIRFILT() FIRFILT(_create_rnyquist)(liquid_firfilt_type          _type,
     // generate square-root Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
     float *hf = (float*) alloca(h_len*sizeof(float));
-    liquid_firdes_prototype(_type,_k,_m,_beta,_mu,hf);
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_k,_m,_beta,_mu,hf);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;

@@ -43,7 +43,7 @@ void firfilt_rrrf_test(float *      _h,
     firfilt_rrrf q = firfilt_rrrf_create(_h, _h_len);
 
     // allocate memory for output
-    float y_test[_y_len];
+    float *y_test = (float*) alloca((_y_len)*sizeof(float));
 
     unsigned int i;
     // compute output
@@ -78,7 +78,7 @@ void firfilt_crcf_test(float *         _h,
     firfilt_crcf q = firfilt_crcf_create(_h, _h_len);
 
     // allocate memory for output
-    liquid_float_complex y_test[_y_len];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((_y_len)*sizeof(liquid_float_complex));
 
     unsigned int i;
     // compute output
@@ -114,7 +114,7 @@ void firfilt_cccf_test(liquid_float_complex * _h,
     firfilt_cccf q = firfilt_cccf_create(_h, _h_len);
 
     // allocate memory for output
-    liquid_float_complex y_test[_y_len];
+    liquid_float_complex *y_test = (liquid_float_complex*) alloca((_y_len)*sizeof(liquid_float_complex));
 
     unsigned int i;
     // compute output

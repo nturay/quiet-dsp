@@ -33,7 +33,13 @@
 #define VERBOSE_FEC_CONV_PUNCTURED    0
 
 #if LIBFEC_ENABLED
+#ifdef LIQUID_BUILD_CPLUSPLUS
+extern "C" {
+#endif
 #include "fec.h"
+#ifdef LIQUID_BUILD_CPLUSPLUS
+}
+#endif
 
 fec fec_conv_punctured_create(fec_scheme _fs)
 {

@@ -38,7 +38,7 @@
 FFT(plan) FFT(_create_plan_r2r_1d)(unsigned int _nfft,
                                    T *          _x,
                                    T *          _y,
-                                   liquid_fft_type          _type,
+                                   int          _type,
                                    int          _flags)
 {
     // allocate plan and initialize all internal arrays to NULL
@@ -47,7 +47,7 @@ FFT(plan) FFT(_create_plan_r2r_1d)(unsigned int _nfft,
     q->nfft   = _nfft;
     q->xr     = _x;
     q->yr     = _y;
-    q->type   = _type;
+    q->type   = (liquid_fft_type)_type;
     q->flags  = _flags;
 
     // TODO : use separate 'method' for real-to-real types

@@ -36,7 +36,8 @@ void fft_test(liquid_float_complex * _x,
 
     unsigned int i;
 
-    liquid_float_complex y[_n], z[_n];
+    liquid_float_complex *y = (liquid_float_complex*) alloca((_n)*sizeof(liquid_float_complex));
+    liquid_float_complex *z = (liquid_float_complex*) alloca((_n)*sizeof(liquid_float_complex));
 
     // compute FFT
     fftplan pf = fft_create_plan(_n, _x, y, LIQUID_FFT_FORWARD, _method);

@@ -36,18 +36,18 @@ void autotest_dotprod_crcf_rand01()
     };
 
     liquid_float_complex x[16] = {
-      1.3164e+00+  5.4161e-01*_Complex_I,   1.8295e-01+ -9.0284e-02*_Complex_I, 
-      1.3487e+00+ -1.8148e+00*_Complex_I,  -7.4696e-01+ -4.1792e-01*_Complex_I, 
-     -9.0551e-01+ -4.4294e-01*_Complex_I,   6.0591e-01+ -1.5383e+00*_Complex_I, 
-     -7.5393e-01+ -3.5691e-01*_Complex_I,  -4.5733e-01+  1.1926e-01*_Complex_I, 
-     -1.4744e-01+ -4.7676e-02*_Complex_I,  -1.2422e+00+ -2.0213e+00*_Complex_I, 
-      3.3208e-02+ -1.3756e+00*_Complex_I,  -4.8573e-01+  1.0977e+00*_Complex_I, 
-      1.5053e+00+  2.1141e-01*_Complex_I,  -8.4062e-01+ -1.0211e+00*_Complex_I, 
-     -1.3932e+00+ -4.8491e-01*_Complex_I,  -1.4234e+00+  2.0333e-01*_Complex_I
+      1.3164e+00f+  5.4161e-01f*_Complex_I,   1.8295e-01f+ -9.0284e-02f*_Complex_I, 
+      1.3487e+00f+ -1.8148e+00f*_Complex_I,  -7.4696e-01f+ -4.1792e-01f*_Complex_I, 
+     -9.0551e-01f+ -4.4294e-01f*_Complex_I,   6.0591e-01f+ -1.5383e+00f*_Complex_I, 
+     -7.5393e-01f+ -3.5691e-01f*_Complex_I,  -4.5733e-01f+  1.1926e-01f*_Complex_I, 
+     -1.4744e-01f+ -4.7676e-02f*_Complex_I,  -1.2422e+00f+ -2.0213e+00f*_Complex_I, 
+      3.3208e-02f+ -1.3756e+00f*_Complex_I,  -4.8573e-01f+  1.0977e+00f*_Complex_I, 
+      1.5053e+00f+  2.1141e-01f*_Complex_I,  -8.4062e-01f+ -1.0211e+00f*_Complex_I, 
+     -1.3932e+00f+ -4.8491e-01f*_Complex_I,  -1.4234e+00f+  2.0333e-01f*_Complex_I
     };
 
     liquid_float_complex y;
-    liquid_float_complex test = -3.35346556487224 + 11.78023318618137*_Complex_I;
+    liquid_float_complex test = -3.35346556487224f + 11.78023318618137f*_Complex_I;
     float tol = 1e-3f;
 
     dotprod_crcf_run(h,x,16,&y);
@@ -81,18 +81,18 @@ void autotest_dotprod_crcf_rand02()
     };
 
     liquid_float_complex x[16] = {
-     -8.3558e-01+  3.0504e-01*_Complex_I,  -6.3004e-01+  2.4680e-01*_Complex_I, 
-      9.6908e-01+  1.2978e+00*_Complex_I,  -2.0587e+00+  9.5385e-01*_Complex_I, 
-      2.5692e-01+ -1.7314e+00*_Complex_I,  -1.2237e+00+ -6.2139e-02*_Complex_I, 
-      5.0300e-02+ -9.2092e-01*_Complex_I,  -1.8816e-01+  7.0746e-02*_Complex_I, 
-     -2.4177e+00+  8.3177e-01*_Complex_I,   1.6871e-01+ -8.5129e-02*_Complex_I, 
-      6.5203e-01+  2.0739e-02*_Complex_I,  -1.2331e-01+ -9.7920e-01*_Complex_I, 
-      8.2352e-01+  9.1093e-01*_Complex_I,   1.5161e+00+ -9.1865e-01*_Complex_I, 
-     -2.0892e+00+  2.7759e-02*_Complex_I,  -2.5188e-01+  2.5568e-01*_Complex_I
+     -8.3558e-01f+  3.0504e-01f*_Complex_I,  -6.3004e-01f+  2.4680e-01f*_Complex_I, 
+      9.6908e-01f+  1.2978e+00f*_Complex_I,  -2.0587e+00f+  9.5385e-01f*_Complex_I, 
+      2.5692e-01f+ -1.7314e+00f*_Complex_I,  -1.2237e+00f+ -6.2139e-02f*_Complex_I, 
+      5.0300e-02f+ -9.2092e-01f*_Complex_I,  -1.8816e-01f+  7.0746e-02f*_Complex_I, 
+     -2.4177e+00f+  8.3177e-01f*_Complex_I,   1.6871e-01f+ -8.5129e-02f*_Complex_I, 
+      6.5203e-01f+  2.0739e-02f*_Complex_I,  -1.2331e-01f+ -9.7920e-01f*_Complex_I, 
+      8.2352e-01f+  9.1093e-01f*_Complex_I,   1.5161e+00f+ -9.1865e-01f*_Complex_I, 
+     -2.0892e+00f+  2.7759e-02f*_Complex_I,  -2.5188e-01f+  2.5568e-01f*_Complex_I
     };
 
     liquid_float_complex y;
-    liquid_float_complex test = 2.11053363855085 - 2.04167493441477*_Complex_I;
+    liquid_float_complex test = 2.11053363855085f - 2.04167493441477f*_Complex_I;
     float tol = 1e-3f;
 
     dotprod_crcf_run(h,x,16,&y);
@@ -123,8 +123,8 @@ void autotest_dotprod_crcf_rand02()
 void runtest_dotprod_crcf(unsigned int _n)
 {
     float tol = 1e-4;
-    float h[_n];
-    liquid_float_complex x[_n];
+    float *h = (float*) alloca((_n)*sizeof(float));
+    liquid_float_complex *x = (liquid_float_complex*) alloca((_n)*sizeof(liquid_float_complex));
 
     // generate random coefficients
     unsigned int i;

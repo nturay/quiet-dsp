@@ -34,7 +34,13 @@
 #define VERBOSE_FEC_RS    0
 
 #if LIBFEC_ENABLED
+#ifdef LIQUID_BUILD_CPLUSPLUS
+extern "C" {
+#endif
 #include "fec.h"
+#ifdef LIQUID_BUILD_CPLUSPLUS
+}
+#endif
 
 fec fec_rs_create(fec_scheme _fs)
 {

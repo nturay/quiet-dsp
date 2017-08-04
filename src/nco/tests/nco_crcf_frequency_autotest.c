@@ -46,7 +46,7 @@ void nco_crcf_frequency_test(int             _type,
                              float           _tol)
 {
     // create object
-    nco_crcf nco = nco_crcf_create(_type);
+    nco_crcf nco = nco_crcf_create((liquid_ncotype)_type);
 
     // set phase and frequency
     nco_crcf_set_phase(nco, _phase);

@@ -41,7 +41,7 @@ void MATRIX(_inv)(T * _X, unsigned int _XR, unsigned int _XC)
     //  xn1 xn2 ... xnn
 
     // allocate temporary memory
-    T x[2*_XR*_XC];
+    T *x = (T*) alloca((2*_XR*_XC)*sizeof(T));
     unsigned int xr = _XR;
     unsigned int xc = _XC*2;
 
@@ -116,7 +116,7 @@ void MATRIX(_gjelim)(T * _X, unsigned int _XR, unsigned int _XC)
     // scale by diagonal
     T g;
     for (r=0; r<_XR; r++) {
-        g = 1 / matrix_access(_X,_XR,_XC,r,r);
+        g = (T)1.0 / matrix_access(_X,_XR,_XC,r,r);
         for (c=0; c<_XC; c++)
             matrix_access(_X,_XR,_XC,r,c) *= g;
     }
@@ -126,7 +126,7 @@ void MATRIX(_gjelim)(T * _X, unsigned int _XR, unsigned int _XC)
 void MATRIX(_pivot)(T * _X, unsigned int _XR, unsigned int _XC, unsigned int _r, unsigned int _c)
 {
     T v = matrix_access(_X,_XR,_XC,_r,_c);
-    if (v==0) {
+    if (v==(T)0.0) {
         fprintf(stderr, "warning: matrix_pivot(), pivoting on zero\n");
         return;
     }

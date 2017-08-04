@@ -121,7 +121,7 @@ FIRINTERP() FIRINTERP(_create_kaiser)(unsigned int _M,
 //  _m      :   filter delay (symbols),  _m > 0
 //  _beta   :   excess bandwidth factor, _beta < 1
 //  _dt     :   fractional sample delay, _dt in (-1, 1)
-FIRINTERP() FIRINTERP(_create_prototype)(liquid_firfilt_type          _type,
+FIRINTERP() FIRINTERP(_create_prototype)(int          _type,
                                          unsigned int _k,
                                          unsigned int _m,
                                          float        _beta,
@@ -145,7 +145,7 @@ FIRINTERP() FIRINTERP(_create_prototype)(liquid_firfilt_type          _type,
     // generate Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
     float *h = (float*) alloca(h_len*sizeof(float));
-    liquid_firdes_prototype(_type,_k,_m,_beta,_dt,h);
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_k,_m,_beta,_dt,h);
 
     // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
