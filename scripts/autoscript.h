@@ -23,6 +23,10 @@
 #ifndef __LIQUID_AUTOSCRIPT_H__
 #define __LIQUID_AUTOSCRIPT_H__
 
+#ifdef _MSC_VER
+static inline void* alloca(size_t s) { return _alloca(s); }
+#endif
+
 typedef struct autoscript_s * autoscript;
 
 // create autoscript generator object
