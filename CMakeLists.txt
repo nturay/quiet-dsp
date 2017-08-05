@@ -1056,6 +1056,7 @@ add_custom_target(autotest_include
                   )
 
 add_executable(autotest EXCLUDE_FROM_ALL ${autotest_SOURCES})
+set_property(TARGET autotest PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS}")
 add_dependencies(autotest autotest_include)
 target_link_libraries(autotest ${LIQUID_LIBRARY})
 
