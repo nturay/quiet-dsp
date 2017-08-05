@@ -116,6 +116,8 @@ CHECK_CPUID("vmx" HAVE_ALTIVEC ${LIQUID_FORCE_PPC_ALTIVEC})
 CHECK_CPUID("neon" HAVE_NEON ${LIQUID_FORCE_ARM_NEON})
 CHECK_CPUID("neon64" HAVE_NEON64 ${LIQUID_FORCE_ARM64_NEON})
 
+set(OS_PATH_SEP "/")
+
 #
 # Build compilation extra flags
 #
@@ -153,6 +155,7 @@ endif ()
 
 if (MSVC)
     set(_EXTRA_C_FLAGS "/wd4003 /DLIQUID_BUILD_CPLUSPLUS")
+    set(OS_PATH_SEP "\\")
 endif (MSVC)
 
 #
@@ -1046,7 +1049,7 @@ set(autotest_SOURCES
 set_source_files_properties(${autotest_SOURCES} PROPERTIES LANGUAGE CXX)
 
 add_custom_target(autotest_include
-                  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/autoscript" "/" "autotest" ${autotest_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
+                  COMMAND "$<TARGET_FILE:autoscript>" "${OS_PATH_SEP}" "autotest" ${autotest_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
                   DEPENDS autoscript
                   BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -1092,7 +1095,7 @@ if (HAVE_SYS_RESOURCE_H)
         )
 
     add_custom_target(benchmark_include
-                      COMMAND "${CMAKE_CURRENT_BINARY_DIR}/autoscript" "/" "benchmark" ${benchmark_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/benchmark_include.h"
+                      COMMAND "$<TARGET_FILE:autoscript>" "${OS_PATH_SEP}" "benchmark" ${benchmark_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/benchmark_include.h"
                       DEPENDS autoscript
                       BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/benchmark_include.h"
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
