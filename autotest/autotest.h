@@ -29,6 +29,13 @@
 #ifndef __LIQUID_AUTOTEST_H__
 #define __LIQUID_AUTOTEST_H__
 
+#ifdef _MSC_VER
+#ifndef LIQUID_BUILD_CPLUSPLUS
+#define LIQUID_BUILD_CPLUSPLUS
+#endif
+#define _USE_MATH_DEFINES
+#endif
+
 #include <stdio.h>
 #include <inttypes.h>
 #include "liquid.h"
