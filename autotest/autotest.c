@@ -275,6 +275,10 @@ int main(int argc, char *argv[])
     if (strcmp(filename,"")!=0)
         export_results(filename);
 
+    if (liquid_autotest_num_failed > 0) {
+        return 1;
+    }
+
     return 0;
 }
 
