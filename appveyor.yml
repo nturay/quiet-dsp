@@ -26,6 +26,7 @@ before_build:
     - cd build
     - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release ..
     - cmake --build . --config Release --target shim
+    - dir Release
 
     - cd %APPVEYOR_BUILD_FOLDER%
 
