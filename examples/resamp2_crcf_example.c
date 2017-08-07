@@ -13,7 +13,6 @@
 #include <math.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 #define OUTPUT_FILENAME "resamp2_crcf_example.m"
 
@@ -30,15 +29,15 @@ int main() {
     unsigned int n = num_samples + 2*m + 1; // adjusted input sequence length
 
     // allocate memory for data arrays
-    liquid_float_complex *x = (liquid_float_complex*) alloca((  n)*sizeof(liquid_float_complex));
-    liquid_float_complex *y = (liquid_float_complex*) alloca((2*n)*sizeof(liquid_float_complex));
-    liquid_float_complex *z = (liquid_float_complex*) alloca((  n)*sizeof(liquid_float_complex));
+    liquid_float_complex x[  n];
+    liquid_float_complex y[2*n];
+    liquid_float_complex z[  n];
 
     // generate the baseband signal (filter pulse)
-    float *h = (float*) alloca((num_samples)*sizeof(float));
+    float h[num_samples];
     liquid_firdes_kaiser(num_samples,bw,60.0f,0.0f,h);
     for (i=0; i<n; i++)
-        x[i] = i < num_samples ? h[i] * cexpf(_Complex_I*(float)(fc*i)) : 0.0f;
+        x[i] = i < num_samples ? h[i] * cexpf(_Complex_I*fc*i) : 0.0f;
 
     // create/print the half-band resampler, with a specified
     // stopband attenuation level

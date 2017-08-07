@@ -16,7 +16,6 @@
 #include <assert.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 void usage()
 {
@@ -72,8 +71,8 @@ int main(int argc, char *argv[])
     qpacketmodem_print(q);
 
     // initialize payload
-    unsigned char *payload_tx = (unsigned char*) alloca((payload_len)*sizeof(unsigned char));
-    unsigned char *payload_rx = (unsigned char*) alloca((payload_len)*sizeof(unsigned char));
+    unsigned char payload_tx[payload_len];
+    unsigned char payload_rx[payload_len];
 
     // initialize payload
     for (i=0; i<payload_len; i++) {
@@ -85,15 +84,15 @@ int main(int argc, char *argv[])
     unsigned int frame_len = qpacketmodem_get_frame_len(q);
 
     // allocate memory for frame samples
-    liquid_float_complex *frame_tx = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));
-    liquid_float_complex *frame_rx = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));
+    liquid_float_complex frame_tx[frame_len];
+    liquid_float_complex frame_rx[frame_len];
 
     // encode frame
     qpacketmodem_encode(q, payload_tx, frame_tx);
 
     // add noise
     for (i=0; i<frame_len; i++)
-        frame_rx[i] = frame_tx[i] + nstd*(randnf() + _Complex_I*randnf())*(float)M_SQRT1_2;
+        frame_rx[i] = frame_tx[i] + nstd*(randnf() + _Complex_I*randnf())*M_SQRT1_2;
 
     // decode frame
     int crc_pass = qpacketmodem_decode(q, frame_rx, payload_rx);

@@ -13,7 +13,6 @@
 #include <assert.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 void usage()
 {
@@ -67,16 +66,16 @@ int main(int argc, char *argv[])
     unsigned int frame_len = qpilotgen_get_frame_len(pg);
 
     // allocate arrays
-    unsigned char *payload_sym_tx = (unsigned char*) alloca((payload_len)*sizeof(unsigned char));  // transmitted payload symbols
-    liquid_float_complex *payload_tx = (liquid_float_complex*) alloca((payload_len)*sizeof(liquid_float_complex));  // transmitted payload samples
-    liquid_float_complex *frame_tx = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));    // transmitted frame samples
-    liquid_float_complex *frame_rx = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));    // received frame samples
-    liquid_float_complex *payload_rx = (liquid_float_complex*) alloca((payload_len)*sizeof(liquid_float_complex));  // received payload samples
-    unsigned char *payload_sym_rx = (unsigned char*) alloca((payload_len)*sizeof(unsigned char));  // received payload symbols
+    unsigned char payload_sym_tx[payload_len];  // transmitted payload symbols
+    liquid_float_complex payload_tx    [payload_len];  // transmitted payload samples
+    liquid_float_complex frame_tx      [frame_len];    // transmitted frame samples
+    liquid_float_complex frame_rx      [frame_len];    // received frame samples
+    liquid_float_complex payload_rx    [payload_len];  // received payload samples
+    unsigned char payload_sym_rx[payload_len];  // received payload symbols
 
     // create modem objects for payload
-    modem mod = modem_create((modulation_scheme)ms);
-    modem dem = modem_create((modulation_scheme)ms);
+    modem mod = modem_create(ms);
+    modem dem = modem_create(ms);
 
     // assemble payload symbols
     for (i=0; i<payload_len; i++) {
@@ -92,8 +91,8 @@ int main(int argc, char *argv[])
 
     // add channel impairments
     for (i=0; i<frame_len; i++) {
-        frame_rx[i]  = frame_tx[i] * cexpf(_Complex_I*dphi*(float)i + _Complex_I*phi);
-        frame_rx[i] += nstd*(randnf() + _Complex_I*randnf())*(float)M_SQRT1_2;
+        frame_rx[i]  = frame_tx[i] * cexpf(_Complex_I*dphi*i + _Complex_I*phi);
+        frame_rx[i] += nstd*(randnf() + _Complex_I*randnf())*M_SQRT1_2;
         frame_rx[i] *= gain;
     }
 

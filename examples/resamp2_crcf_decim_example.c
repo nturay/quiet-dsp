@@ -18,7 +18,6 @@
 #include <math.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 #define OUTPUT_FILENAME "resamp2_crcf_decim_example.m"
 
@@ -53,8 +52,8 @@ int main(int argc, char*argv[])
     unsigned int i;
 
     // allocate arrays
-    liquid_float_complex *x = (liquid_float_complex*) alloca((2*num_samples)*sizeof(liquid_float_complex)); // input array
-    liquid_float_complex *y = (liquid_float_complex*) alloca((  num_samples)*sizeof(liquid_float_complex)); // output array
+    liquid_float_complex x[2*num_samples]; // input array
+    liquid_float_complex y[  num_samples]; // output array
 
     // generate input
     unsigned int w_len = 2*num_samples - 4*m;   // window length
@@ -66,7 +65,7 @@ int main(int argc, char*argv[])
         w_sum += w;
 
         // compute windowed complex sinusoid
-        x[i] = w * cexpf(_Complex_I*(float)(2*M_PI*fc*i));
+        x[i] = w * cexpf(_Complex_I*2*M_PI*fc*i);
     }
 
     // create/print the half-band resampler

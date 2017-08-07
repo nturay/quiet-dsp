@@ -12,7 +12,6 @@
 #include <getopt.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 #define OUTPUT_FILENAME "resamp_crcf_example.m"
 
@@ -87,8 +86,8 @@ int main(int argc, char*argv[])
     unsigned int y_len = (unsigned int) ceilf(1.1 * nx * r) + 4;
 
     // arrays
-    liquid_float_complex *x = (liquid_float_complex*) alloca((nx)*sizeof(liquid_float_complex));
-    liquid_float_complex *y = (liquid_float_complex*) alloca((y_len)*sizeof(liquid_float_complex));
+    liquid_float_complex x[nx];
+    liquid_float_complex y[y_len];
 
     // create resampler
     resamp_crcf q = resamp_crcf_create(r,m,bw,As,npfb);
@@ -100,7 +99,7 @@ int main(int argc, char*argv[])
         float w = i < n ? kaiser(i, n, 10.0f, 0.0f) : 0.0f;
 
         // apply window to complex sinusoid
-        x[i] = cexpf(_Complex_I*(float)(2*M_PI*fc*i)) * w;
+        x[i] = cexpf(_Complex_I*2*M_PI*fc*i) * w;
 
         // accumulate window
         wsum += w;
@@ -137,8 +136,8 @@ int main(int argc, char*argv[])
     // run FFT and ensure that carrier has moved and that image
     // frequencies and distortion have been adequately suppressed
     unsigned int nfft = 1 << liquid_nextpow2(ny);
-    liquid_float_complex *yfft = (liquid_float_complex*) alloca((nfft)*sizeof(liquid_float_complex));   // fft input
-    liquid_float_complex *Yfft = (liquid_float_complex*) alloca((nfft)*sizeof(liquid_float_complex));   // fft output
+    liquid_float_complex yfft[nfft];   // fft input
+    liquid_float_complex Yfft[nfft];   // fft output
     for (i=0; i<nfft; i++)
         yfft[i] = i < ny ? y[i] : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);

@@ -14,7 +14,6 @@
 #include <assert.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 #define OUTPUT_FILENAME "symsync_crcf_kaiser_example.m"
 
@@ -96,17 +95,17 @@ int main(int argc, char*argv[])
 
     // derived values
     unsigned int num_samples = k*num_symbols;
-    liquid_float_complex *x = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));           // interpolated samples
-    liquid_float_complex *y = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));           // received signal (with noise)
-    float         *tau_hat = (float*) alloca((num_samples)*sizeof(float));     // instantaneous timing offset estimate
-    liquid_float_complex *sym_out = (liquid_float_complex*) alloca((num_symbols + 64)*sizeof(liquid_float_complex));// synchronized symbols
+    liquid_float_complex x[num_samples];           // interpolated samples
+    liquid_float_complex y[num_samples];           // received signal (with noise)
+    float         tau_hat[num_samples];     // instantaneous timing offset estimate
+    liquid_float_complex sym_out[num_symbols + 64];// synchronized symbols
 
     // create sequence of Nyquist-interpolated QPSK symbols
     firinterp_crcf interp = firinterp_crcf_create_prototype(ftype,k,m,beta,tau);
     for (i=0; i<num_symbols; i++) {
         // generate random QPSK symbol
-        liquid_float_complex s = ( rand() % 2 ? (float)M_SQRT1_2 : (float)-M_SQRT1_2 ) +
-                          ( rand() % 2 ? (float)M_SQRT1_2 : (float)-M_SQRT1_2 ) * _Complex_I;
+        liquid_float_complex s = ( rand() % 2 ? M_SQRT1_2 : -M_SQRT1_2 ) +
+                          ( rand() % 2 ? M_SQRT1_2 : -M_SQRT1_2 ) * _Complex_I;
 
         // interpolate symbol
         firinterp_crcf_execute(interp, s, &x[i*k]);

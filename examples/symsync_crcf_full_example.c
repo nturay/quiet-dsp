@@ -16,7 +16,6 @@
 #include <assert.h>
 
 #include "liquid.h"
-#include "examples.h"
 
 #define OUTPUT_FILENAME "symsync_crcf_full_example.m"
 
@@ -71,8 +70,8 @@ int main(int argc, char*argv[]) {
                 ftype_tx = LIQUID_FIRFILT_GMSKTX;
                 ftype_rx = LIQUID_FIRFILT_GMSKRX;
             } else {
-                ftype_tx = (liquid_firfilt_type)liquid_getopt_str2firfilt(optarg);
-                ftype_rx = (liquid_firfilt_type)liquid_getopt_str2firfilt(optarg);
+                ftype_tx = liquid_getopt_str2firfilt(optarg);
+                ftype_rx = liquid_getopt_str2firfilt(optarg);
             }
             if (ftype_tx == LIQUID_FIRFILT_UNKNOWN) {
                 fprintf(stderr,"error: %s, unknown filter type '%s'\n", argv[0], optarg);
@@ -135,16 +134,16 @@ int main(int argc, char*argv[]) {
 
     unsigned int num_samples = k*num_symbols;
     unsigned int num_samples_resamp = (unsigned int) ceilf(num_samples*r*1.1f) + 4;
-    liquid_float_complex *s = (liquid_float_complex*) alloca((num_symbols)*sizeof(liquid_float_complex));           // data symbols
-    liquid_float_complex *x = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));           // interpolated samples
-    liquid_float_complex *y = (liquid_float_complex*) alloca((num_samples_resamp)*sizeof(liquid_float_complex));    // resampled data (resamp_crcf)
-    liquid_float_complex *z = (liquid_float_complex*) alloca((k_out*num_symbols + 64)*sizeof(liquid_float_complex));// synchronized samples
-    liquid_float_complex *sym_out = (liquid_float_complex*) alloca((num_symbols + 64)*sizeof(liquid_float_complex));// synchronized symbols
+    liquid_float_complex s[num_symbols];           // data symbols
+    liquid_float_complex x[num_samples];           // interpolated samples
+    liquid_float_complex y[num_samples_resamp];    // resampled data (resamp_crcf)
+    liquid_float_complex z[k_out*num_symbols + 64];// synchronized samples
+    liquid_float_complex sym_out[num_symbols + 64];// synchronized symbols
 
     for (i=0; i<num_symbols; i++) {
         if (random_data) {
             // random signal (QPSK)
-            s[i]  = cexpf(_Complex_I*0.5f*(float)M_PI*((rand() % 4) + 0.5f));
+            s[i]  = cexpf(_Complex_I*0.5f*M_PI*((rand() % 4) + 0.5f));
         } else {
             s[i] = (i%2) ? 1.0f : -1.0f;  // 101010 phasing pattern
         }
