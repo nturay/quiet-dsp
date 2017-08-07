@@ -157,6 +157,8 @@ if (MSVC)
     set(_EXTRA_C_FLAGS "/wd4003 /DLIQUID_BUILD_CPLUSPLUS")
     set(OS_PATH_SEP "\\")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/getopt)
+    set(GETOPT_SOURCES getopt/getopt.c)
+    add_library(GETOPT_LIBRARY STATIC ${GETOPT_SOURCES})
 endif (MSVC)
 
 #
@@ -1060,6 +1062,9 @@ add_executable(autotest EXCLUDE_FROM_ALL ${autotest_SOURCES})
 set_property(TARGET autotest PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS}")
 add_dependencies(autotest autotest_include)
 target_link_libraries(autotest ${LIQUID_LIBRARY})
+if (MSVC)
+    target_link_libraries(autotest ${GETOPT_LIBRARY})
+endif(MSVC)
 
 #
 # Benchmark
