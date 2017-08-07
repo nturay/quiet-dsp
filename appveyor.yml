@@ -14,13 +14,25 @@ environment:
           MSVC_BAT: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat
           MSVC_BAT_ARCH: x86
           GENERATOR: "Visual Studio 14 2015 Win64"
-          APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
 before_build:
     - if DEFINED MSVC_BAT call "%MSVC_BAT%" %MSVC_BAT_ARCH%
+
+    - git clone https://github.com/quiet/libcorrect.git C:\projects\libcorrect
+
+    - cd C:\projects\libcorrect
+
+    - mkdir build
+    - cd build
+    - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release "%SRCPATH%/libcorrect"
+    - cmake --build . --config Release --target shim
+
     - cd %APPVEYOR_BUILD_FOLDER%
 
 build_script:
+    - set "INCLUDE=%INCLUDE%;C:\projects\libcorrect\build\Release"
+    - set "LIBPATH=%LIBPATH%;C:\projects\libcorrect\build\Release"
+
     - mkdir build
     - cd build
     - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release -DLIQUID_BUILD_EXAMPLES=off -DLIQUID_BUILD_SANDBOX=off ..
