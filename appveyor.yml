@@ -24,7 +24,7 @@ before_build:
 
     - mkdir build
     - cd build
-    - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release "%SRCPATH%/libcorrect"
+    - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release ..
     - cmake --build . --config Release --target shim
 
     - cd %APPVEYOR_BUILD_FOLDER%
