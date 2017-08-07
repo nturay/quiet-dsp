@@ -26,13 +26,13 @@ before_build:
     - cd build
     - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release ..
     - cmake --build . --config Release --target shim
-    - dir Release
+    - dir /s
 
     - cd %APPVEYOR_BUILD_FOLDER%
 
 build_script:
-    - set "INCLUDE=%INCLUDE%;C:\projects\libcorrect\build\Release"
-    - set "LIBPATH=%LIBPATH%;C:\projects\libcorrect\build\Release"
+    - set "INCLUDE=%INCLUDE%;C:\projects\libcorrect\build\include\Release"
+    - set "LIBPATH=%LIBPATH%;C:\projects\libcorrect\build\lib\Release"
 
     - mkdir build
     - cd build
