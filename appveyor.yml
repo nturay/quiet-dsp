@@ -31,7 +31,7 @@ before_build:
 
 build_script:
     - set "INCLUDE=%INCLUDE%;C:\projects\libcorrect\build\include"
-    - set "LIBPATH=%LIBPATH%;C:\projects\libcorrect\build\lib\Release"
+    - set "LIB=%LIB%;C:\projects\libcorrect\build\lib\Release"
 
     - mkdir build
     - cd build
