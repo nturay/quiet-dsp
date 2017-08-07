@@ -182,7 +182,7 @@ void autoscript_print(autoscript _q)
         struct package_s * p = &_q->packages[i];
         for (j=0; j<p->num_scripts; j++) {
             // print formatting line, adding appropriate space to align columns
-            printf("    {.id = %4u, .api = &%s_%s,%s .name = \"%s\"}",
+            printf("    {id = %4u, api = &%s_%s,%s name = \"%s\"}",
                 n,
                 _q->type,
                 p->scripts[j].name,
@@ -200,7 +200,7 @@ void autoscript_print(autoscript _q)
     printf("// array of packages\n");
     printf("package_t packages[NUM_PACKAGES] = {\n");
     for (i=0; i<_q->num_packages; i++) {
-        printf("    {.id = %4u, .index = %4u, .num_scripts = %4u, .name = \"%s\"}",
+        printf("    {id = %4u, index = %4u, num_scripts = %4u, name = \"%s\"}",
             i,
             n,
             _q->packages[i].num_scripts,
