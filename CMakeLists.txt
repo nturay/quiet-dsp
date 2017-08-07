@@ -1067,6 +1067,12 @@ if (MSVC)
     target_link_libraries(autotest ${GETOPT_LIBRARY})
 endif(MSVC)
 
+add_custom_target(autotest_run
+                  COMMAND "$<TARGET_FILE:autotest>"
+                  DEPENDS autotest
+                  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+                  )
+
 #
 # Benchmark
 #
