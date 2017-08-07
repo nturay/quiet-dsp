@@ -158,7 +158,8 @@ if (MSVC)
     set(OS_PATH_SEP "\\")
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/getopt)
     set(GETOPT_SOURCES getopt/getopt.c)
-    add_library(GETOPT_LIBRARY STATIC ${GETOPT_SOURCES})
+    add_library(getopt STATIC ${GETOPT_SOURCES})
+    set(GETOPT_LIBRARY getopt)
 endif (MSVC)
 
 #
