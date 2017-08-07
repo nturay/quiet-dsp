@@ -156,6 +156,7 @@ endif ()
 if (MSVC)
     set(_EXTRA_C_FLAGS "/wd4003 /DLIQUID_BUILD_CPLUSPLUS")
     set(OS_PATH_SEP "\\")
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/getopt)
 endif (MSVC)
 
 #
