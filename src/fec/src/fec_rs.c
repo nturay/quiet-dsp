@@ -236,11 +236,11 @@ void fec_rs_setlength(fec _q,
     div_t d;
 
     // compute the total number of blocks necessary: ceil(num_dec_bytes / kk)
-    d = div(_q->num_dec_bytes, _q->kk);
+    d = div((int)_q->num_dec_bytes, (int)_q->kk);
     _q->num_blocks = d.quot + (d.rem==0 ? 0 : 1);
 
     // compute the decoded block length: ceil(num_dec_bytes / num_blocks)
-    d = div(_dec_msg_len, _q->num_blocks);
+    d = div((int)_dec_msg_len, (int)_q->num_blocks);
     _q->dec_block_len = d.quot + (d.rem == 0 ? 0 : 1);
 
     // compute the encoded block length: dec_block_len + nroots
