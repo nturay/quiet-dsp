@@ -121,6 +121,7 @@ int export_results(char * _filename);
 // main function
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     // options
     enum {RUN_ALL,              // run all tests
           RUN_ALL_RANDOM,       // run all tests (random order)
