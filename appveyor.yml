@@ -30,4 +30,4 @@ build_script:
 test_script:
     - cd %APPVEYOR_BUILD_FOLDER%
     - cd build
-    - cmake --build . --config Release --target autotest_run
+    - Release\autotest.exe
