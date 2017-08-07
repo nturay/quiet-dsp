@@ -204,10 +204,10 @@ void liquid_autotest_print_array(unsigned char * _x,
 // CONTEND_DELTA
 #define TEST_DELTA(F,L,EX,X,EY,Y,ED,D)                              \
 {                                                                   \
-    if (cabsf((X)-(Y))>(D))                                         \
+    if (fabs((X)-(Y))>(D))                                          \
     {                                                               \
         liquid_autotest_failed_expr(F,L,"abs(" #X "-" #Y ")",       \
-                                    cabsf(X-Y),"<",ED,D);           \
+                                    fabs(X-Y),"<",ED,D);            \
     } else {                                                        \
         liquid_autotest_passed();                                   \
     }                                                               \

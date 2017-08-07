@@ -134,7 +134,8 @@ void autotest_dotprod_cccf_struct_lengths()
     // n = 32
     dp = dotprod_cccf_create(h,32);
     dotprod_cccf_execute(dp, x, &y);
-    CONTEND_DELTA(y, v32, tol);
+    CONTEND_DELTA(crealf(y), crealf(v32), tol);
+    CONTEND_DELTA(cimagf(y), cimagf(v32), tol);
     dotprod_cccf_destroy(dp);
     if (liquid_autotest_verbose) {
         printf("  dotprod-cccf-32 : %12.8f + j%12.8f (expected %12.8f + j%12.8f)\n",
@@ -144,7 +145,8 @@ void autotest_dotprod_cccf_struct_lengths()
     // n = 33
     dp = dotprod_cccf_create(h,33);
     dotprod_cccf_execute(dp, x, &y);
-    CONTEND_DELTA(y, v33, tol);
+    CONTEND_DELTA(crealf(y), crealf(v33), tol);
+    CONTEND_DELTA(cimagf(y), cimagf(v33), tol);
     dotprod_cccf_destroy(dp);
     if (liquid_autotest_verbose) {
         printf("  dotprod-cccf-33 : %12.8f + j%12.8f (expected %12.8f + j%12.8f)\n",
@@ -154,7 +156,8 @@ void autotest_dotprod_cccf_struct_lengths()
     // n = 34
     dp = dotprod_cccf_create(h,34);
     dotprod_cccf_execute(dp, x, &y);
-    CONTEND_DELTA(y, v34, tol);
+    CONTEND_DELTA(crealf(y), crealf(v34), tol);
+    CONTEND_DELTA(cimagf(y), cimagf(v34), tol);
     dotprod_cccf_destroy(dp);
     if (liquid_autotest_verbose) {
         printf("  dotprod-cccf-34 : %12.8f + j%12.8f (expected %12.8f + j%12.8f)\n",
@@ -164,7 +167,8 @@ void autotest_dotprod_cccf_struct_lengths()
     // n = 35
     dp = dotprod_cccf_create(h,35);
     dotprod_cccf_execute(dp, x, &y);
-    CONTEND_DELTA(y, v35, tol);
+    CONTEND_DELTA(crealf(y), crealf(v35), tol);
+    CONTEND_DELTA(cimagf(y), cimagf(v35), tol);
     dotprod_cccf_destroy(dp);
     if (liquid_autotest_verbose) {
         printf("  dotprod-cccf-35 : %12.8f + j%12.8f (expected %12.8f + j%12.8f)\n",

@@ -280,7 +280,8 @@ void autotest_resamp_crcf_output_block()
     CONTEND_LESS_THAN( max_sidelobe, -As );     // maximum side-lobe should be sufficiently low
 
     // make sure our magic value is still there
-    CONTEND_DELTA(y[y_len - 1], magic, 0.0001f);
+    CONTEND_DELTA(crealf(y[y_len - 1]), crealf(magic), 0.0001f);
+    CONTEND_DELTA(cimagf(y[y_len - 1]), cimagf(magic), 0.0001f);
 
     // did we use the right number of samples?
     CONTEND_EQUALITY(ux, nx);
