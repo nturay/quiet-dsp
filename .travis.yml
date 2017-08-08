@@ -9,6 +9,7 @@ script:
     - mkdir -p "libcorrect"
     - cd libcorrect
     - git clone https://github.com/quiet/libcorrect.git
+    - ls
     - mkdir build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release .. && make && make shim
