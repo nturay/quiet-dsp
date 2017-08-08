@@ -1068,7 +1068,7 @@ if (MSVC)
 endif(MSVC)
 
 add_custom_target(autotest_run
-                  COMMAND "$<TARGET_FILE:autotest>"
+                  COMMAND "$<TARGET_FILE:autotest>" "-q"
                   DEPENDS autotest
                   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
                   )
