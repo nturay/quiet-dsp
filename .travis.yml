@@ -15,6 +15,8 @@ script:
     - cd ../..
     - export CPATH="$( pwd )/libcorrect/build/include"
     - export LIBPATH="$( pwd )/libcorrect/build/lib"
+    - ls "$CPATH"
+    - ls "$LIBPATH"
     - mkdir build
     - cd build
     - cmake -DCMAKE_BUILD_TYPE=Release -DLIQUID_BUILD_EXAMPLES="off" -DLIQUID_BUILD_SANDBOX="off" .. && make liquid-static liquid-shared autotest
