@@ -1,0 +1,21 @@
+language: cpp
+
+os:
+    - linux
+    - osx
+
+script:
+    - set -e
+    - mkdir -p "libcorrect"
+    - cd libcorrect
+    - git clone https://github.com/quiet/libcorrect.git
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release .. && make && make shim
+    - cd ../..
+    - export CPATH="$( pwd )/libcorrect/build/include"
+    - export LIBPATH="$( pwd )/libcorrect/build/lib"
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_BUILD_TYPE=Release -DLIQUID_BUILD_EXAMPLES="off" -DLIQUID_BUILD_SANDBOX="off" .. && make liquid-static liquid-shared autotest
+    - make autotest_run
