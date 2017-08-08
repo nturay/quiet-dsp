@@ -178,7 +178,7 @@ void qdetector_cccf_runtest_linear(unsigned int _sequence_len)
         CONTEND_DELTA( dphi_hat, dphi, 0.01f );
 
         // check carrier phase offset estimate
-        CONTEND_DELTA( phi_hat, phi, 0.1f );
+        CONTEND_DELTA( phi_hat, phi, 0.15f );
     }
 }
 
