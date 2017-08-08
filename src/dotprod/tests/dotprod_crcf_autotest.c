@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 
+#include "<stdlib.h>"
+
 #include "autotest/autotest.h"
 #include "liquid.internal.h"
 
