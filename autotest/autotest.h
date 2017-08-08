@@ -38,6 +38,7 @@
 
 #include <stdio.h>
 #include <inttypes.h>
+#include <stdlib.h>
 #include "liquid.h"
 
 #ifdef LIQUID_BUILD_CPLUSPLUS
