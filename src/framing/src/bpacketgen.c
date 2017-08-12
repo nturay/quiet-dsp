@@ -134,17 +134,17 @@ bpacketgen bpacketgen_create(unsigned int _m,
 bpacketgen bpacketgen_recreate(bpacketgen _q,
                                unsigned int _m,
                                unsigned int _dec_msg_len,
-                               crc_scheme _crc,
-                               fec_scheme _fec0,
-                               fec_scheme _fec1)
+                               int          _crc,
+                               int          _fec0,
+                               int          _fec1)
 {
     // validate input
 
     // re-create internal packetizer object
     _q->dec_msg_len = _dec_msg_len;
-    _q->crc         = _crc;
-    _q->fec0        = _fec0;
-    _q->fec1        = _fec1;
+    _q->crc         = (crc_scheme)_crc;
+    _q->fec0        = (fec_scheme)_fec0;
+    _q->fec1        = (fec_scheme)_fec1;
 
     // derived values
     _q->enc_msg_len = packetizer_compute_enc_msg_len(_q->dec_msg_len,

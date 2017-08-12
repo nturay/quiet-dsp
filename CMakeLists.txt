@@ -47,6 +47,8 @@ option(LIQUID_FORCE_X86_AVX "Force AVX (useful for cross-compiling)" OFF)
 option(LIQUID_FORCE_PPC_ALTIVEC "Force AltiVec (useful for cross-compiling)" OFF)
 option(LIQUID_FORCE_ARM_NEON "Force NEON (useful for cross-compiling)" OFF)
 option(LIQUID_FORCE_ARM64_NEON "Force AArch64 NEON (useful for cross-compiling)" OFF)
+option(LIQUID_CXX "Compile in C++ mode. Always on for Windows/MSVC." OFF)
+
 
 CHECK_INCLUDE_FILE(sys/resource.h HAVE_SYS_RESOURCE_H)
 
@@ -150,20 +152,27 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
         # No extra flags needed
     endif ()
     set(_EXTRA_C_FLAGS "${_EXTRA_C_FLAGS} -ffast-math")
-    set(CMAKE_CXX_FLAGS "-DLIQUID_BUILD_CPLUSPLUS -Werror=vla")
-    if (CMAKE_C_COMPILER_ID MATCHES "Clang")
-        add_definitions("-x c++")
-    endif()
-endif ()
 
-if (MSVC)
+    if (LIQUID_CXX)
+        set(CMAKE_CXX_FLAGS "-DLIQUID_BUILD_CPLUSPLUS -Werror=vla")
+        if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+            add_definitions("-x c++")
+        endif()
+    endif()
+elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
+    set(LIQUID_CXX ON)
+    # for now, simd doesnt work on msvc because of gcc builtin usage
+    set(LIQUID_SIMDOVERRIDE ON)
     set(_EXTRA_C_FLAGS "/wd4003 /DLIQUID_BUILD_CPLUSPLUS")
     set(OS_PATH_SEP "\\")
+
+    # we use our custom getopt here since windows lacks getopt.h
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/getopt)
     set(GETOPT_SOURCES getopt/getopt.c)
     add_library(getopt STATIC ${GETOPT_SOURCES})
     set(GETOPT_LIBRARY getopt)
-endif (MSVC)
+endif ()
+
 
 #
 # MODULE : agc - automatic gain control
@@ -285,7 +294,6 @@ set(dotprod_BENCHMARKS_SOURCES
     src/dotprod/bench/sumsqcf_benchmark.c
     )
 
-if (NOT MSVC)
 if (LIQUID_SIMDOVERRIDE)
     set(dotprod_SOURCES ${dotprod_C_SOURCES})
 elseif (HAVE_SSE41 AND HAVE_SMMINTRIN_H)
@@ -302,9 +310,6 @@ elseif (HAVE_NEON OR HAVE_NEON64)
 else ()
     set(dotprod_SOURCES ${dotprod_C_SOURCES})
 endif ()
-else (NOT MSVC)
-    set(dotprod_SOURCES ${dotprod_C_SOURCES})
-endif (NOT MSVC)
 
 #
 # MODULE : equalization
@@ -960,7 +965,9 @@ set(liquid_SOURCES
     ${utility_SOURCES}
     ${vector_SOURCES}
     )
-set_source_files_properties(${liquid_SOURCES} PROPERTIES LANGUAGE CXX)
+if (LIQUID_CXX)
+    set_source_files_properties(${liquid_SOURCES} PROPERTIES LANGUAGE CXX)
+endif()
 
 if (NOT LIQUID_BUILD_SHARED AND NOT LIQUID_BUILD_STATIC)
     message(FATAL_ERROR "Please, define LIQUID_BUILD_SHARED and/or LIQUID_BUILD_STATIC.")
@@ -1053,7 +1060,9 @@ set(autotest_SOURCES
     ${autotest_EXTRA_SOURCES}
     )
 
-set_source_files_properties(${autotest_SOURCES} PROPERTIES LANGUAGE CXX)
+if (LIQUID_CXX)
+    set_source_files_properties(${autotest_SOURCES} PROPERTIES LANGUAGE CXX)
+endif()
 
 add_custom_target(autotest_include
                   COMMAND "$<TARGET_FILE:autoscript>" "${OS_PATH_SEP}" "autotest" ${autotest_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
@@ -1066,9 +1075,9 @@ add_executable(autotest EXCLUDE_FROM_ALL ${autotest_SOURCES})
 set_property(TARGET autotest PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS}")
 add_dependencies(autotest autotest_include)
 target_link_libraries(autotest ${LIQUID_LIBRARY})
-if (MSVC)
+if (GETOPT_LIBRARY)
     target_link_libraries(autotest ${GETOPT_LIBRARY})
-endif(MSVC)
+endif(GETOPT_LIBRARY)
 
 add_custom_target(autotest_run
                   COMMAND "$<TARGET_FILE:autotest>"
