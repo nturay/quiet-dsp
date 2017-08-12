@@ -27,5 +27,7 @@ script:
     - cd ../..
     - mkdir build
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DLIQUID_BUILD_EXAMPLES="off" -DLIQUID_BUILD_SANDBOX="off" -DLIQUID_CXX=$BUILD_CXX .. && make liquid-static liquid-shared autotest
+    - cmake -DCMAKE_BUILD_TYPE=Release -DLIQUID_BUILD_EXAMPLES="off" -DLIQUID_BUILD_SANDBOX="off" -DLIQUID_CXX=$BUILD_CXX .. && make liquid-static liquid-shared
+    - cat include/config.h
+    - make autotest
     - make autotest_run
