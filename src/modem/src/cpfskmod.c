@@ -26,7 +26,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -220,7 +220,7 @@ unsigned int cpfskmod_get_delay(cpfskmod _q)
 //  _y      :   output sample array [size: _k x 1]
 void cpfskmod_modulate(cpfskmod        _q,
                        unsigned int    _s,
-                       float complex * _y)
+                       liquid_float_complex * _y)
 {
     // run interpolator
     float v = 2.0f*_s - (float)(_q->M) + 1.0f;

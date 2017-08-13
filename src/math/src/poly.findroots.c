@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -71,15 +71,15 @@ void POLY(_findroots_durandkerner)(T *          _p,
     if (_k < 2) {
         fprintf(stderr,"%s_findroots_durandkerner(), order must be greater than 0\n", POLY_NAME);
         exit(1);
-    } else if (_p[_k-1] != 1) {
+    } else if (_p[_k-1] != (T)1.0) {
         fprintf(stderr,"%s_findroots_durandkerner(), _p[_k-1] must be equal to 1\n", POLY_NAME);
         exit(1);
     }
 
     unsigned int i;
     unsigned int num_roots = _k-1;
-    T r0[num_roots];
-    T r1[num_roots];
+    T *r0 = (T*) alloca((num_roots)*sizeof(T));
+    T *r1 = (T*) alloca((num_roots)*sizeof(T));
 
     // find intial magnitude
     float g     = 0.0f;
@@ -91,7 +91,7 @@ void POLY(_findroots_durandkerner)(T *          _p,
     }
 
     // initialize roots
-    T t0 = 0.9f * (1 + gmax) * cexpf(_Complex_I*1.1526f);
+    T t0 = crealf(0.9f * (1 + gmax) * cexpf(_Complex_I*1.1526f));
     T t  = 1.0f;
     for (i=0; i<num_roots; i++) {
         r0[i] = t;
@@ -126,7 +126,7 @@ void POLY(_findroots_durandkerner)(T *          _p,
         T e;
         for (j=0; j<num_roots; j++) {
             e = r0[j] - r1[j];
-            delta += crealf(e*conjf(e));
+            delta += crealf((liquid_float_complex)e*conjf((liquid_float_complex)e));
         }
         delta /= num_roots * gmax;
 #if LIQUID_POLY_FINDROOTS_DEBUG
@@ -152,8 +152,8 @@ void POLY(_findroots_bairstow)(T *          _p,
                                unsigned int _k,
                                TC *         _roots)
 {
-    T p0[_k];       // buffer 0
-    T p1[_k];       // buffer 1
+    T *p0 = (T*) alloca((_k)*sizeof(T));       // buffer 0
+    T *p1 = (T*) alloca((_k)*sizeof(T));       // buffer 1
     T * p   = NULL; // input polynomial
     T * pr  = NULL; // output (reduced) polynomial
 
@@ -173,7 +173,7 @@ void POLY(_findroots_bairstow)(T *          _p,
 
         // initial estimates for u, v
         // TODO : ensure no division by zero
-        if (p[n-1] == 0) {
+        if (p[n-1] == (T)0.0) {
             fprintf(stderr,"warning: poly_findroots_bairstow(), irreducible polynomial");
             p[n-1] = 1e-12;
         }
@@ -184,8 +184,8 @@ void POLY(_findroots_bairstow)(T *          _p,
         POLY(_findroots_bairstow_recursion)(p,n,pr,&u,&v);
 
         // compute complex roots of x^2 + u*x + v
-        TC r0 = 0.5f*(-u + csqrtf(u*u - 4.0*v));
-        TC r1 = 0.5f*(-u - csqrtf(u*u - 4.0*v));
+        TC r0 = 0.5f*((liquid_float_complex)-u + csqrtf((liquid_float_complex)(u*u - (T)4.0*v)));
+        TC r1 = 0.5f*((liquid_float_complex)-u - csqrtf((liquid_float_complex)(u*u - (T)4.0*v)));
 
         // append result to output
         _roots[k++] = r0;
@@ -251,8 +251,8 @@ void POLY(_findroots_bairstow_recursion)(T *          _p,
     T du, dv;
 
     // reduced polynomials
-    T b[_k];
-    T f[_k];
+    T *b = (T*) alloca((_k)*sizeof(T));
+    T *f = (T*) alloca((_k)*sizeof(T));
     b[n] = b[n-1] = 0;
     f[n] = f[n-1] = 0;
 
@@ -273,7 +273,7 @@ void POLY(_findroots_bairstow_recursion)(T *          _p,
         h =  b[0] - v*f[0];
 
         // compute scaling factor
-        q  = 1/(v*g*g + h*(h-u*g));
+        q  = (T)1.0/(v*g*g + h*(h-u*g));
 
         // compute u, v steps
         du = - q*(-h*c   + g*d);

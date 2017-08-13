@@ -55,8 +55,8 @@ void iirfilt_crcf_bench(struct rusage *     _start,
                                                    fc, f0, Ap, As);
 
     // initialize input/output
-    float complex x[4];
-    float complex y[4];
+    liquid_float_complex x[4];
+    liquid_float_complex y[4];
     for (i=0; i<4; i++)
         x[i] = randnf() + _Complex_I*randnf();
 
@@ -106,7 +106,7 @@ void benchmark_irfilt_crcf_dcblock(struct rusage *     _start,
     iirfilt_crcf q = iirfilt_crcf_create_dc_blocker(0.1f);
 
     // initialize input/output
-    float complex x[4];
+    liquid_float_complex x[4];
     for (i=0; i<4; i++)
         x[i] = randnf() + _Complex_I*randnf();
 

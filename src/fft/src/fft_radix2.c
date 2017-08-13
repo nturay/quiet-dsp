@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "liquid.internal.h"
 
 // create FFT plan for regular DFT
@@ -67,7 +67,7 @@ FFT(plan) FFT(_create_plan_radix2)(unsigned int _nfft,
     
     T d = (q->direction == LIQUID_FFT_FORWARD) ? -1.0 : 1.0;
     for (i=0; i<q->nfft; i++)
-        q->data.radix2.twiddle[i] = cexpf(_Complex_I*d*2*M_PI*(T)i / (T)(q->nfft));
+        q->data.radix2.twiddle[i] = cexpf(_Complex_I*d*(T)(2*M_PI*i) / (T)(q->nfft));
 
     return q;
 }

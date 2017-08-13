@@ -157,7 +157,7 @@ void MATRIX(_div)(T * _X,
                   unsigned int _n)
 {
     // compute inv(_Y)
-    T Y_inv[_n*_n];
+    T *Y_inv = (T*) alloca((_n*_n)*sizeof(T));
     memmove(Y_inv, _Y, _n*_n*sizeof(T));
     MATRIX(_inv)(Y_inv,_n,_n);
 
@@ -194,9 +194,9 @@ T MATRIX(_det)(T * _X,
     if (n==2) return MATRIX(_det2x2)(_X,2,2);
 
     // compute L/U decomposition (Doolittle's method)
-    T L[n*n]; // lower
-    T U[n*n]; // upper
-    T P[n*n]; // permutation
+    T *L = (T*) alloca((n*n)*sizeof(T)); // lower
+    T *U = (T*) alloca((n*n)*sizeof(T)); // upper
+    T *P = (T*) alloca((n*n)*sizeof(T)); // permutation
     MATRIX(_ludecomp_doolittle)(_X,n,n,L,U,P);
 
     // evaluate along the diagonal of U
@@ -227,7 +227,7 @@ void MATRIX(_hermitian)(T * _X,
                         unsigned int _XR,
                         unsigned int _XC)
 {
-    T y[_XR*_XC];
+    T *y = (T*) alloca((_XR*_XC)*sizeof(T));
     memmove(y,_X,_XR*_XC*sizeof(T));
 
     unsigned int r,c;
@@ -261,7 +261,7 @@ void MATRIX(_mul_transpose)(T * _x,
 
             for (i=0; i<_n; i++) {
                 T prod =        matrix_access(_x,_m,_n,r,i) *
-                         conjf( matrix_access(_x,_m,_n,c,i) );
+                         T_CONJ( matrix_access(_x,_m,_n,c,i) );
                 sum += prod;
             }
 
@@ -293,7 +293,7 @@ void MATRIX(_transpose_mul)(T * _x,
             sum = 0.0f;
 
             for (i=0; i<_m; i++) {
-                T prod = conjf( matrix_access(_x,_m,_n,i,r) ) *
+                T prod = T_CONJ( matrix_access(_x,_m,_n,i,r) ) *
                                 matrix_access(_x,_m,_n,i,c);
                 sum += prod;
             }

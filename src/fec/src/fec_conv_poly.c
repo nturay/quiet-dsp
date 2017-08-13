@@ -27,7 +27,13 @@
 #include "liquid.internal.h"
 
 #if LIBFEC_ENABLED
-#include <fec.h>
+#ifdef LIQUID_BUILD_CPLUSPLUS
+extern "C" {
+#endif
+#include "fec.h"
+#ifdef LIQUID_BUILD_CPLUSPLUS
+}
+#endif
 
 int fec_conv27_poly[2]  = {V27POLYA,
                            V27POLYB};

@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -555,7 +555,7 @@ float liquid_filter_energy(float *      _h,
     }
 
     // allocate memory for complex phasor
-    float complex expjwt[_h_len];
+    liquid_float_complex *expjwt = (liquid_float_complex*) alloca(_h_len*sizeof(liquid_float_complex));
 
     // initialize accumulators
     float e_total = 0.0f;       // total energy
@@ -571,10 +571,10 @@ float liquid_filter_energy(float *      _h,
         
         // initialize complex phasor
         for (k=0; k<_h_len; k++)
-            expjwt[k] = cexpf(_Complex_I*2*M_PI*f*k);
+            expjwt[k] = cexpf(_Complex_I*(float)(2*M_PI*f*k));
 
         // compute vector dot product
-        float complex v;
+        liquid_float_complex v;
         dotprod_crcf_execute(dp, expjwt, &v);
 
         // accumulate output

@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -68,9 +68,9 @@ void liquid_firdes_fnyquist(liquid_firfilt_type _type,
     // derived values
     unsigned int h_len = 2*_k*_m+1;   // filter length
 
-    float H_prime[h_len];   // frequency response of Nyquist filter (real)
-    float complex H[h_len]; // frequency response of Nyquist filter
-    float complex h[h_len]; // impulse response of Nyquist filter
+    float *H_prime = (float*) alloca(h_len*sizeof(float));   // frequency response of Nyquist filter (real)
+    liquid_float_complex *H = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex)); // frequency response of Nyquist filter
+    liquid_float_complex *h = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex)); // impulse response of Nyquist filter
 
     // compute Nyquist filter frequency response
     switch (_type) {

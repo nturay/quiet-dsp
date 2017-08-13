@@ -123,9 +123,9 @@ void autotest_polyf_expandroots_11()
     float c[12];
     float c_test[12] = {39916800,
                         120543840,
-                        150917976,
-                        105258076,
-                        45995730,
+                        (float)150917976,
+                        (float)105258076,
+                        (float)45995730,
                         13339535,
                         2637558,
                         357423,
@@ -153,9 +153,9 @@ void autotest_polycf_expandroots_4()
 {
     // expand complex roots on conjugate pair
     float theta = 1.7f;
-    float complex a[2] = { -cexpf(_Complex_I*theta), -cexpf(-_Complex_I*theta) };
-    float complex c[3];
-    float complex c_test[3] = { 1, 2*cosf(theta), 1 };
+    liquid_float_complex a[2] = { -cexpf(_Complex_I*theta), -cexpf(-_Complex_I*theta) };
+    liquid_float_complex c[3];
+    liquid_float_complex c_test[3] = { 1, 2*cosf(theta), 1 };
     float tol = 1e-3f;
 
     polycf_expandroots(a,2,c);
@@ -319,8 +319,8 @@ void autotest_polyf_findroots()
     float tol=1e-6f;
 
     float p[6] = {6,11,-33,-33,11,6};
-    float complex roots[5];
-    float complex rtest[5] = {-3,2,-1,0.5,-1./3.};
+    liquid_float_complex roots[5];
+    liquid_float_complex rtest[5] = {-3,2,-1,0.5,-1./3.};
 
     polyf_findroots(p,6,roots);
 
@@ -366,10 +366,10 @@ void xautotest_polycf_findroots_rand()
     unsigned int n=5;
     float tol=1e-4f;
 
-    float complex p[n];
-    float complex roots[n-1];
+    liquid_float_complex *p = (liquid_float_complex*) alloca((n)*sizeof(liquid_float_complex));
+    liquid_float_complex *roots = (liquid_float_complex*) alloca((n-1)*sizeof(liquid_float_complex));
 
-    float complex p_hat[n];
+    liquid_float_complex *p_hat = (liquid_float_complex*) alloca((n)*sizeof(liquid_float_complex));
 
     unsigned int i;
     for (i=0; i<n; i++)
@@ -377,7 +377,7 @@ void xautotest_polycf_findroots_rand()
 
     polycf_findroots(p,n,roots);
 
-    float complex roots_hat[n-1];
+    liquid_float_complex *roots_hat = (liquid_float_complex*) alloca((n-1)*sizeof(liquid_float_complex));
     // convert form...
     for (i=0; i<n-1; i++)
         roots_hat[i] = -roots[i];

@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -62,11 +62,11 @@ int fec_sumproduct(unsigned int    _m,
 
     // internal variables
     unsigned int num_iterations = 0;
-    float Lq[_m*_n];
-    float Lr[_m*_n];
-    float Lc[_n];
-    float LQ[_n];
-    unsigned char parity[_m];
+    float *Lq = (float*) alloca((_m*_n)*sizeof(float));
+    float *Lr = (float*) alloca((_m*_n)*sizeof(float));
+    float *Lc = (float*) alloca(_n*sizeof(float));
+    float *LQ = (float*) alloca(_n*sizeof(float));
+    unsigned char *parity = (unsigned char*) alloca(_m*sizeof(unsigned char));
     unsigned int i;
     unsigned int j;
     int parity_pass;

@@ -114,9 +114,7 @@ void MODEM(_demodulate_arb)(MODEM()        _q,
 MODEM() MODEM(_create_V29)()
 {
     MODEM() q = MODEM(_create_arb)(4);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb_V29,16);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb_V29_T,16);
     return q;
 }
 
@@ -124,9 +122,7 @@ MODEM() MODEM(_create_V29)()
 MODEM() MODEM(_create_arb16opt)()
 {
     MODEM() q = MODEM(_create_arb)(4);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb16opt,16);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb16opt_T,16);
     return q;
 }
 
@@ -134,9 +130,7 @@ MODEM() MODEM(_create_arb16opt)()
 MODEM() MODEM(_create_arb32opt)()
 {
     MODEM() q = MODEM(_create_arb)(5);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb32opt,32);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb32opt_T,32);
     return q;
 }
 
@@ -144,9 +138,7 @@ MODEM() MODEM(_create_arb32opt)()
 MODEM() MODEM(_create_arb64opt)()
 {
     MODEM() q = MODEM(_create_arb)(6);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb64opt,64);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb64opt_T,64);
     return q;
 }
 
@@ -154,9 +146,7 @@ MODEM() MODEM(_create_arb64opt)()
 MODEM() MODEM(_create_arb128opt)()
 {
     MODEM() q = MODEM(_create_arb)(7);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb128opt,128);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb128opt_T,128);
     return q;
 }
 
@@ -164,9 +154,7 @@ MODEM() MODEM(_create_arb128opt)()
 MODEM() MODEM(_create_arb256opt)()
 {
     MODEM() q = MODEM(_create_arb)(8);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb256opt,256);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb256opt_T,256);
     return q;
 }
 
@@ -174,9 +162,7 @@ MODEM() MODEM(_create_arb256opt)()
 MODEM() MODEM(_create_arb64vt)()
 {
     MODEM() q = MODEM(_create_arb)(6);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb_vt64,64);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb_vt64_T,64);
     return q;
 }
 
@@ -184,9 +170,7 @@ MODEM() MODEM(_create_arb64vt)()
 MODEM() MODEM(_create_arb64ui)()
 {
     MODEM() q = MODEM(_create_arb)(6);
-#if T == float
-    MODEM(_arb_init)(q,(TC*)modem_arb_ui64,64);
-#endif
+    MODEM(_arb_init)(q,(TC*)modem_arb_ui64_T,64);
     return q;
 }
 
@@ -317,8 +301,8 @@ void MODEM(_demodulate_soft_arb)(MODEM()         _q,
     T d;                // distance for this symbol
     TC x_hat;    // re-modulated symbol
 
-    T dmin_0[bps];
-    T dmin_1[bps];
+    T *dmin_0 = (T*) alloca(bps*sizeof(T));
+    T *dmin_1 = (T*) alloca(bps*sizeof(T));
     for (k=0; k<bps; k++) {
         dmin_0[k] = 4.0f;
         dmin_1[k] = 4.0f;

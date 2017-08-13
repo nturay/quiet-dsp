@@ -57,8 +57,8 @@ int main(int argc, char*argv[])
     agc_crcf q = agc_crcf_create();
     agc_crcf_set_bandwidth(q, bt);
 
-    float complex x[num_samples];   // input
-    float complex y[num_samples];   // output
+    liquid_float_complex x[num_samples];   // input
+    liquid_float_complex y[num_samples];   // output
     float rssi[num_samples];        // received signal strength
 
     // print info

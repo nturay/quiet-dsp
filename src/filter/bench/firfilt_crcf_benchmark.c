@@ -44,12 +44,12 @@ void firfilt_crcf_bench(struct rusage *_start,
     firfilt_crcf f = firfilt_crcf_create(h,_n);
 
     // generate input vector
-    float complex x[4];
+    liquid_float_complex x[4];
     for (i=0; i<4; i++)
         x[i] = randnf() + _Complex_I*randnf();
 
     // output vector
-    float complex y[4];
+    liquid_float_complex y[4];
 
     // start trials
     getrusage(RUSAGE_SELF, _start);

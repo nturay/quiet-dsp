@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 
@@ -43,9 +43,9 @@ void autotest_flexframesync()
     flexframegenprops_s fgprops;
     flexframegenprops_init_default(&fgprops);
     fgprops.mod_scheme  = _ms;
-    fgprops.check       = _check;
-    fgprops.fec0        = _fec0;
-    fgprops.fec1        = _fec1;
+    fgprops.check       = (crc_scheme)_check;
+    fgprops.fec0        = (fec_scheme)_fec0;
+    fgprops.fec1        = (fec_scheme)_fec1;
     flexframegen fg = flexframegen_create(&fgprops);
 
     // create flexframesync object
@@ -53,7 +53,7 @@ void autotest_flexframesync()
     
     // initialize header and payload
     unsigned char header[14] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-    unsigned char payload[_payload_len];
+    unsigned char *payload = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char));
     for (i=0; i<_payload_len; i++)
         payload[i] = rand() & 0xff;
     
@@ -64,7 +64,7 @@ void autotest_flexframesync()
 
     // generate the frame
     int frame_complete = 0;
-    float complex buf[2];
+    liquid_float_complex buf[2];
     while (!frame_complete) {
         // write samples to buffer
         frame_complete = flexframegen_write_samples(fg, buf, 2);

@@ -74,7 +74,7 @@ void liquid_print_fec_schemes()
     printf("          ");
     for (i=0; i<LIQUID_FEC_NUM_SCHEMES; i++) {
 #if !LIBFEC_ENABLED
-        if ( fec_scheme_is_convolutional(i) || fec_scheme_is_reedsolomon(i) )
+        if ( fec_scheme_is_convolutional((fec_scheme)i) || fec_scheme_is_reedsolomon((fec_scheme)i) )
             continue;
 #endif
         printf("%s", fec_scheme_str[i][0]);
@@ -98,7 +98,7 @@ fec_scheme liquid_getopt_str2fec(const char * _str)
     unsigned int i;
     for (i=0; i<LIQUID_FEC_NUM_SCHEMES; i++) {
         if (strcmp(_str,fec_scheme_str[i][0])==0) {
-            return i;
+            return (fec_scheme)i;
         }
     }
 
@@ -374,11 +374,11 @@ unsigned int fec_rs_get_enc_msg_len(unsigned int _dec_msg_len,
     div_t d;
 
     // compute the number of blocks in the full message sequence
-    d = div(_dec_msg_len, _kk);
+    d = div((int)_dec_msg_len, (int)_kk);
     unsigned int num_blocks = d.quot + (d.rem==0 ? 0 : 1);
 
     // compute the length of each decoded block
-    d = div(_dec_msg_len, num_blocks);
+    d = div((int)_dec_msg_len, (int)num_blocks);
     unsigned int dec_block_len = d.quot + (d.rem == 0 ? 0 : 1);
 
     // compute the encoded block length
@@ -740,7 +740,7 @@ void fec_decode_soft(fec _q,
     } else {
         // pack bytes and use hard-decision decoding
         unsigned enc_msg_len = fec_get_enc_msg_length(_q->scheme, _dec_msg_len);
-        unsigned char msg_enc_hard[enc_msg_len];
+        unsigned char *msg_enc_hard = (unsigned char*) alloca(enc_msg_len*sizeof(unsigned char));
         unsigned int i;
         for (i=0; i<enc_msg_len; i++) {
             // TODO : use pack bytes

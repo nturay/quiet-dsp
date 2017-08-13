@@ -48,9 +48,9 @@ int main(int argc, char*argv[]) {
     unsigned int num_samples = 3*sequence_len;
 
     // data arrays
-    float complex sequence[sequence_len];   // sequence
-    float complex x[num_samples];           // input sequence
-    float complex rxy[num_samples];         // correlator output
+    liquid_float_complex sequence[sequence_len];   // sequence
+    liquid_float_complex x[num_samples];           // input sequence
+    liquid_float_complex rxy[num_samples];         // correlator output
 
     // generate random sequence
     for (i=0; i<sequence_len; i++) {
@@ -83,7 +83,7 @@ int main(int argc, char*argv[]) {
     }
 
     // find peak
-    float complex rxy_peak = 0;
+    liquid_float_complex rxy_peak = 0;
     for (i=0; i<num_samples; i++) {
         if (i==0 || cabsf(rxy[i]) > cabsf(rxy_peak))
             rxy_peak = rxy[i];

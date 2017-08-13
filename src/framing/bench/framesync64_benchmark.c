@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/resource.h>
-#include <math.h>
+
 #include "liquid.h"
 
 typedef struct {
@@ -74,7 +74,7 @@ void benchmark_framesync64(
     // generate the frame
     //unsigned int frame_len = framegen64_getframelen(fg);
     unsigned int frame_len = LIQUID_FRAME64_LEN;
-    float complex frame[frame_len];
+    liquid_float_complex frame[frame_len];
     framegen64_execute(fg, header, payload, frame);
 
     // add some noise

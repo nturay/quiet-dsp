@@ -32,7 +32,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "liquid.internal.h"
 
 #define FFT_DEBUG_RADER 0
@@ -151,7 +151,7 @@ FFT(plan) FFT(_create_plan_rader2)(unsigned int _nfft,
     // (use newly-created FFT plan of length nfft_prime)
     T d = (q->direction == LIQUID_FFT_FORWARD) ? -1.0 : 1.0;
     for (i=0; i<q->data.rader2.nfft_prime; i++)
-        q->data.rader2.x_prime[i] = cexpf(_Complex_I*d*2*M_PI*q->data.rader2.seq[i%(q->nfft-1)]/(T)(q->nfft));
+        q->data.rader2.x_prime[i] = cexpf(_Complex_I*d*(T)(2*M_PI*q->data.rader2.seq[i%(q->nfft-1)])/(T)(q->nfft));
     FFT(_execute)(q->data.rader2.fft);
     
     // copy result to R

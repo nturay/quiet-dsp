@@ -24,9 +24,11 @@
 // Design root raised-cosine filter
 //
 
-#include <math.h>
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "liquid.internal.h"
 
 // Design root-Nyquist raised-cosine filter
 //  _k      : samples/symbol

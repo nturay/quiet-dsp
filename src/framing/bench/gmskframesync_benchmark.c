@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/resource.h>
-#include <math.h>
+
 #include <assert.h>
 #include "liquid.h"
 
@@ -101,7 +101,7 @@ void benchmark_gmskframesync(struct rusage *     _start,
     gmskframegen_assemble(fg, header, payload, payload_len, check, fec0, fec1);
     gmskframegen_print(fg);
     unsigned int frame_len = gmskframegen_getframelen(fg);
-    float complex frame[frame_len];
+    liquid_float_complex frame[frame_len];
     int frame_complete = 0;
     unsigned int n=0;
     while (!frame_complete) {
@@ -155,7 +155,7 @@ void benchmark_gmskframesync_noise(struct rusage *     _start,
 
     // allocate memory for noise buffer and initialize
     unsigned int num_samples = 1024;
-    float complex y[num_samples];
+    liquid_float_complex y[num_samples];
     for (i=0; i<num_samples; i++)
         y[i] = nstd*(randnf() + randnf()*_Complex_I)*M_SQRT1_2;
 

@@ -23,7 +23,9 @@
 #define __LIQUID_H__
 
 #ifdef __cplusplus
+#ifndef LIQUID_BUILD_CPLUSPLUS
 extern "C" {
+#endif // LIQUID_BUILD_CPLUSPLUS
 #   define LIQUID_USE_COMPLEX_H 0
 #else
 #   define LIQUID_USE_COMPLEX_H 1
@@ -77,10 +79,11 @@ int liquid_libversion_number(void);
  * define complex type compatible with the C++ complex standard,
  * otherwise resort to defining binary compatible array.
  */
-#if LIQUID_USE_COMPLEX_H==1
+#if LIQUID_USE_COMPLEX_H==1 && !defined LIQUID_BUILD_CPLUSPLUS
 #   include <complex.h>
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef R _Complex C
-#elif defined _GLIBCXX_COMPLEX || defined _LIBCPP_COMPLEX
+#elif defined _GLIBCXX_COMPLEX || defined _LIBCPP_COMPLEX || defined LIQUID_BUILD_CPLUSPLUS
+#   include <complex>
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef std::complex<R> C
 #else
 #   define LIQUID_DEFINE_COMPLEX(R,C) typedef struct {R real; R imag;} C;
@@ -3727,9 +3730,9 @@ void framesync64_set_csma_callbacks(framesync64             _q,
 
 // frame generator
 typedef struct {
-    unsigned int check;         // data validity check
-    unsigned int fec0;          // forward error-correction scheme (inner)
-    unsigned int fec1;          // forward error-correction scheme (outer)
+    crc_scheme check;         // data validity check
+    fec_scheme fec0;          // forward error-correction scheme (inner)
+    fec_scheme fec1;          // forward error-correction scheme (outer)
     unsigned int mod_scheme;    // modulation scheme
 } flexframegenprops_s;
 
@@ -7016,9 +7019,9 @@ void liquid_vectorf_add(float *      _a,
                         float *      _c);
 #endif
 
-#ifdef __cplusplus
+#if defined __cplusplus && !defined LIQUID_BUILD_CPLUSPLUS
 } //extern "C"
-#endif // __cplusplus
+#endif // __cplusplus && !LIQUID_BUILD_CPLUSPLUS
 
 #endif // __LIQUID_H__
 

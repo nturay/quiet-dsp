@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include <math.h>
+
 #include <stdlib.h>
 
 #include "liquid.internal.h"
@@ -123,13 +123,13 @@ void gmskmod_reset(gmskmod _q)
 
 void gmskmod_modulate(gmskmod _q,
                       unsigned int _s,
-                      float complex * _y)
+                      liquid_float_complex * _y)
 {
     // generate sample from symbol
     float x = _s==0 ? -_q->k_inv : _q->k_inv;
 
     // run interpolator
-    float phi[_q->k];
+    float *phi = (float*) alloca((_q->k)*sizeof(float));
     firinterp_rrrf_execute(_q->interp_tx, x, phi);
 
     // integrate phase state

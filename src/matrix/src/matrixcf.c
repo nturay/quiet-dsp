@@ -29,12 +29,13 @@
 #define MATRIX(name)    LIQUID_CONCAT(matrixcf, name)
 #define MATRIX_NAME     "matrixcf"
 
-#define T               float complex   // general type
+#define T               liquid_float_complex   // general type
 #define TP              float           // primitive type
 #define T_COMPLEX       1               // is type complex?
 
 #define T_ABS(X)        cabsf(X)
 #define TP_ABS(X)       fabsf(X)
+#define T_CONJ(X)       conjf(X)
 
 #define MATRIX_PRINT_ELEMENT(X,R,C,r,c)     \
     printf("%7.2f+j%6.2f ",                 \

@@ -24,7 +24,9 @@
 // data for testing Q/R decomposition
 //
 
-#include <complex.h>
+
+
+#include "liquid.h"
 
 // matrixf_data_qrdecomp_A [size: 4 x 4]
 float matrixf_data_qrdecomp_A[] = {

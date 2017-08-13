@@ -27,9 +27,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
-#include <complex.h>
+
 
 #include "liquid.internal.h"
 
@@ -37,11 +37,17 @@
 
 // gmskframegen
 void gmskframegen_encode_header( gmskframegen _q, const unsigned char * _header);
-void gmskframegen_write_preamble(gmskframegen _q, float complex * _y);
-void gmskframegen_write_header(  gmskframegen _q, float complex * _y);
-void gmskframegen_write_payload( gmskframegen _q, float complex * _y);
-void gmskframegen_write_tail(    gmskframegen _q, float complex * _y);
+void gmskframegen_write_preamble(gmskframegen _q, liquid_float_complex * _y);
+void gmskframegen_write_header(  gmskframegen _q, liquid_float_complex * _y);
+void gmskframegen_write_payload( gmskframegen _q, liquid_float_complex * _y);
+void gmskframegen_write_tail(    gmskframegen _q, liquid_float_complex * _y);
 
+enum state {
+    STATE_PREAMBLE,         // preamble
+    STATE_HEADER,           // header
+    STATE_PAYLOAD,          // payload (frame)
+    STATE_TAIL,             // tail symbols
+};
 
 // gmskframe object structure
 struct gmskframegen_s {
@@ -77,12 +83,7 @@ struct gmskframegen_s {
     unsigned char * payload_enc;// encoded payload
 
     // framing state
-    enum {
-        STATE_PREAMBLE,         // preamble
-        STATE_HEADER,           // header
-        STATE_PAYLOAD,          // payload (frame)
-        STATE_TAIL,             // tail symbols
-    } state;
+    enum state state;
     int frame_assembled;        // frame assembled flag
     int frame_complete;         // frame completed flag
     unsigned int symbol_counter;//
@@ -294,7 +295,7 @@ unsigned int gmskframegen_getframelen(gmskframegen _q)
 
 // write sample to output buffer
 int gmskframegen_write_samples(gmskframegen _q,
-                               float complex * _y)
+                               liquid_float_complex * _y)
 {
     switch (_q->state) {
     case STATE_PREAMBLE:
@@ -376,7 +377,7 @@ void gmskframegen_encode_header(gmskframegen          _q,
 }
 
 void gmskframegen_write_preamble(gmskframegen    _q,
-                                 float complex * _y)
+                                 liquid_float_complex * _y)
 {
     unsigned char bit = msequence_advance(_q->ms_preamble);
     gmskmod_modulate(_q->mod, bit, _y);
@@ -398,7 +399,7 @@ void gmskframegen_write_preamble(gmskframegen    _q,
 }
 
 void gmskframegen_write_header(gmskframegen    _q,
-                               float complex * _y)
+                               liquid_float_complex * _y)
 {
     div_t d = div(_q->symbol_counter, 8);
     unsigned int byte_index = d.quot;
@@ -417,7 +418,7 @@ void gmskframegen_write_header(gmskframegen    _q,
 }
 
 void gmskframegen_write_payload(gmskframegen    _q,
-                                float complex * _y)
+                                liquid_float_complex * _y)
 {
     div_t d = div(_q->symbol_counter, 8);
     unsigned int byte_index = d.quot;
@@ -436,7 +437,7 @@ void gmskframegen_write_payload(gmskframegen    _q,
 }
 
 void gmskframegen_write_tail(gmskframegen    _q,
-                             float complex * _y)
+                             liquid_float_complex * _y)
 {
     unsigned char bit = rand() % 2;
     gmskmod_modulate(_q->mod, bit, _y);

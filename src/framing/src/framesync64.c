@@ -29,8 +29,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
-#include <complex.h>
+
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -44,23 +44,29 @@
 
 // push samples through detection stage
 void framesync64_execute_seekpn(framesync64   _q,
-                                float complex _x);
+                                liquid_float_complex _x);
 
 // step receiver mixer, matched filter, decimator
 //  _q      :   frame synchronizer
 //  _x      :   input sample
 //  _y      :   output symbol
 int framesync64_step(framesync64     _q,
-                     float complex   _x,
-                     float complex * _y);
+                     liquid_float_complex   _x,
+                     liquid_float_complex * _y);
 
 // push samples through synchronizer, saving received p/n symbols
 void framesync64_execute_rxpreamble(framesync64   _q,
-                                    float complex _x);
+                                    liquid_float_complex _x);
 
 // receive payload symbols
 void framesync64_execute_rxpayload(framesync64   _q,
-                                   float complex _x);
+                                   liquid_float_complex _x);
+
+enum state {
+    FRAMESYNC64_STATE_DETECTFRAME=0,    // detect frame (seek p/n sequence)
+    FRAMESYNC64_STATE_RXPREAMBLE,       // receive p/n sequence
+    FRAMESYNC64_STATE_RXPAYLOAD,        // receive payload data
+};
 
 // framesync64 object structure
 struct framesync64_s {
@@ -89,23 +95,19 @@ struct framesync64_s {
 #endif
 
     // preamble
-    float complex preamble_pn[64];  // known 64-symbol p/n sequence
-    float complex preamble_rx[64];  // received p/n symbols
+    liquid_float_complex preamble_pn[64];  // known 64-symbol p/n sequence
+    liquid_float_complex preamble_rx[64];  // received p/n symbols
     
     // payload decoder
-    float complex payload_rx [630]; // received payload symbols with pilots
-    float complex payload_sym[600]; // received payload symbols
+    liquid_float_complex payload_rx [630]; // received payload symbols with pilots
+    liquid_float_complex payload_sym[600]; // received payload symbols
     unsigned char payload_dec[ 72]; // decoded payload bytes
     qpacketmodem  dec;              // packet demodulator/decoder
     qpilotsync    pilotsync;        // pilot extraction, carrier recovery
     int           payload_valid;    // did payload pass crc?
     
     // status variables
-    enum {
-        FRAMESYNC64_STATE_DETECTFRAME=0,    // detect frame (seek p/n sequence)
-        FRAMESYNC64_STATE_RXPREAMBLE,       // receive p/n sequence
-        FRAMESYNC64_STATE_RXPAYLOAD,        // receive payload data
-    }            state;
+    enum state state;
     unsigned int preamble_counter;  // counter: num of p/n syms received
     unsigned int payload_counter;   // counter: num of payload syms received
 
@@ -133,8 +135,8 @@ framesync64 framesync64_create(framesync_callback _callback,
     // generate p/n sequence
     msequence ms = msequence_create(7, 0x0089, 1);
     for (i=0; i<64; i++) {
-        q->preamble_pn[i]  = (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2);
-        q->preamble_pn[i] += (msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2)*_Complex_I;
+        q->preamble_pn[i]  = (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2);
+        q->preamble_pn[i] += (msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2)*_Complex_I;
     }
     msequence_destroy(ms);
 
@@ -158,9 +160,9 @@ framesync64 framesync64_create(framesync_callback _callback,
     q->mixer = nco_crcf_create(LIQUID_NCO);
     
     // create payload demodulator/decoder object
-    int check      = LIQUID_CRC_24;
-    int fec0       = LIQUID_FEC_NONE;
-    int fec1       = LIQUID_FEC_GOLAY2412;
+    crc_scheme check      = LIQUID_CRC_24;
+    fec_scheme fec0       = LIQUID_FEC_NONE;
+    fec_scheme fec1       = LIQUID_FEC_GOLAY2412;
     int mod_scheme = LIQUID_MODEM_QPSK;
     q->dec         = qpacketmodem_create();
     qpacketmodem_configure(q->dec, 72, check, fec0, fec1, mod_scheme);
@@ -239,7 +241,7 @@ void framesync64_reset(framesync64 _q)
 //  _x      :   input sample array [size: _n x 1]
 //  _n      :   number of input samples
 void framesync64_execute(framesync64     _q,
-                         float complex * _x,
+                         liquid_float_complex * _x,
                          unsigned int    _n)
 {
     unsigned int i;
@@ -277,10 +279,10 @@ void framesync64_execute(framesync64     _q,
 //  _x      :   input sample
 //  _sym    :   demodulated symbol
 void framesync64_execute_seekpn(framesync64   _q,
-                                float complex _x)
+                                liquid_float_complex _x)
 {
     // push through pre-demod synchronizer
-    float complex * v = qdetector_cccf_execute(_q->detector, _x);
+    liquid_float_complex *v = (liquid_float_complex*)qdetector_cccf_execute(_q->detector, _x);
 
     // check if frame has been detected
     if (v != NULL) {
@@ -325,11 +327,11 @@ void framesync64_execute_seekpn(framesync64   _q,
 //  _x      :   input sample
 //  _y      :   output symbol
 int framesync64_step(framesync64     _q,
-                     float complex   _x,
-                     float complex * _y)
+                     liquid_float_complex   _x,
+                     liquid_float_complex * _y)
 {
     // mix sample down
-    float complex v;
+    liquid_float_complex v;
     nco_crcf_mix_down(_q->mixer, _x, &v);
     nco_crcf_step    (_q->mixer);
     
@@ -369,10 +371,10 @@ int framesync64_step(framesync64     _q,
 //  _x      :   input sample
 //  _sym    :   demodulated symbol
 void framesync64_execute_rxpreamble(framesync64   _q,
-                                    float complex _x)
+                                    liquid_float_complex _x)
 {
     // step synchronizer
-    float complex mf_out = 0.0f;
+    liquid_float_complex mf_out = 0.0f;
     int sample_available = framesync64_step(_q, _x, &mf_out);
 
     // compute output if timeout
@@ -409,10 +411,10 @@ void framesync64_execute_rxpreamble(framesync64   _q,
 //  _x      :   input sample
 //  _sym    :   demodulated symbol
 void framesync64_execute_rxpayload(framesync64   _q,
-                                   float complex _x)
+                                   liquid_float_complex _x)
 {
     // step synchronizer
-    float complex mf_out = 0.0f;
+    liquid_float_complex mf_out = 0.0f;
     int sample_available = framesync64_step(_q, _x, &mf_out);
 
     // compute output if timeout
@@ -503,7 +505,7 @@ void framesync64_debug_print(framesync64  _q,
         return;
     }
     unsigned int i;
-    float complex * rc;
+    liquid_float_complex * rc;
     FILE* fid = fopen(_filename,"w");
     fprintf(fid,"%% %s: auto-generated file", _filename);
     fprintf(fid,"\n\n");

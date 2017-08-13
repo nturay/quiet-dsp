@@ -85,11 +85,11 @@ int main(int argc, char*argv[])
     unsigned int num_samples = k*num_symbols;
 
     // bookkeeping variables
-    float complex x[num_samples];       // interpolated time series
-    float complex y[num_samples];       // equalized output
+    liquid_float_complex x[num_samples];       // interpolated time series
+    liquid_float_complex y[num_samples];       // equalized output
 
     float hm[hm_len];                   // matched filter response
-    float complex hp[hp_len];           // equalizer filter coefficients
+    liquid_float_complex hp[hp_len];           // equalizer filter coefficients
 
     unsigned int i;
 
@@ -114,7 +114,7 @@ int main(int argc, char*argv[])
     // filtered error vector magnitude (emperical RMS error)
     float evm_hat = 0.03f;
 
-    float complex d_hat = 0.0f;
+    liquid_float_complex d_hat = 0.0f;
     for (i=0; i<num_samples; i++) {
         // print filtered evm (emperical rms error)
         if ( ((i+1)%50)==0 )
@@ -131,7 +131,7 @@ int main(int argc, char*argv[])
 
         // estimate transmitted signal
         unsigned int sym_out;   // output symbol
-        float complex d_prime;  // estimated input sample
+        liquid_float_complex d_prime;  // estimated input sample
         modem_demodulate(demod, d_hat, &sym_out);
         modem_get_demodulator_sample(demod, &d_prime);
 
@@ -154,8 +154,8 @@ int main(int argc, char*argv[])
 
     firfilt_cccf mf = firfilt_cccf_create(hp, hp_len);
 
-    float complex buf_tx[k];
-    float complex buf_rx[k];
+    liquid_float_complex buf_tx[k];
+    liquid_float_complex buf_rx[k];
     for (i=0; i<500e3; i++) {
         // generate random symbol
         gmskmod_modulate(gmod, rand()%2, buf_tx);

@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "autotest/autotest.h"
 #include "liquid.internal.h"
@@ -48,9 +48,9 @@ float liquid_scramble_test_entropy(unsigned char * _x,
 // helper function to keep code base small
 void liquid_scramble_test(unsigned int _n)
 {
-    unsigned char x[_n];    // input data
-    unsigned char y[_n];    // scrambled data
-    unsigned char z[_n];    // unscrambled data
+    unsigned char *x = (unsigned char*) alloca((_n)*sizeof(unsigned char));    // input data
+    unsigned char *y = (unsigned char*) alloca((_n)*sizeof(unsigned char));    // scrambled data
+    unsigned char *z = (unsigned char*) alloca((_n)*sizeof(unsigned char));    // unscrambled data
 
     unsigned int i;
 
@@ -78,10 +78,10 @@ void liquid_scramble_test(unsigned int _n)
 // test unscrambling of soft bits (helper function to keep code base small)
 void liquid_scramble_soft_test(unsigned int _n)
 {
-    unsigned char msg_org[_n];      // input data
-    unsigned char msg_enc[_n];      // scrambled data 
-    unsigned char msg_soft[8*_n];   // scrambled data (soft bits)
-    unsigned char msg_dec[_n];      // unscrambled data
+    unsigned char *msg_org = (unsigned char*) alloca((_n)*sizeof(unsigned char));      // input data
+    unsigned char *msg_enc = (unsigned char*) alloca((_n)*sizeof(unsigned char));      // scrambled data 
+    unsigned char *msg_soft = (unsigned char*) alloca((8*_n)*sizeof(unsigned char));   // scrambled data (soft bits)
+    unsigned char *msg_dec = (unsigned char*) alloca((_n)*sizeof(unsigned char));      // unscrambled data
 
     unsigned int i;
 

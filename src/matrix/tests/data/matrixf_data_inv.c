@@ -24,7 +24,9 @@
 // data for testing matrix inversion
 //
 
-#include <complex.h>
+
+
+#include "liquid.h"
 
 // matrixf_data_inv_x [size: 5 x 5]
 float matrixf_data_inv_x[] = {

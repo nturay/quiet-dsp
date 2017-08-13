@@ -75,7 +75,7 @@ int main(int argc, char*argv[])
     unsigned int i;
 
     // allocate array for output samples
-    float complex * y = (float complex*) malloc(num_samples*sizeof(float complex));
+    liquid_float_complex * y = (liquid_float_complex*) malloc(num_samples*sizeof(liquid_float_complex));
 
     // generate Doppler filter coefficients
     float h[h_len];
@@ -94,8 +94,8 @@ int main(int argc, char*argv[])
     firfilt_crcf fdoppler = firfilt_crcf_create(h,h_len);
 
     // generate complex circular Gauss random variables
-    float complex v;    // circular Gauss random variable (uncorrelated)
-    float complex x;    // circular Gauss random variable (correlated w/ Doppler filter)
+    liquid_float_complex v;    // circular Gauss random variable (uncorrelated)
+    liquid_float_complex x;    // circular Gauss random variable (correlated w/ Doppler filter)
     float s   = sqrtf((omega*K)/(K+1.0));
     float sig = sqrtf(0.5f*omega/(K+1.0));
     for (i=0; i<num_samples; i++) {

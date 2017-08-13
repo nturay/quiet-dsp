@@ -66,8 +66,8 @@ int main(int argc, char*argv[])
     nco_crcf_pll_set_bandwidth(nco_rx, pll_bandwidth);
 
     // generate input
-    float complex x[n];
-    float complex y[n];
+    liquid_float_complex x[n];
+    liquid_float_complex y[n];
     float phase_error[n];
 
     unsigned int i;

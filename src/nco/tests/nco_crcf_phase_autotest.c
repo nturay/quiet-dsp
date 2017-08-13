@@ -21,7 +21,7 @@
  */
 
 #include <stdlib.h>
-#include <complex.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 
@@ -38,7 +38,7 @@ void nco_crcf_phase_test(float _theta,
                          float _tol)
 {
     // create object
-    nco_crcf nco = nco_crcf_create(_type);
+    nco_crcf nco = nco_crcf_create((liquid_ncotype)_type);
 
     // set phase
     nco_crcf_set_phase(nco, _theta);
@@ -186,8 +186,8 @@ void autotest_nco_mixing() {
         nco_crcf_sincos(p, &nco_q, &nco_i);
 
         // mix back to zero phase
-        complex float nco_cplx_in = nco_i + _Complex_I*nco_q;
-        complex float nco_cplx_out;
+        liquid_float_complex nco_cplx_in = nco_i + _Complex_I*nco_q;
+        liquid_float_complex nco_cplx_out;
         nco_crcf_mix_down(p, nco_cplx_in, &nco_cplx_out);
 
         // assert mixer output is correct
@@ -221,8 +221,8 @@ void autotest_nco_block_mixing()
     unsigned int num_samples = 1024;
 
     // store samples
-    float complex * x = (float complex*)malloc(num_samples*sizeof(float complex));
-    float complex * y = (float complex*)malloc(num_samples*sizeof(float complex));
+    liquid_float_complex * x = (liquid_float_complex*)malloc(num_samples*sizeof(liquid_float_complex));
+    liquid_float_complex * y = (liquid_float_complex*)malloc(num_samples*sizeof(liquid_float_complex));
 
     // generate complex sin/cos
     for (i=0; i<num_samples; i++)

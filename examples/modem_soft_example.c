@@ -75,7 +75,7 @@ int main(int argc, char*argv[])
     unsigned char soft_bits[bps];
     unsigned int s_soft;    // demodulated symbol (soft, compacted)
     unsigned int num_symbols = 1<<bps;
-    float complex x;
+    liquid_float_complex x;
     unsigned int num_sym_errors = 0;
     unsigned int num_bit_errors = 0;
 

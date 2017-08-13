@@ -33,11 +33,11 @@ void liquid_kbd_window_test(unsigned int _n,
     float tol = 1e-3f;
 
     // compute window
-    float w[_n];
+    float *w = (float*) alloca((_n)*sizeof(float));
     liquid_kbd_window(_n,_beta,w);
 
     // square window
-    float w2[_n];
+    float *w2 = (float*) alloca((_n)*sizeof(float));
     for (i=0; i<_n; i++)
         w2[i] = w[i]*w[i];
 

@@ -98,7 +98,7 @@ int main(int argc, char*argv[]) {
     // run loop
     unsigned int i, M=1<<bps, sym_in, sym_out, num_errors=0;
     float phase_error;
-    float complex x, r, v, noise;
+    liquid_float_complex x, r, v, noise;
     for (i=0; i<n; i++) {
         // generate random symbol
         sym_in = rand() % M;

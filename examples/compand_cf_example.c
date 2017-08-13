@@ -21,7 +21,7 @@ int main() {
     fprintf(fid,"clear all\n");
     fprintf(fid,"close all\n");
 
-    float complex x, y, z;
+    liquid_float_complex x, y, z;
     int i, j;
 
     for (i=0; i<n+1; i++) {

@@ -27,9 +27,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
-#include <complex.h>
+
+
 #include "liquid.internal.h"
 
 struct ASGRAM(_s) {
@@ -229,7 +229,7 @@ void ASGRAM(_print)(ASGRAM() _q)
 {
     float maxval;
     float maxfreq;
-    char ascii[_q->nfft+1];
+    char *ascii = (char*) alloca((_q->nfft+1)*sizeof(char));
     ascii[_q->nfft] = '\0'; // append null character to end of string
         
     // execute the spectrogram

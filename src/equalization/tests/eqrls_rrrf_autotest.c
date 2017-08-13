@@ -48,10 +48,10 @@ void autotest_eqrls_rrrf_01()
     unsigned int n=64;      // number of symbols to observe
 
     // bookkeeping variables
-    float y[n];         // received data sequence (filtered by channel)
+    float *y = (float*) alloca((n)*sizeof(float));         // received data sequence (filtered by channel)
     //float d_hat[n];   // recovered data sequence
-    float h[h_len];     // channel filter coefficients
-    float w[p];         // equalizer filter coefficients
+    float *h = (float*) alloca((h_len)*sizeof(float));     // channel filter coefficients
+    float *w = (float*) alloca((p)*sizeof(float));         // equalizer filter coefficients
     unsigned int i;
 
     // create equalizer

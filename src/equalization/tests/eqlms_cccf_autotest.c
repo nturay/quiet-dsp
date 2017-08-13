@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 
+#include <stdlib.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 
@@ -48,26 +50,26 @@ void autotest_eqlms_cccf_blind()
     eqlms_cccf_set_bw(eq, mu);
 
     // create channel filter
-    float complex h[5] = {
-        { 1.00f,  0.00f},
-        { 0.00f, -0.01f},
-        {-0.11f,  0.02f},
-        { 0.02f,  0.01f},
-        {-0.09f, -0.04f} };
+    liquid_float_complex h[5] = {
+         1.00f+ _Complex_I* 0.00f,
+         0.00f+ _Complex_I*-0.01f,
+        -0.11f+ _Complex_I* 0.02f,
+         0.02f+ _Complex_I* 0.01f,
+        -0.09f+ _Complex_I*-0.04f };
     firfilt_cccf fchannel = firfilt_cccf_create(h,5);
 
     // arrays
-    float complex buf[k];               // filter buffer
-    float complex sym_in [num_symbols]; // input symbols
-    float complex sym_out[num_symbols]; // equalized symbols
+    liquid_float_complex *buf = (liquid_float_complex*) alloca((k)*sizeof(liquid_float_complex));               // filter buffer
+    liquid_float_complex *sym_in = (liquid_float_complex*) alloca((num_symbols)*sizeof(liquid_float_complex)); // input symbols
+    liquid_float_complex *sym_out = (liquid_float_complex*) alloca((num_symbols)*sizeof(liquid_float_complex)); // equalized symbols
 
     // run equalization
     unsigned int i;
     unsigned int j;
     for (i=0; i<num_symbols; i++) {
         // generate input symbol
-        sym_in[i]  = ( msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2 );
-        sym_in[i] += ( msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2 )*_Complex_I;
+        sym_in[i]  = ( msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2 );
+        sym_in[i] += ( msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2 )*_Complex_I;
 
         // interpolate
         firinterp_crcf_execute(interp, sym_in[i], buf);
@@ -144,21 +146,21 @@ void autotest_eqlms_cccf_decisiondirected()
 
     // create channel filter
     unsigned int h_len = 5; // channel filter length
-    float complex h[5] = {1.0f, 0.0f, -0.1f, 0.02f, -0.1f};
+    liquid_float_complex h[5] = {1.0f, 0.0f, -0.1f, 0.02f, -0.1f};
     firfilt_cccf fchannel = firfilt_cccf_create(h,h_len);
 
     // arrays
-    float complex buf[k];               // filter buffer
-    float complex sym_in [num_symbols]; // input symbols
-    float complex sym_out[num_symbols]; // equalized symbols
+    liquid_float_complex *buf = (liquid_float_complex*) alloca((k)*sizeof(liquid_float_complex));               // filter buffer
+    liquid_float_complex *sym_in = (liquid_float_complex*) alloca((num_symbols)*sizeof(liquid_float_complex)); // input symbols
+    liquid_float_complex *sym_out = (liquid_float_complex*) alloca((num_symbols)*sizeof(liquid_float_complex)); // equalized symbols
 
     // run equalization
     unsigned int i;
     unsigned int j;
     for (i=0; i<num_symbols; i++) {
         // generate input symbol
-        sym_in[i]  = ( msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2 );
-        sym_in[i] += ( msequence_advance(ms) ? M_SQRT1_2 : -M_SQRT1_2 )*_Complex_I;
+        sym_in[i]  = ( msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2 );
+        sym_in[i] += ( msequence_advance(ms) ? (float)M_SQRT1_2 : (float)-M_SQRT1_2 )*_Complex_I;
 
         // interpolate
         firinterp_crcf_execute(interp, sym_in[i], buf);

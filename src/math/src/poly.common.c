@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 T POLY(_val)(T * _p, unsigned int _k, T _x)
 {
@@ -51,7 +51,7 @@ void POLY(_fit)(T * _x,
 {
 
     // ...
-    T X[_n*_k];
+    T *X = (T*) alloca((_n*_k)*sizeof(T));
     unsigned int r,c;
     T v;
     for (r=0; r<_n; r++) {
@@ -63,24 +63,24 @@ void POLY(_fit)(T * _x,
     }
 
     // compute transpose of X
-    T Xt[_k*_n];
+    T *Xt = (T*) alloca((_k*_n)*sizeof(T));
     memmove(Xt,X,_k*_n*sizeof(T));
     MATRIX(_trans)(Xt,_n,_k);
 
     // compute [X']*y
-    T Xty[_k];
+    T *Xty = (T*) alloca((_k)*sizeof(T));
     MATRIX(_mul)(Xt, _k, _n,
                  _y, _n, 1,
                  Xty,_k, 1);
 
     // compute [X']*X
-    T X2[_k*_k];
+    T *X2 = (T*) alloca((_k*_k)*sizeof(T));
     MATRIX(_mul)(Xt, _k, _n,
                  X,  _n, _k,
                  X2, _k, _k);
 
     // compute inv([X']*X)
-    T G[_k*_k];
+    T *G = (T*) alloca((_k*_k)*sizeof(T));
     memmove(G,X2,_k*_k*sizeof(T));
     MATRIX(_inv)(G,_k,_k);
 

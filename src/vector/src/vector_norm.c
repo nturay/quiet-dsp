@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <math.h>
+
 
 // compute l2-norm on vector
 //  _x      :   input array [size: _n x 1]

@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 // defined:
 //  TO          output data type
@@ -41,6 +41,11 @@
 
 // internal: update timing
 void RESAMP(_update_timing_state)(RESAMP() _q);
+
+enum state {
+    RESAMP_STATE_BOUNDARY, // boundary between input samples
+    RESAMP_STATE_INTERP,   // regular interpolation
+};
 
 struct RESAMP(_s) {
     // filter design parameters
@@ -64,10 +69,7 @@ struct RESAMP(_s) {
     unsigned int npfb;  // number of filters in the bank
     FIRPFB() f;         // filterbank object (interpolator)
 
-    enum {
-        RESAMP_STATE_BOUNDARY, // boundary between input samples
-        RESAMP_STATE_INTERP,   // regular interpolation
-    } state;
+    enum state state;
 };
 
 // create arbitrary resampler
@@ -115,8 +117,8 @@ RESAMP() RESAMP(_create)(float        _rate,
 
     // design filter
     unsigned int n = 2*q->m*q->npfb+1;
-    float hf[n];
-    TC h[n];
+    float *hf = (float*) alloca(n*sizeof(float));
+    TC *h = (TC*) alloca(n*sizeof(TC));
     liquid_firdes_kaiser(n,q->fc/((float)(q->npfb)),q->As,0.0f,hf);
 
     // normalize filter coefficients by DC gain

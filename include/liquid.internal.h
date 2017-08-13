@@ -32,16 +32,50 @@
 #ifndef __LIQUID_INTERNAL_H__
 #define __LIQUID_INTERNAL_H__
 
+#ifdef _MSC_VER
+#ifndef LIQUID_BUILD_CPLUSPLUS
+#define LIQUID_BUILD_CPLUSPLUS
+#endif
+#define _USE_MATH_DEFINES
+#endif
+
 // Configuration file
 #include "config.h"
 
-#include <complex.h>
 #include "liquid.h"
+
+#ifdef LIQUID_BUILD_CPLUSPLUS
+#ifndef _LIQUID_COMPLEX_WRAPPERS
+#define _LIQUID_COMPLEX_WRAPPERS
+static inline liquid_float_complex cexpf(liquid_float_complex f) { return std::exp(f); }
+static inline liquid_float_complex conjf(liquid_float_complex f) { return std::conj(f); }
+static inline float crealf(liquid_float_complex f) { return std::real(f); }
+static inline float cimagf(liquid_float_complex f) { return std::imag(f); }
+static inline float cabsf(liquid_float_complex f) { return std::abs(f); }
+static inline liquid_float_complex ccosf(liquid_float_complex f) { return std::cos(f); }
+static inline liquid_float_complex csinf(liquid_float_complex f) { return std::sin(f); }
+static inline liquid_float_complex csqrtf(liquid_float_complex f) { return std::sqrt(f); }
+static inline float cargf(liquid_float_complex f) { return std::arg(f); }
+
+static inline liquid_double_complex conj(liquid_double_complex d) { return std::conj(d); }
+static inline double creal(liquid_double_complex d) { return std::real(d); }
+static inline double cimag(liquid_double_complex d) { return std::imag(d); }
+static inline double cabs(liquid_double_complex d) { return std::abs(d); }
+
+static inline float conjf(float f) { return f; }
+static inline double conj(double d) { return d; }
+
+static const liquid_float_complex _Complex_I(0.0f, 1.0f);
+#endif
+
+#include <cmath>
+#else
+#include <math.h>
+#endif
 
 #if defined HAVE_FEC_H && defined HAVE_LIBFEC
 #  define LIBFEC_ENABLED 1
 #endif
-
 
 //
 // Debugging macros
@@ -760,7 +794,13 @@ LIQUID_FFT_DEFINE_INTERNAL_API(LIQUID_FFT_MANGLE_FLOAT, float, liquid_float_comp
 // Use fftw library if installed (and not overridden with configuration),
 // otherwise use internal (less efficient) fft library.
 #if HAVE_FFTW3_H && !defined LIQUID_FFTOVERRIDE
+#ifdef LIQUID_BUILD_CPLUSPLUS
+extern "C" {
+#endif
 #   include <fftw3.h>
+#ifdef LIQUID_BUILD_CPLUSPLUS
+}
+#endif
 #   define FFT_PLAN             fftwf_plan
 #   define FFT_CREATE_PLAN      fftwf_plan_dft_1d
 #   define FFT_DESTROY_PLAN     fftwf_destroy_plan
@@ -1009,10 +1049,10 @@ void liquid_firdes_farcsech_freqresponse(unsigned int _k,
 //  _n      :   number of elements in _z
 //  _tol    :   tolerance for finding complex pairs
 //  _p      :   resulting pairs, pure real values of _z at end
-void liquid_cplxpair(float complex * _z,
+void liquid_cplxpair(liquid_float_complex * _z,
                      unsigned int _n,
                      float _tol,
-                     float complex * _p);
+                     liquid_float_complex * _p);
 
 // post-process cleanup used with liquid_cplxpair
 //
@@ -1026,7 +1066,7 @@ void liquid_cplxpair(float complex * _z,
 //  _p          :   pre-processed complex array [size: _n x 1]
 //  _n          :   array length
 //  _num_pairs  :   number of complex conjugate pairs
-void liquid_cplxpair_cleanup(float complex * _p,
+void liquid_cplxpair_cleanup(liquid_float_complex * _p,
                              unsigned int _n,
                              unsigned int _num_pairs);
 
@@ -1049,22 +1089,22 @@ float ellipdegf(float _N,
                 unsigned int _n);
 
 // elliptic cd() function (_n recursions)
-float complex ellip_cdf(float complex _u,
+liquid_float_complex ellip_cdf(liquid_float_complex _u,
                         float _k,
                         unsigned int _n);
 
 // elliptic inverse cd() function (_n recursions)
-float complex ellip_acdf(float complex _u,
+liquid_float_complex ellip_acdf(liquid_float_complex _u,
                          float _k,
                          unsigned int _n);
 
 // elliptic sn() function (_n recursions)
-float complex ellip_snf(float complex _u,
+liquid_float_complex ellip_snf(liquid_float_complex _u,
                         float _k,
                         unsigned int _n);
 
 // elliptic inverse sn() function (_n recursions)
-float complex ellip_asnf(float complex _u,
+liquid_float_complex ellip_asnf(liquid_float_complex _u,
                          float _k,
                          unsigned int _n);
 
@@ -1161,19 +1201,19 @@ float liquid_logf(float _x);
 //
 
 // complex square root
-float complex liquid_csqrtf(float complex _z);
+liquid_float_complex liquid_csqrtf(liquid_float_complex _z);
 
 // complex exponent, logarithm
-float complex liquid_cexpf(float complex _z);
-float complex liquid_clogf(float complex _z);
+liquid_float_complex liquid_cexpf(liquid_float_complex _z);
+liquid_float_complex liquid_clogf(liquid_float_complex _z);
 
 // complex arcsin, arccos, arctan
-float complex liquid_casinf(float complex _z);
-float complex liquid_cacosf(float complex _z);
-float complex liquid_catanf(float complex _z);
+liquid_float_complex liquid_casinf(liquid_float_complex _z);
+liquid_float_complex liquid_cacosf(liquid_float_complex _z);
+liquid_float_complex liquid_catanf(liquid_float_complex _z);
 
 // faster approximation to arg{*}
-float liquid_cargf_approx(float complex _z);
+float liquid_cargf_approx(liquid_float_complex _z);
 
 
 // internal trig helper functions
@@ -1403,7 +1443,7 @@ void MODEM(_demodulate_linear_array_ref)(T              _v,     \
 
 
 // define internal modem APIs
-LIQUID_MODEM_DEFINE_INTERNAL_API(LIQUID_MODEM_MANGLE_FLOAT,float,float complex)
+LIQUID_MODEM_DEFINE_INTERNAL_API(LIQUID_MODEM_MANGLE_FLOAT,float,liquid_float_complex)
 
 // APSK constants (container for apsk structure definitions)
 struct liquid_apsk_s {
@@ -1426,26 +1466,26 @@ extern struct liquid_apsk_s liquid_apsk256;
 
 
 // 'square' 32-QAM (first quadrant)
-extern const float complex modem_arb_sqam32[8];
+extern const liquid_float_complex modem_arb_sqam32[8];
 
 // 'square' 128-QAM (first quadrant)
-extern const float complex modem_arb_sqam128[32];
+extern const liquid_float_complex modem_arb_sqam128[32];
 
 // V.29 star constellation
-extern const float complex modem_arb_V29[16];
+extern const liquid_float_complex modem_arb_V29[16];
 
 // Virginia Tech logo
-extern const float complex modem_arb_vt64[64];
+extern const liquid_float_complex modem_arb_vt64[64];
 
 // University of Illinois logo
-extern const float complex modem_arb_ui64[64];
+extern const liquid_float_complex modem_arb_ui64[64];
 
 // optimal QAM constellations
-extern const float complex modem_arb16opt[16];
-extern const float complex modem_arb32opt[32];
-extern const float complex modem_arb64opt[64];
-extern const float complex modem_arb128opt[128];
-extern const float complex modem_arb256opt[256];
+extern const liquid_float_complex modem_arb16opt[16];
+extern const liquid_float_complex modem_arb32opt[32];
+extern const liquid_float_complex modem_arb64opt[64];
+extern const liquid_float_complex modem_arb128opt[128];
+extern const liquid_float_complex modem_arb256opt[256];
 
 
 //
@@ -1462,8 +1502,8 @@ extern const float complex modem_arb256opt[256];
 //  _M_S0   :   total number of enabled subcarriers in S0
 void ofdmframe_init_S0(unsigned char * _p,
                        unsigned int    _M,
-                       float complex * _S0,
-                       float complex * _s0,
+                       liquid_float_complex * _S0,
+                       liquid_float_complex * _s0,
                        unsigned int *  _M_S0);
 
 // generate long sequence symbols
@@ -1474,13 +1514,13 @@ void ofdmframe_init_S0(unsigned char * _p,
 //  _M_S1   :   total number of enabled subcarriers in S1
 void ofdmframe_init_S1(unsigned char * _p,
                        unsigned int    _M,
-                       float complex * _S1,
-                       float complex * _s1,
+                       liquid_float_complex * _S1,
+                       liquid_float_complex * _s1,
                        unsigned int *  _M_S1);
 
 // generate symbol (add cyclic prefix/postfix, overlap)
 void ofdmframegen_gensymbol(ofdmframegen    _q,
-                            float complex * _buffer);
+                            liquid_float_complex * _buffer);
 
 void ofdmframesync_cpcorrelate(ofdmframesync _q);
 void ofdmframesync_findrxypeak(ofdmframesync _q);
@@ -1493,24 +1533,24 @@ void ofdmframesync_execute_S1( ofdmframesync _q);
 void ofdmframesync_execute_rxsymbols(ofdmframesync _q);
 
 void ofdmframesync_S0_metrics(ofdmframesync _q,
-                              float complex * _G,
-                              float complex * _s_hat);
+                              liquid_float_complex * _G,
+                              liquid_float_complex * _s_hat);
 
 // estimate short sequence gain
 //  _q      :   ofdmframesync object
 //  _x      :   input array (time)
 //  _G      :   output gain (freq)
 void ofdmframesync_estimate_gain_S0(ofdmframesync   _q,
-                                    float complex * _x,
-                                    float complex * _G);
+                                    liquid_float_complex * _x,
+                                    liquid_float_complex * _G);
 
 // estimate long sequence gain
 //  _q      :   ofdmframesync object
 //  _x      :   input array (time)
 //  _G      :   output gain (freq)
 void ofdmframesync_estimate_gain_S1(ofdmframesync _q,
-                                    float complex * _x,
-                                    float complex * _G);
+                                    liquid_float_complex * _x,
+                                    liquid_float_complex * _G);
 
 // estimate complex equalizer gain from G0 and G1
 //  _q      :   ofdmframesync object
@@ -1549,7 +1589,7 @@ void NCO(_pll_reset)(NCO() _q);                                 \
 // Define nco internal APIs
 LIQUID_NCO_DEFINE_INTERNAL_API(NCO_MANGLE_FLOAT,
                                float,
-                               float complex)
+                               liquid_float_complex)
 
 // 
 // MODULE : optim (non-linear optimization)
@@ -1720,7 +1760,7 @@ void optim_sort(float *_v,
 
 #define randf_inline() ((float) rand() / (float) RAND_MAX)
 
-float complex icrandnf();
+liquid_float_complex icrandnf();
 
 // generate x ~ Gamma(delta,1)
 float randgammaf_delta(float _delta);

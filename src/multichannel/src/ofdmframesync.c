@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -40,6 +40,14 @@
 #define DEBUG_OFDMFRAMESYNC_BUFFER_LEN  (2048)
 
 #define OFDMFRAMESYNC_ENABLE_SQUELCH    0
+
+enum state {
+    OFDMFRAMESYNC_STATE_SEEKPLCP=0,   // seek initial PLCP
+    OFDMFRAMESYNC_STATE_PLCPSHORT0,   // seek first PLCP short sequence
+    OFDMFRAMESYNC_STATE_PLCPSHORT1,   // seek second PLCP short sequence
+    OFDMFRAMESYNC_STATE_PLCPLONG,     // seek PLCP long sequence
+    OFDMFRAMESYNC_STATE_RXSYMBOLS     // receive payload symbols
+};
 
 struct ofdmframesync_s {
     unsigned int M;         // number of subcarriers
@@ -61,32 +69,26 @@ struct ofdmframesync_s {
 
     // transform object
     FFT_PLAN fft;           // ifft object
-    float complex * X;      // frequency-domain buffer
-    float complex * x;      // time-domain buffer
+    liquid_float_complex * X;      // frequency-domain buffer
+    liquid_float_complex * x;      // time-domain buffer
     windowcf input_buffer;  // input sequence buffer
 
     // PLCP sequences
-    float complex * S0;     // short sequence (freq)
-    float complex * s0;     // short sequence (time)
-    float complex * S1;     // long sequence (freq)
-    float complex * s1;     // long sequence (time)
+    liquid_float_complex * S0;     // short sequence (freq)
+    liquid_float_complex * s0;     // short sequence (time)
+    liquid_float_complex * S1;     // long sequence (freq)
+    liquid_float_complex * s1;     // long sequence (time)
 
     // gain
     float g0;               // nominal gain (coarse initial estimate)
-    float complex * G0;     // complex subcarrier gain estimate, S0[0]
-    float complex * G1;     // complex subcarrier gain estimate, S0[1]
-    float complex * G;      // complex subcarrier gain estimate
-    float complex * B;      // subcarrier phase rotation due to backoff
-    float complex * R;      // 
+    liquid_float_complex * G0;     // complex subcarrier gain estimate, S0[0]
+    liquid_float_complex * G1;     // complex subcarrier gain estimate, S0[1]
+    liquid_float_complex * G;      // complex subcarrier gain estimate
+    liquid_float_complex * B;      // subcarrier phase rotation due to backoff
+    liquid_float_complex * R;      // 
 
     // receiver state
-    enum {
-        OFDMFRAMESYNC_STATE_SEEKPLCP=0,   // seek initial PLCP
-        OFDMFRAMESYNC_STATE_PLCPSHORT0,   // seek first PLCP short sequence
-        OFDMFRAMESYNC_STATE_PLCPSHORT1,   // seek second PLCP short sequence
-        OFDMFRAMESYNC_STATE_PLCPLONG,     // seek PLCP long sequence
-        OFDMFRAMESYNC_STATE_RXSYMBOLS     // receive payload symbols
-    } state;
+    enum state state;
 
     // synchronizer objects
     nco_crcf nco_rx;        // numerically-controlled oscillator
@@ -104,8 +106,8 @@ struct ofdmframesync_s {
     unsigned int timer;         // input sample timer
     unsigned int num_symbols;   // symbol counter
     unsigned int backoff;       // sample timing backoff
-    float complex s_hat_0;      // first S0 symbol metrics estimate
-    float complex s_hat_1;      // second S0 symbol metrics estimate
+    liquid_float_complex s_hat_0;      // first S0 symbol metrics estimate
+    liquid_float_complex s_hat_1;      // second S0 symbol metrics estimate
 
     // detection thresholds
     float plcp_detect_thresh;   // plcp detection threshold, nominally 0.35
@@ -121,7 +123,7 @@ struct ofdmframesync_s {
     windowcf debug_x;
     windowf  debug_rssi;
     windowcf debug_framesyms;
-    float complex * G_hat;  // complex subcarrier gain estimate, S1
+    liquid_float_complex * G_hat;  // complex subcarrier gain estimate, S1
     float * px;             // pilot x-value
     float * py;             // pilot y-value
     float p_phase[2];       // pilot polyfit
@@ -184,18 +186,18 @@ ofdmframesync ofdmframesync_create(unsigned int           _M,
     }
 
     // create transform object
-    q->X = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->x = (float complex*) malloc((q->M)*sizeof(float complex));
+    q->X = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->x = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
     q->fft = FFT_CREATE_PLAN(q->M, q->x, q->X, FFT_DIR_FORWARD, FFT_METHOD);
  
     // create input buffer the length of the transform
     q->input_buffer = windowcf_create(q->M + q->cp_len);
 
     // allocate memory for PLCP arrays
-    q->S0 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->s0 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->S1 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->s1 = (float complex*) malloc((q->M)*sizeof(float complex));
+    q->S0 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->s0 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->S1 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->s1 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
     ofdmframe_init_S0(q->p, q->M, q->S0, q->s0, &q->M_S0);
     ofdmframe_init_S1(q->p, q->M, q->S1, q->s1, &q->M_S1);
 
@@ -206,17 +208,17 @@ ofdmframesync ofdmframesync_create(unsigned int           _M,
 
     // gain
     q->g0 = 1.0f;
-    q->G0 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->G1 = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->G  = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->B  = (float complex*) malloc((q->M)*sizeof(float complex));
-    q->R  = (float complex*) malloc((q->M)*sizeof(float complex));
+    q->G0 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->G1 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->G  = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->B  = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->R  = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
 
 #if 1
-    memset(q->G0, 0x00, q->M*sizeof(float complex));
-    memset(q->G1, 0x00, q->M*sizeof(float complex));
-    memset(q->G , 0x00, q->M*sizeof(float complex));
-    memset(q->B,  0x00, q->M*sizeof(float complex));
+    memset(q->G0, 0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->G1, 0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->G , 0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->B,  0x00, q->M*sizeof(liquid_float_complex));
 #endif
 
     // timing backoff
@@ -356,11 +358,11 @@ int ofdmframesync_is_frame_open(ofdmframesync _q)
 }
 
 void ofdmframesync_execute(ofdmframesync _q,
-                           float complex * _x,
+                           liquid_float_complex * _x,
                            unsigned int _n)
 {
     unsigned int i;
-    float complex x;
+    liquid_float_complex x;
     for (i=0; i<_n; i++) {
         x = _x[i];
 
@@ -431,7 +433,7 @@ void ofdmframesync_execute_seekplcp(ofdmframesync _q)
     _q->timer = 0;
 
     //
-    float complex * rc;
+    liquid_float_complex * rc;
     windowcf_read(_q->input_buffer, &rc);
 
     // estimate gain
@@ -456,7 +458,7 @@ void ofdmframesync_execute_seekplcp(ofdmframesync _q)
     // estimate S0 gain
     ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0);
 
-    float complex s_hat;
+    liquid_float_complex s_hat;
     ofdmframesync_S0_metrics(_q, _q->G0, &s_hat);
     s_hat *= g;
 
@@ -508,7 +510,7 @@ void ofdmframesync_execute_S0a(ofdmframesync _q)
     _q->timer = 0;
 
     //
-    float complex * rc;
+    liquid_float_complex * rc;
     windowcf_read(_q->input_buffer, &rc);
 
     // TODO : re-estimate nominal gain
@@ -516,7 +518,7 @@ void ofdmframesync_execute_S0a(ofdmframesync _q)
     // estimate S0 gain
     ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0);
 
-    float complex s_hat;
+    liquid_float_complex s_hat;
     ofdmframesync_S0_metrics(_q, _q->G0, &s_hat);
     s_hat *= _q->g0;
 
@@ -556,13 +558,13 @@ void ofdmframesync_execute_S0b(ofdmframesync _q)
     _q->timer = _q->M + _q->cp_len - _q->backoff;
 
     //
-    float complex * rc;
+    liquid_float_complex * rc;
     windowcf_read(_q->input_buffer, &rc);
 
     // estimate S0 gain
     ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G1);
 
-    float complex s_hat;
+    liquid_float_complex s_hat;
     ofdmframesync_S0_metrics(_q, _q->G1, &s_hat);
     s_hat *= _q->g0;
 
@@ -596,7 +598,7 @@ void ofdmframesync_execute_S0b(ofdmframesync _q)
     }
 #endif
 
-    float complex g_hat = 0.0f;
+    liquid_float_complex g_hat = 0.0f;
     unsigned int i;
     for (i=0; i<_q->M; i++)
         g_hat += _q->G1[i] * conjf(_q->G0[i]);
@@ -606,7 +608,7 @@ void ofdmframesync_execute_S0b(ofdmframesync _q)
     float nu_hat = 2.0f * cargf(g_hat) / (float)(_q->M);
 #else
     // compute carrier frequency offset estimate using ML method
-    float complex t0 = 0.0f;
+    liquid_float_complex t0 = 0.0f;
     for (i=0; i<_q->M2; i++) {
         t0 += conjf(rc[i])       *       _q->s0[i] * 
                     rc[i+_q->M2] * conjf(_q->s0[i+_q->M2]);
@@ -635,7 +637,7 @@ void ofdmframesync_execute_S1(ofdmframesync _q)
     _q->num_symbols++;
 
     // run fft
-    float complex * rc;
+    liquid_float_complex * rc;
     windowcf_read(_q->input_buffer, &rc);
 
     // estimate S1 gain
@@ -643,7 +645,7 @@ void ofdmframesync_execute_S1(ofdmframesync _q)
     ofdmframesync_estimate_gain_S1(_q, &rc[_q->cp_len], _q->G);
 
     // compute detector output
-    float complex g_hat = 0.0f;
+    liquid_float_complex g_hat = 0.0f;
     unsigned int i;
     for (i=0; i<_q->M; i++) {
         //g_hat += _q->G[(i+1+_q->M)%_q->M]*conjf(_q->G[(i+_q->M)%_q->M]);
@@ -724,9 +726,9 @@ void ofdmframesync_execute_rxsymbols(ofdmframesync _q)
     if (_q->timer == 0) {
 
         // run fft
-        float complex * rc;
+        liquid_float_complex * rc;
         windowcf_read(_q->input_buffer, &rc);
-        memmove(_q->x, &rc[_q->cp_len-_q->backoff], (_q->M)*sizeof(float complex));
+        memmove(_q->x, &rc[_q->cp_len-_q->backoff], (_q->M)*sizeof(liquid_float_complex));
         FFT_EXECUTE(_q->fft);
 
         // recover symbol in internal _q->X buffer
@@ -757,12 +759,12 @@ void ofdmframesync_execute_rxsymbols(ofdmframesync _q)
 
 // compute S0 metrics
 void ofdmframesync_S0_metrics(ofdmframesync _q,
-                              float complex * _G,
-                              float complex * _s_hat)
+                              liquid_float_complex * _G,
+                              liquid_float_complex * _s_hat)
 {
     // timing, carrier offset correction
     unsigned int i;
-    float complex s_hat = 0.0f;
+    liquid_float_complex s_hat = 0.0f;
 
     // compute timing estimate, accumulate phase difference across
     // gains on subsequent pilot subcarriers (note that all the odd
@@ -781,11 +783,11 @@ void ofdmframesync_S0_metrics(ofdmframesync _q,
 //  _x      :   input array (time), [size: M x 1]
 //  _G      :   output gain (freq)
 void ofdmframesync_estimate_gain_S0(ofdmframesync   _q,
-                                    float complex * _x,
-                                    float complex * _G)
+                                    liquid_float_complex * _x,
+                                    liquid_float_complex * _G)
 {
     // move input array into fft input buffer
-    memmove(_q->x, _x, (_q->M)*sizeof(float complex));
+    memmove(_q->x, _x, (_q->M)*sizeof(liquid_float_complex));
 
     // compute fft, storing result into _q->X
     FFT_EXECUTE(_q->fft);
@@ -814,11 +816,11 @@ void ofdmframesync_estimate_gain_S0(ofdmframesync   _q,
 //  _x      :   input array (time), [size: M x 1]
 //  _G      :   output gain (freq)
 void ofdmframesync_estimate_gain_S1(ofdmframesync _q,
-                                    float complex * _x,
-                                    float complex * _G)
+                                    liquid_float_complex * _x,
+                                    liquid_float_complex * _G)
 {
     // move input array into fft input buffer
-    memmove(_q->x, _x, (_q->M)*sizeof(float complex));
+    memmove(_q->x, _x, (_q->M)*sizeof(liquid_float_complex));
 
     // compute fft, storing result into _q->X
     FFT_EXECUTE(_q->fft);
@@ -850,7 +852,7 @@ void ofdmframesync_estimate_eqgain(ofdmframesync _q,
 #if DEBUG_OFDMFRAMESYNC
     if (_q->debug_enabled) {
         // copy pre-smoothed gain
-        memmove(_q->G_hat, _q->G, _q->M*sizeof(float complex));
+        memmove(_q->G_hat, _q->G, _q->M*sizeof(liquid_float_complex));
     }
 #endif
 
@@ -867,7 +869,7 @@ void ofdmframesync_estimate_eqgain(ofdmframesync _q,
         _q->x[i] = (i < _ntaps) ? 1.0f : 0.0f;
     FFT_EXECUTE(_q->fft);
 
-    memmove(_q->G0, _q->G, _q->M*sizeof(float complex));
+    memmove(_q->G0, _q->G, _q->M*sizeof(liquid_float_complex));
 
     // smooth complex equalizer gains
     for (i=0; i<_q->M; i++) {
@@ -877,9 +879,9 @@ void ofdmframesync_estimate_eqgain(ofdmframesync _q,
             continue;
         }
 
-        float complex w;
-        float complex w0 = 0.0f;
-        float complex G_hat = 0.0f;
+        liquid_float_complex w;
+        liquid_float_complex w0 = 0.0f;
+        liquid_float_complex G_hat = 0.0f;
 
         unsigned int j;
         for (j=0; j<_q->M; j++) {
@@ -912,7 +914,7 @@ void ofdmframesync_estimate_eqgain_poly(ofdmframesync _q,
 #if DEBUG_OFDMFRAMESYNC
     if (_q->debug_enabled) {
         // copy pre-smoothed gain
-        memmove(_q->G_hat, _q->G, _q->M*sizeof(float complex));
+        memmove(_q->G_hat, _q->G, _q->M*sizeof(liquid_float_complex));
     }
 #endif
 
@@ -921,11 +923,11 @@ void ofdmframesync_estimate_eqgain_poly(ofdmframesync _q,
     unsigned int N = _q->M_pilot + _q->M_data;
     if (_order > N-1) _order = N-1;
     if (_order > 10)  _order = 10;
-    float x_freq[N];
-    float y_abs[N];
-    float y_arg[N];
-    float p_abs[_order+1];
-    float p_arg[_order+1];
+    float *x_freq = (float*) alloca((N)*sizeof(float));
+    float *y_abs = (float*) alloca((N)*sizeof(float));
+    float *y_arg = (float*) alloca((N)*sizeof(float));
+    float *p_abs = (float*) alloca((_order+1)*sizeof(float));
+    float *p_arg = (float*) alloca((_order+1)*sizeof(float));
 
     unsigned int n=0;
     unsigned int k;
@@ -999,13 +1001,13 @@ void ofdmframesync_rxsymbol(ofdmframesync _q)
         _q->X[i] *= _q->R[i];
 
     // polynomial curve-fit
-    float x_phase[_q->M_pilot];
-    float y_phase[_q->M_pilot];
+    float *x_phase = (float*) alloca((_q->M_pilot)*sizeof(float));
+    float *y_phase = (float*) alloca((_q->M_pilot)*sizeof(float));
     float p_phase[2];
 
     unsigned int n=0;
     unsigned int k;
-    float complex pilot = 1.0f;
+    liquid_float_complex pilot = 1.0f;
     for (i=0; i<_q->M; i++) {
 
         // start at mid-point (effective fftshift)
@@ -1117,7 +1119,7 @@ void ofdmframesync_debug_enable(ofdmframesync _q)
     _q->debug_x         = windowcf_create(DEBUG_OFDMFRAMESYNC_BUFFER_LEN);
     _q->debug_rssi      = windowf_create(DEBUG_OFDMFRAMESYNC_BUFFER_LEN);
     _q->debug_framesyms = windowcf_create(DEBUG_OFDMFRAMESYNC_BUFFER_LEN);
-    _q->G_hat           = (float complex*) malloc((_q->M)*sizeof(float complex));
+    _q->G_hat           = (liquid_float_complex*) malloc((_q->M)*sizeof(liquid_float_complex));
 
     _q->px = (float*) malloc((_q->M_pilot)*sizeof(float));
     _q->py = (float*) malloc((_q->M_pilot)*sizeof(float));
@@ -1165,7 +1167,7 @@ void ofdmframesync_debug_print(ofdmframesync _q,
     fprintf(fid,"M_pilot = %u;\n", _q->M_pilot);
     fprintf(fid,"M_data  = %u;\n", _q->M_data);
     unsigned int i;
-    float complex * rc;
+    liquid_float_complex * rc;
     float * r;
 
     // save subcarrier allocation

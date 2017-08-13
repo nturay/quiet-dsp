@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -49,26 +49,26 @@
 // outputs
 //  _b      :   digital numerator (length _nz+1)
 //  _a      :   digital denominator (length _np+1)
-void bilinear_zpk(float complex * _z,
+void bilinear_zpk(liquid_float_complex * _z,
                   unsigned int _nz,
-                  float complex * _p,
+                  liquid_float_complex * _p,
                   unsigned int _np,
-                  float complex _k,
+                  liquid_float_complex _k,
                   float _m,
-                  float complex * _b,
-                  float complex * _a)
+                  liquid_float_complex * _b,
+                  liquid_float_complex * _a)
 {
     unsigned int i;
 
     // expand numerator
     unsigned int nb = _nz+1;
-    float complex pb[nb];
+    liquid_float_complex pb[nb];
     cfpoly_expandroots(_z,_nz,pb);
     if (_nz == 0) pb[0] = 1.;
 
     // expand denominator
     unsigned int na = _np+1;
-    float complex pa[na];
+    liquid_float_complex pa[na];
     cfpoly_expandroots(_p,_np,pa);
     if (_np == 0) pa[0] = 1.;
 
@@ -116,13 +116,13 @@ void bilinear_zpk(float complex * _z,
 // outputs
 //  _bd         :   digital filter numerator (length _b_order+1)
 //  _ad         :   digital filter numerator (length _a_order+1)
-void bilinear_nd(float complex * _b,
+void bilinear_nd(liquid_float_complex * _b,
                  unsigned int _b_order,
-                 float complex * _a,
+                 liquid_float_complex * _a,
                  unsigned int _a_order,
                  float _m,
-                 float complex * _bd,
-                 float complex * _ad)
+                 liquid_float_complex * _bd,
+                 liquid_float_complex * _ad)
 {
     if (_b_order > _a_order) {
         fprintf(stderr,"error: bilinear_nd(), numerator order cannot be higher than denominator\n");
@@ -189,7 +189,7 @@ void bilinear_nd(float complex * _b,
     }
 
     // normalize by a[0]
-    float complex a0_inv = 1.0f / _ad[0];
+    liquid_float_complex a0_inv = 1.0f / _ad[0];
     for (i=0; i<na; i++) {
         _bd[i] *= a0_inv;
         _ad[i] *= a0_inv;

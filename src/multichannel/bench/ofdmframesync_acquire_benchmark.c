@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
 #include <sys/resource.h>
 #include "liquid.h"
@@ -56,7 +56,7 @@ void ofdmframesync_acquire_bench(struct rusage *_start,
     ofdmframesync fs = ofdmframesync_create(M,cp_len,taper_len,NULL,NULL,NULL);
 
     unsigned int i;
-    float complex y[num_samples];   // frame samples
+    liquid_float_complex y[num_samples];   // frame samples
 
     // assemble full frame
     unsigned int n=0;

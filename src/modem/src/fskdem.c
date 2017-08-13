@@ -26,7 +26,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
+
 #include <string.h>
 
 #include "liquid.internal.h"
@@ -48,8 +48,8 @@ struct fskdem_s {
     unsigned int    M;          // constellation size
     float           M2;         // (M-1)/2
     unsigned int    K;          // FFT size
-    float complex * buf_time;   // FFT input buffer
-    float complex * buf_freq;   // FFT output buffer
+    liquid_float_complex * buf_time;   // FFT input buffer
+    liquid_float_complex * buf_freq;   // FFT output buffer
     FFT_PLAN        fft;        // FFT object
     unsigned int *  demod_map;  // demodulation map
 
@@ -141,8 +141,8 @@ fskdem fskdem_create(unsigned int _m,
     }
 
     // allocate memory for transform
-    q->buf_time = (float complex*) malloc(q->K * sizeof(float complex));
-    q->buf_freq = (float complex*) malloc(q->K * sizeof(float complex));
+    q->buf_time = (liquid_float_complex*) malloc(q->K * sizeof(liquid_float_complex));
+    q->buf_freq = (liquid_float_complex*) malloc(q->K * sizeof(liquid_float_complex));
     q->fft = FFT_CREATE_PLAN(q->K, q->buf_time, q->buf_freq, FFT_DIR_FORWARD, 0);
 
     // reset modem object
@@ -192,10 +192,10 @@ void fskdem_reset(fskdem _q)
 //  _q      :   fskdem object
 //  _y      :   input sample array [size: _k x 1]
 unsigned int fskdem_demodulate(fskdem          _q,
-                               float complex * _y)
+                               liquid_float_complex * _y)
 {
     // copy input to internal time buffer
-    memmove(_q->buf_time, _y, _q->k*sizeof(float complex));
+    memmove(_q->buf_time, _y, _q->k*sizeof(liquid_float_complex));
 
     // compute transform, storing result in 'buf_freq'
     FFT_EXECUTE(_q->fft);

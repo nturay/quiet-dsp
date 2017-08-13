@@ -105,14 +105,14 @@ int main(int argc, char*argv[])
     unsigned int num_samples = k*num_symbols;
 
     // bookkeeping variables
-    float complex sym_tx[num_symbols];  // transmitted data sequence
-    float complex x[num_samples];       // interpolated time series
-    float complex y[num_samples];       // channel output
-    float complex z[num_samples];       // equalized output
+    liquid_float_complex sym_tx[num_symbols];  // transmitted data sequence
+    liquid_float_complex x[num_samples];       // interpolated time series
+    liquid_float_complex y[num_samples];       // channel output
+    liquid_float_complex z[num_samples];       // equalized output
 
     float hm[hm_len];                   // matched filter response
-    float complex hc[hc_len];           // channel filter coefficients
-    float complex hp[hp_len];           // equalizer filter coefficients
+    liquid_float_complex hc[hc_len];           // channel filter coefficients
+    liquid_float_complex hp[hp_len];           // equalizer filter coefficients
 
     unsigned int i;
 
@@ -160,7 +160,7 @@ int main(int argc, char*argv[])
     // filtered error vector magnitude (emperical RMS error)
     float evm_hat = 0.03f;
 
-    float complex d_hat = 0.0f;
+    liquid_float_complex d_hat = 0.0f;
     for (i=0; i<num_samples; i++) {
         // print filtered evm (emperical rms error)
         if ( ((i+1)%50)==0 )
@@ -177,7 +177,7 @@ int main(int argc, char*argv[])
 
         // estimate transmitted signal
         unsigned int sym_out;   // output symbol
-        float complex d_prime;  // estimated input sample
+        liquid_float_complex d_prime;  // estimated input sample
         modem_demodulate(demod, d_hat, &sym_out);
         modem_get_demodulator_sample(demod, &d_prime);
 

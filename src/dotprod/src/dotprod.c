@@ -68,10 +68,20 @@ void DOTPROD(_run4)(TC *         _h,
     // initialize accumulator
     TO r=0;
 
+    // t = 4*(floor(_n/4))
+    unsigned int t=(_n>>2)<<2; 
+
     // compute dotprod in groups of 4
     unsigned int i;
+    for (i=0; i<t; i+=4) {
+        r += _h[i]   * _x[i];
+        r += _h[i+1] * _x[i+1];
+        r += _h[i+2] * _x[i+2];
+        r += _h[i+3] * _x[i+3];
+    }
+
     // clean up remaining
-    for (i=0; i<_n; i++)
+    for ( ; i<_n; i++)
         r += _h[i] * _x[i];
 
     // return result

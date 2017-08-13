@@ -23,9 +23,9 @@ int main() {
     iirfilt_crcf_print(q);
 
     // allocate memory for data arrays
-    float complex x[num_samples];   // original input
-    float complex y[num_samples];   // input with DC offset
-    float complex z[num_samples];   // DC-blocked result
+    liquid_float_complex x[num_samples];   // original input
+    liquid_float_complex y[num_samples];   // input with DC offset
+    liquid_float_complex z[num_samples];   // DC-blocked result
 
     // generate signals
     unsigned int i;

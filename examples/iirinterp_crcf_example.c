@@ -58,8 +58,8 @@ int main(int argc, char*argv[]) {
     float delay = iirinterp_crcf_groupdelay(q,0.0f);
 
     // generate input signal and interpolate
-    float complex x[  num_samples]; // input samples
-    float complex y[k*num_samples]; // output samples
+    liquid_float_complex x[  num_samples]; // input samples
+    liquid_float_complex y[k*num_samples]; // output samples
     unsigned int i;
     for (i=0; i<num_samples; i++) {
         // input signal (sinusoidal chirp)

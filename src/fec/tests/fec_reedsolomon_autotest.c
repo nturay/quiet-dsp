@@ -43,10 +43,10 @@ void autotest_reedsolomon_223_255()
     CONTEND_EQUALITY( enc_msg_len, 255 );
 
     // create arrays
-    unsigned char msg_org[dec_msg_len]; // original message
-    unsigned char msg_enc[enc_msg_len]; // encoded message
-    unsigned char msg_rec[enc_msg_len]; // received message
-    unsigned char msg_dec[dec_msg_len]; // decoded message
+    unsigned char *msg_org = (unsigned char*) alloca((dec_msg_len)*sizeof(unsigned char)); // original message
+    unsigned char *msg_enc = (unsigned char*) alloca((enc_msg_len)*sizeof(unsigned char)); // encoded message
+    unsigned char *msg_rec = (unsigned char*) alloca((enc_msg_len)*sizeof(unsigned char)); // received message
+    unsigned char *msg_dec = (unsigned char*) alloca((dec_msg_len)*sizeof(unsigned char)); // decoded message
 
     // initialize original message
     unsigned int i;

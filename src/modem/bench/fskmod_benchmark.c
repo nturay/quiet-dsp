@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <sys/resource.h>
 #include "liquid.h"
 
@@ -49,7 +49,7 @@ void fskmod_bench(struct rusage *     _start,
     fskmod mod = fskmod_create(_m,_k,_bandwidth);
 
     unsigned int M = 1 << _m;   // constellation size
-    float complex buf[_k];      // transmit buffer
+    liquid_float_complex buf[_k];      // transmit buffer
     
     unsigned long int i;
 

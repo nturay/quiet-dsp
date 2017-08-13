@@ -24,7 +24,9 @@
 // data for testing matrix addition
 //
 
-#include <complex.h>
+
+
+#include "liquid.h"
 
 // matrixf_data_add_x [size: 5 x 4]
 float matrixf_data_add_x[] = {

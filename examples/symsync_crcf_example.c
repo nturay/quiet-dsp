@@ -84,9 +84,9 @@ int main(int argc, char*argv[]) {
     // derived values
     unsigned int num_samples = k*num_symbols;
 
-    float complex s[num_symbols];       // data symbols
-    float complex x[num_samples];       // interpolated samples
-    float complex y[num_symbols + 64];  // synchronized symbols
+    liquid_float_complex s[num_symbols];       // data symbols
+    liquid_float_complex x[num_samples];       // interpolated samples
+    liquid_float_complex y[num_symbols + 64];  // synchronized symbols
 
     // generate random QPSK symbols
     for (i=0; i<num_symbols; i++) {

@@ -86,7 +86,7 @@ int main(int argc, char*argv[])
 
     // derived values
     unsigned int  buf_len = 256;
-    float complex buf[buf_len]; // time-domain buffer
+    liquid_float_complex buf[buf_len]; // time-domain buffer
 
     // allocate memory for header, payload
     unsigned char header[8];

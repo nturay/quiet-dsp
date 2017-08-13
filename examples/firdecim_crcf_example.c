@@ -85,9 +85,9 @@ int main(int argc, char*argv[]) {
     firdecim_crcf  decim  = firdecim_crcf_create(k,g,h_len);
 
     // allocate memory for buffers
-    float complex x[num_symbols];   // input symbols
-    float complex y[num_samples];   // interpolated sequence
-    float complex z[num_symbols];   // decimated (received) symbols
+    liquid_float_complex x[num_symbols];   // input symbols
+    liquid_float_complex y[num_samples];   // interpolated sequence
+    liquid_float_complex z[num_symbols];   // decimated (received) symbols
 
     // generate input symbols, padded with zeros at the end
     for (i=0; i<num_data_symbols; i++) {

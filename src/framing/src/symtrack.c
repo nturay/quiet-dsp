@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #define DEBUG_SYMTRACK           0
 #define DEBUG_SYMTRACK_PRINT     0
@@ -125,7 +125,7 @@ SYMTRACK() SYMTRACK(_create)(int          _ftype,
     q->nco = NCO(_create)(LIQUID_VCO);
 
     // demodulator
-    q->demod = MODEM(_create)(q->mod_scheme);
+    q->demod = MODEM(_create)((modulation_scheme)q->mod_scheme);
 
     // set default bandwidth
     SYMTRACK(_set_bandwidth)(q, 0.9f);
@@ -190,7 +190,7 @@ void SYMTRACK(_set_modscheme)(SYMTRACK() _q,
     _q->mod_scheme = _ms;
 
     // re-create modem
-    _q->demod = MODEM(_recreate)(_q->demod, _q->mod_scheme);
+    _q->demod = MODEM(_recreate)(_q->demod, (modulation_scheme)_q->mod_scheme);
 }
 
 // set symtrack internal bandwidth

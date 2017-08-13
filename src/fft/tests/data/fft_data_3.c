@@ -24,15 +24,18 @@
 // autotest fft data for 3-point transform
 //
 
-#include <complex.h>
 
-float complex fft_test_x3[] = {
-   -0.757661328095 +   0.655250200055*_Complex_I,
-   -1.262964116539 +   0.804288531547*_Complex_I,
-    0.075727215016 +  -0.825503865060*_Complex_I};
 
-float complex fft_test_y3[] = {
-   -1.944898229617 +   0.634034866542*_Complex_I,
-    1.247398741022 +   1.825198567765*_Complex_I,
-   -1.575484495691 +  -0.493482834141*_Complex_I};
+#include "liquid.h"
+#include "autotest/autotest.h"
+
+liquid_float_complex fft_test_x3[] = {
+   -0.757661328095f +   0.655250200055f*_Complex_I,
+   -1.262964116539f +   0.804288531547f*_Complex_I,
+    0.075727215016f +  -0.825503865060f*_Complex_I};
+
+liquid_float_complex fft_test_y3[] = {
+   -1.944898229617f +   0.634034866542f*_Complex_I,
+    1.247398741022f +   1.825198567765f*_Complex_I,
+   -1.575484495691f +  -0.493482834141f*_Complex_I};
 

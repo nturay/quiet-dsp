@@ -22,7 +22,7 @@
 
 #include <sys/resource.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "liquid.h"
 
 #define EQRLS_CCCF_TRAIN_BENCH_API(N)   \
@@ -48,18 +48,18 @@ void eqrls_cccf_train_bench(struct rusage *_start,
     unsigned long int i;
 
     // set up initial arrays to 'randomize' inputs/outputs
-    float complex y[11];
+    liquid_float_complex y[11];
     for (i=0; i<11; i++)
         y[i] = randnf() + _Complex_I*randnf();
 
-    float complex d[13];
+    liquid_float_complex d[13];
     for (i=0; i<13; i++)
         d[i] = randnf() + _Complex_I*randnf();
 
     unsigned int iy=0;
     unsigned int id=0;
 
-    float complex z;
+    liquid_float_complex z;
 
     // start trials
     getrusage(RUSAGE_SELF, _start);

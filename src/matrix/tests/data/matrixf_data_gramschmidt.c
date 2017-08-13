@@ -24,7 +24,9 @@
 // data for testing Gram-Schmidt orthonormalization
 //
 
-#include <complex.h>
+
+
+#include "liquid.h"
 
 // matrixf_data_gramschmidt_A [size: 4 x 3]
 float matrixf_data_gramschmidt_A[] = {

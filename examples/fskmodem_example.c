@@ -83,8 +83,8 @@ int main(int argc, char*argv[])
     fskdem_print(dem);
 
     // 
-    float complex buf_tx[k];    // transmit buffer
-    float complex buf_rx[k];    // transmit buffer
+    liquid_float_complex buf_tx[k];    // transmit buffer
+    liquid_float_complex buf_rx[k];    // transmit buffer
     
     // spectral periodogram
     spgramcf periodogram = spgramcf_create_default(nfft);

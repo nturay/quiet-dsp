@@ -89,9 +89,9 @@ int main(int argc, char*argv[])
 
     // derived/fixed values
     unsigned int    buf_len = 37;
-    float complex   buf_input  [buf_len];
-    float complex   buf_channel[buf_len];
-    float complex   buf_output [buf_len];
+    liquid_float_complex   buf_input  [buf_len];
+    liquid_float_complex   buf_channel[buf_len];
+    liquid_float_complex   buf_output [buf_len];
 
     // 
     // generate input sequence using symbol stream generator
@@ -101,7 +101,7 @@ int main(int argc, char*argv[])
     //
     // create multi-path channel filter
     //
-    float complex hc[hc_len];
+    liquid_float_complex hc[hc_len];
     for (i=0; i<hc_len; i++)
         hc[i] = (i==0) ? 0.5f : (randnf() + _Complex_I*randnf())*0.2f;
     firfilt_cccf channel = firfilt_cccf_create(hc, hc_len);

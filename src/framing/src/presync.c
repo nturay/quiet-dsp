@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <string.h>
 
 #include "liquid.internal.h"
@@ -87,16 +87,16 @@ PRESYNC() PRESYNC(_create)(TC *         _v,
     _q->sync_q = (DOTPROD()*) malloc( _q->m*sizeof(DOTPROD()) );
 
     // buffer
-    T vi_prime[_n];
-    T vq_prime[_n];
+    T *vi_prime = (T*) alloca((_n)*sizeof(T));
+    T *vq_prime = (T*) alloca((_n)*sizeof(T));
     for (i=0; i<_q->m; i++) {
 
         // generate signal with frequency offset
         _q->dphi[i] = (float)i / (float)(_q->m-1)*_dphi_max;
         unsigned int k;
         for (k=0; k<_q->n; k++) {
-            vi_prime[k] = REAL( _v[k] * cexpf(-_Complex_I*k*_q->dphi[i]) );
-            vq_prime[k] = IMAG( _v[k] * cexpf(-_Complex_I*k*_q->dphi[i]) );
+            vi_prime[k] = REAL( _v[k] * cexpf(-_Complex_I*(T)(k*_q->dphi[i])) );
+            vq_prime[k] = IMAG( _v[k] * cexpf(-_Complex_I*(T)(k*_q->dphi[i])) );
         }
 
         _q->sync_i[i] = DOTPROD(_create)(vi_prime, _q->n);
@@ -154,8 +154,8 @@ void PRESYNC(_reset)(PRESYNC() _q)
 //  _id         :   ...
 void PRESYNC(_correlatex)(PRESYNC()       _q,
                           unsigned int    _id,
-                          float complex * _rxy0,
-                          float complex * _rxy1)
+                          liquid_float_complex * _rxy0,
+                          liquid_float_complex * _rxy1)
 {
     // validate input...
     if (_id >= _q->m) {
@@ -206,10 +206,10 @@ void PRESYNC(_correlate)(PRESYNC() _q,
                          float *   _dphi_hat)
 {
     unsigned int i;
-    float complex rxy_max = 0;  // maximum cross-correlation
+    liquid_float_complex rxy_max = 0;  // maximum cross-correlation
     float abs_rxy_max = 0;      // absolute value of rxy_max
-    float complex rxy0;
-    float complex rxy1;
+    liquid_float_complex rxy0;
+    liquid_float_complex rxy1;
     float dphi_hat = 0.0f;
     for (i=0; i<_q->m; i++)  {
 

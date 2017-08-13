@@ -71,7 +71,7 @@ FIRPFB() FIRPFB(_create)(unsigned int _M,
     // generate bank of sub-samped filters
     // length of each sub-sampled filter
     unsigned int h_sub_len = _h_len / q->num_filters;
-    TC h_sub[h_sub_len];
+    TC *h_sub = (TC*) alloca(h_sub_len*sizeof(TC));
     unsigned int i, n;
     for (i=0; i<q->num_filters; i++) {
         for (n=0; n<h_sub_len; n++) {
@@ -124,12 +124,12 @@ FIRPFB() FIRPFB(_create_kaiser)(unsigned int _M,
 
     // generate square-root Nyquist filter
     unsigned int H_len = 2*_M*_m + 1;
-    float Hf[H_len];
+    float *Hf = (float*) alloca(H_len*sizeof(float));
     liquid_firdes_kaiser(H_len, _fc/(float)_M, _As, 0.0f, Hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC Hc[H_len];
+    TC *Hc = (TC*) alloca(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         Hc[i] = Hf[i];
 
@@ -166,12 +166,12 @@ FIRPFB() FIRPFB(_create_rnyquist)(int          _type,
 
     // generate square-root Nyquist filter
     unsigned int H_len = 2*_M*_k*_m + 1;
-    float Hf[H_len];
-    liquid_firdes_prototype(_type,_M*_k,_m,_beta,0,Hf);
+    float *Hf = (float*) alloca(H_len*sizeof(float));
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_M*_k,_m,_beta,0,Hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC Hc[H_len];
+    TC *Hc = (TC*) alloca(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         Hc[i] = Hf[i];
 
@@ -208,11 +208,11 @@ FIRPFB() FIRPFB(_create_drnyquist)(int          _type,
 
     // generate square-root Nyquist filter
     unsigned int H_len = 2*_M*_k*_m + 1;
-    float Hf[H_len];
-    liquid_firdes_prototype(_type,_M*_k,_m,_beta,0,Hf);
+    float *Hf = (float*) alloca(H_len*sizeof(float));
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_M*_k,_m,_beta,0,Hf);
     
     // compute derivative filter
-    float dHf[H_len];
+    float *dHf = (float*) alloca(H_len*sizeof(float));
     float HdH_max = 0.0f;
     unsigned int i;
     for (i=0; i<H_len; i++) {
@@ -229,9 +229,9 @@ FIRPFB() FIRPFB(_create_drnyquist)(int          _type,
             HdH_max = fabsf(Hf[i]*dHf[i]);
     }
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     // and apply scaling factor for normalized response
-    TC Hc[H_len];
+    TC *Hc = (TC*) alloca(H_len*sizeof(TC));
     for (i=0; i<H_len; i++)
         Hc[i] = dHf[i] * 0.06f / HdH_max;
 
@@ -259,7 +259,7 @@ FIRPFB() FIRPFB(_recreate)(FIRPFB()     _q,
     }
 
     // re-create each dotprod object
-    TC h_sub[_q->h_sub_len];
+    TC *h_sub = (TC*) alloca(_q->h_sub_len*sizeof(TC));
     unsigned int i, n;
     for (i=0; i<_q->num_filters; i++) {
         for (n=0; n<_q->h_sub_len; n++) {

@@ -70,10 +70,10 @@ void symsync_crcf_test(unsigned int _k,
     unsigned int i;
 
     // allocate arrays
-    float complex s[num_symbols];       // data symbols
-    float complex x[num_samples];       // interpolated samples
-    float complex y[num_samples_resamp];// resampled data (resamp_crcf)
-    float complex z[num_symbols + 64];  // synchronized symbols
+    liquid_float_complex *s = (liquid_float_complex*) alloca((num_symbols)*sizeof(liquid_float_complex));       // data symbols
+    liquid_float_complex *x = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));       // interpolated samples
+    liquid_float_complex *y = (liquid_float_complex*) alloca((num_samples_resamp)*sizeof(liquid_float_complex));// resampled data (resamp_crcf)
+    liquid_float_complex *z = (liquid_float_complex*) alloca((num_symbols + 64)*sizeof(liquid_float_complex));  // synchronized symbols
 
     // generate pseudo-random QPSK symbols
     // NOTE: by using an m-sequence generator this sequence will be identical
@@ -82,8 +82,8 @@ void symsync_crcf_test(unsigned int _k,
     for (i=0; i<num_symbols; i++) {
         int si = msequence_generate_symbol(ms, 1);
         int sq = msequence_generate_symbol(ms, 1);
-        s[i] = (si ? -1.0f : 1.0f) * M_SQRT1_2 +
-               (sq ? -1.0f : 1.0f) * M_SQRT1_2 * _Complex_I;
+        s[i] = (si ? -1.0f : 1.0f) * (float)M_SQRT1_2 +
+               (sq ? -1.0f : 1.0f) * (float)M_SQRT1_2 * _Complex_I;
     }
     msequence_destroy(ms);
 

@@ -62,8 +62,8 @@ int main(int argc, char*argv[]) {
     float delay = iirdecim_crcf_groupdelay(q,0.0f);
 
     // generate input signal and decimate
-    float complex x[num_samples];   // input samples
-    float complex y[num_samples/M]; // output samples
+    liquid_float_complex x[num_samples];   // input samples
+    liquid_float_complex y[num_samples/M]; // output samples
     unsigned int i;
     unsigned int w_len = num_samples > 4*delay ? num_samples - 4*delay : num_samples;
     for (i=0; i<num_samples; i++) {

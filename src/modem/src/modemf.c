@@ -24,7 +24,7 @@
 // modemf.c : linear modem API, floating-point (single precision)
 //
 
-#include <math.h>
+
 #include <stdint.h>
 #include "liquid.internal.h"
 
@@ -34,10 +34,21 @@
 #define FREQDEM(name)       LIQUID_CONCAT(freqdem,name)
 
 #define T                   float           /* primitive type */
-#define TC                  float complex   /* primitive type (complex) */
+#define TC                  liquid_float_complex   /* primitive type (complex) */
 
 #define PRINTVAL_T(X,F)     PRINTVAL_FLOAT(X,F)
 #define PRINTVAL_TC(X,F)    PRINTVAL_CFLOAT(X,F)
+
+#define modem_arb_sqam32_T  modem_arb_sqam32
+#define modem_arb_sqam128_T  modem_arb_sqam128
+#define modem_arb_V29_T  modem_arb_V29
+#define modem_arb16opt_T  modem_arb16opt
+#define modem_arb32opt_T  modem_arb32opt
+#define modem_arb64opt_T  modem_arb64opt
+#define modem_arb128opt_T  modem_arb128opt
+#define modem_arb256opt_T  modem_arb256opt
+#define modem_arb_vt64_T  modem_arb_vt64
+#define modem_arb_ui64_T  modem_arb_ui64
 
 // common source must come first (object definition)
 #include "modem_common.c"

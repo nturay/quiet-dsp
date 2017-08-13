@@ -62,8 +62,8 @@ void autotest_bpacketsync()
     unsigned int enc_msg_len = bpacketgen_get_packet_len(pg);
 
     // initialize arrays
-    unsigned char msg_org[dec_msg_len]; // original message
-    unsigned char msg_enc[enc_msg_len]; // encoded message
+    unsigned char *msg_org = (unsigned char*) alloca((dec_msg_len)*sizeof(unsigned char)); // original message
+    unsigned char *msg_enc = (unsigned char*) alloca((enc_msg_len)*sizeof(unsigned char)); // encoded message
 
     unsigned int num_packets_found=0;
 

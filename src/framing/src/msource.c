@@ -27,10 +27,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 // forward declaration of internal single source object and methods
 typedef struct QSOURCE(_s) * QSOURCE();
+
+enum type {
+    QSOURCE_TONE,
+    QSOURCE_NOISE,
+    QSOURCE_MODEM,
+};
 
 // internal structure (single source)
 struct QSOURCE(_s) {
@@ -52,12 +58,8 @@ struct QSOURCE(_s) {
             SYMSTREAM() symstream;
         } linmod;
     } source;
-    
-    enum {
-        QSOURCE_TONE,
-        QSOURCE_NOISE,
-        QSOURCE_MODEM,
-    } type;
+
+    enum type type;
 
     nco_crcf mixer;
     float    gain;
@@ -522,7 +524,7 @@ void QSOURCE(_gen_sample)(QSOURCE() _q,
         sample = 1.0f;
         break;
     case QSOURCE_NOISE:
-        IIRFILT(_execute)(_q->source.noise.filter, (randnf() + _Complex_I*randnf())*M_SQRT1_2, &sample);
+        IIRFILT(_execute)(_q->source.noise.filter, (randnf() + _Complex_I*randnf())*(T)M_SQRT1_2, &sample);
         break;
     case QSOURCE_MODEM:
         SYMSTREAM(_write_samples)(_q->source.linmod.symstream, &sample, 1);

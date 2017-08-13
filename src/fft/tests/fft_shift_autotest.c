@@ -25,51 +25,51 @@
 
 void autotest_fft_shift_4()
 {
-    float complex x[] = {
-        0 + 0*_Complex_I,
-        1 + 1*_Complex_I,
-        2 + 2*_Complex_I,
-        3 + 3*_Complex_I
+    liquid_float_complex x[] = {
+        0.f + 0.f*_Complex_I,
+        1.f + 1.f*_Complex_I,
+        2.f + 2.f*_Complex_I,
+        3.f + 3.f*_Complex_I
     };
 
-    float complex test[] = {
-        2 + 2*_Complex_I,
-        3 + 3*_Complex_I,
-        0 + 0*_Complex_I,
-        1 + 1*_Complex_I
+    liquid_float_complex test[] = {
+        2.f + 2.f*_Complex_I,
+        3.f + 3.f*_Complex_I,
+        0.f + 0.f*_Complex_I,
+        1.f + 1.f*_Complex_I
     };
 
     fft_shift(x,4);
 
-    CONTEND_SAME_DATA(x,test,4*sizeof(float complex));
+    CONTEND_SAME_DATA(x,test,4*sizeof(liquid_float_complex));
 }
 
 void autotest_fft_shift_8()
 {
-    float complex x[] = {
-        0 + 0*_Complex_I,
-        1 + 1*_Complex_I,
-        2 + 2*_Complex_I,
-        3 + 3*_Complex_I,
-        4 + 4*_Complex_I,
-        5 + 5*_Complex_I,
-        6 + 6*_Complex_I,
-        7 + 7*_Complex_I
+    liquid_float_complex x[] = {
+        0.f + 0.f*_Complex_I,
+        1.f + 1.f*_Complex_I,
+        2.f + 2.f*_Complex_I,
+        3.f + 3.f*_Complex_I,
+        4.f + 4.f*_Complex_I,
+        5.f + 5.f*_Complex_I,
+        6.f + 6.f*_Complex_I,
+        7.f + 7.f*_Complex_I
     };
 
-    float complex test[] = {
-        4 + 4*_Complex_I,
-        5 + 5*_Complex_I,
-        6 + 6*_Complex_I,
-        7 + 7*_Complex_I,
-        0 + 0*_Complex_I,
-        1 + 1*_Complex_I,
-        2 + 2*_Complex_I,
-        3 + 3*_Complex_I
+    liquid_float_complex test[] = {
+        4.f + 4.f*_Complex_I,
+        5.f + 5.f*_Complex_I,
+        6.f + 6.f*_Complex_I,
+        7.f + 7.f*_Complex_I,
+        0.f + 0.f*_Complex_I,
+        1.f + 1.f*_Complex_I,
+        2.f + 2.f*_Complex_I,
+        3.f + 3.f*_Complex_I
     };
 
     fft_shift(x,8);
 
-    CONTEND_SAME_DATA(x,test,8*sizeof(float complex));
+    CONTEND_SAME_DATA(x,test,8*sizeof(liquid_float_complex));
 }
 

@@ -72,8 +72,8 @@ int main(int argc, char*argv[]) {
     }
 
     // data arrays
-    float complex x[n];         // input complex sinusoid
-    float complex y[n];         // output complex sinusoid
+    liquid_float_complex x[n];         // input complex sinusoid
+    liquid_float_complex y[n];         // output complex sinusoid
     float phase_error[n];       // output phase error
 
     // generate PLL filter

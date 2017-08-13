@@ -24,7 +24,7 @@
 // Matrix Q/R decomposition method definitions
 //
 
-#include <math.h>
+
 #include "liquid.internal.h"
 
 #define DEBUG_MATRIX_QRDECOMP 1
@@ -48,7 +48,7 @@ void MATRIX(_qrdecomp_gramschmidt)(T *          _x,
     unsigned int k;
 
     // generate and initialize matrices
-    T e[n*n];   // normalized...
+    T *e = (T*) alloca((n*n)*sizeof(T));   // normalized...
     for (i=0; i<n*n; i++)
         e[i] = 0.0f;
 

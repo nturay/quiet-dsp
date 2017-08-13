@@ -76,14 +76,14 @@ void detector_cccf_runtest(unsigned int _n,
     float delay = (float)(_n + m) + _dt;    // expected delay
 
     // arrays
-    float complex s[_n];            // synchronization pattern (samples)
-    float complex x[num_samples];   // resampled signal with noise and offsets
+    liquid_float_complex *s = (liquid_float_complex*) alloca((_n)*sizeof(liquid_float_complex));            // synchronization pattern (samples)
+    liquid_float_complex *x = (liquid_float_complex*) alloca((num_samples)*sizeof(liquid_float_complex));   // resampled signal with noise and offsets
 
     // generate synchronization pattern (two samples per symbol)
     unsigned int n2 = (_n - (_n%2)) / 2;    // n2 = floor(n/2)
     unsigned int mm = liquid_nextpow2(n2);  // mm = ceil( log2(n2) )
     msequence ms = msequence_create_default(mm);
-    float complex v = 0.0f;
+    liquid_float_complex v = 0.0f;
     for (i=0; i<_n; i++) {
         if ( (i%2)==0 )
             v = msequence_advance(ms) ? 1.0f : -1.0f;
@@ -107,10 +107,10 @@ void detector_cccf_runtest(unsigned int _n,
         x[i] *= gamma;
 
         // add carrier offset
-        x[i] *= cexpf(_Complex_I*_dphi*i);
+        x[i] *= cexpf(_Complex_I*_dphi*(float)i);
 
         // add noise
-        x[i] += nstd * ( randnf() + _Complex_I*randnf() ) * M_SQRT1_2;
+        x[i] += nstd * ( randnf() + _Complex_I*randnf() ) * (float)M_SQRT1_2;
     }
     
     // destroy fractional sample interpolator

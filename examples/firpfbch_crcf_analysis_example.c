@@ -30,8 +30,8 @@ int main() {
     unsigned int num_samples = num_frames * num_channels;
 
     // data arrays
-    float complex x[num_samples];  // time-domain input  [size: num_samples  x 1         ]
-    float complex y[num_samples];  // channelized output [size: num_channels x num_frames]
+    liquid_float_complex x[num_samples];  // time-domain input  [size: num_samples  x 1         ]
+    liquid_float_complex y[num_samples];  // channelized output [size: num_channels x num_frames]
 
     // initialize input with zeros
     for (i=0; i<num_samples; i++)
@@ -102,7 +102,7 @@ int main() {
     // save channelized output signals
     for (i=0; i<num_frames; i++) {
         for (k=0; k<num_channels; k++) {
-            float complex v = y[i*num_channels + k];
+            liquid_float_complex v = y[i*num_channels + k];
             fprintf(fid,"  y(%3u,%6u) = %12.4e + 1i*%12.4e;\n", k+1, i+1, crealf(v), cimagf(v));
         }
     }

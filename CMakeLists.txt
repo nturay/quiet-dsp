@@ -1,4 +1,4 @@
-project(liquid-dsp C)
+project(liquid-dsp C CXX)
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -47,6 +47,8 @@ option(LIQUID_FORCE_X86_AVX "Force AVX (useful for cross-compiling)" OFF)
 option(LIQUID_FORCE_PPC_ALTIVEC "Force AltiVec (useful for cross-compiling)" OFF)
 option(LIQUID_FORCE_ARM_NEON "Force NEON (useful for cross-compiling)" OFF)
 option(LIQUID_FORCE_ARM64_NEON "Force AArch64 NEON (useful for cross-compiling)" OFF)
+option(LIQUID_CXX "Compile in C++ mode. Always on for Windows/MSVC." OFF)
+
 
 CHECK_INCLUDE_FILE(sys/resource.h HAVE_SYS_RESOURCE_H)
 
@@ -83,7 +85,7 @@ find_path(fec_include NAMES fec.h)
 find_library(fec_library NAMES fec)
 find_package_handle_standard_args(Fec DEFAULT_MSG fec_library fec_include)
 mark_as_advanced(fec_include fec_library)
-if(Fec_FOUND)
+if(FEC_FOUND)
     set(HAVE_FEC_H 1)
     set(HAVE_LIBFEC 1)
     add_library(fec UNKNOWN IMPORTED)
@@ -96,7 +98,7 @@ find_path(fftw3_include NAMES fftw3.h)
 find_library(fftw3_library NAMES fftw3f)
 find_package_handle_standard_args(Fftw3 DEFAULT_MSG fftw3_library fftw3_include)
 mark_as_advanced(fftw3_include fftw3_library)
-if (Fftw3_FOUND)
+if (FFTW3_FOUND)
     set(HAVE_FFTW3_H 1)
     add_library(fftw3f UNKNOWN IMPORTED)
     set_target_properties(fftw3f PROPERTIES IMPORTED_LOCATION "${fftw3_library}" INTERFACE_INCLUDE_DIRECTORIES "${fftw3_include}")
@@ -115,6 +117,8 @@ CHECK_CPUID("avx" HAVE_AVX ${LIQUID_FORCE_X86_AVX})
 CHECK_CPUID("vmx" HAVE_ALTIVEC ${LIQUID_FORCE_PPC_ALTIVEC})
 CHECK_CPUID("neon" HAVE_NEON ${LIQUID_FORCE_ARM_NEON})
 CHECK_CPUID("neon64" HAVE_NEON64 ${LIQUID_FORCE_ARM64_NEON})
+
+set(OS_PATH_SEP "/")
 
 #
 # Build compilation extra flags
@@ -148,8 +152,32 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
         # No extra flags needed
     endif ()
     set(_EXTRA_C_FLAGS "${_EXTRA_C_FLAGS} -ffast-math")
+
+    if (LIQUID_CXX)
+        set(CMAKE_CXX_FLAGS "-DLIQUID_BUILD_CPLUSPLUS -Werror=vla")
+        if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+            add_definitions("-x c++")
+        endif()
+    endif()
+elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
+    set(LIQUID_CXX ON)
+    # for now, simd doesnt work on msvc because of gcc builtin usage
+    set(LIQUID_SIMDOVERRIDE ON)
+    set(_EXTRA_C_FLAGS "/wd4003 /DLIQUID_BUILD_CPLUSPLUS")
+    set(OS_PATH_SEP "\\")
+
+    # we use our custom getopt here since windows lacks getopt.h
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/getopt)
+    set(GETOPT_SOURCES getopt/getopt.c)
+    add_library(getopt STATIC ${GETOPT_SOURCES})
+    set(GETOPT_LIBRARY getopt)
 endif ()
 
+if (LIQUID_CXX)
+    # not presently supported in c++ mode
+    set(LIQUID_BUILD_EXAMPLES OFF)
+    set(LIQUID_BUILD_SANDBOX OFF)
+endif()
 #
 # MODULE : agc - automatic gain control
 #
@@ -941,6 +969,9 @@ set(liquid_SOURCES
     ${utility_SOURCES}
     ${vector_SOURCES}
     )
+if (LIQUID_CXX)
+    set_source_files_properties(${liquid_SOURCES} PROPERTIES LANGUAGE CXX)
+endif()
 
 if (NOT LIQUID_BUILD_SHARED AND NOT LIQUID_BUILD_STATIC)
     message(FATAL_ERROR "Please, define LIQUID_BUILD_SHARED and/or LIQUID_BUILD_STATIC.")
@@ -951,10 +982,10 @@ if (LIQUID_BUILD_SHARED)
     if (HAVE_LIBM)
         target_link_libraries(liquid-shared m)
     endif ()
-    if (Fec_FOUND)
+    if (FEC_FOUND)
         target_link_libraries(liquid-shared fec)
     endif ()
-    if (NOT LIQUID_FFTOVERRIDE AND Fftw3_FOUND)
+    if (NOT LIQUID_FFTOVERRIDE AND FFTW3_FOUND)
         target_link_libraries(liquid-shared fftw3f)
     endif ()
     set_property(TARGET liquid-shared PROPERTY OUTPUT_NAME "liquid")
@@ -969,10 +1000,10 @@ if (LIQUID_BUILD_STATIC)
     if (HAVE_LIBM)
         target_link_libraries(liquid-static m)
     endif ()
-    if (Fec_FOUND)
+    if (FEC_FOUND)
         target_link_libraries(liquid-static fec)
     endif ()
-    if (NOT LIQUID_FFTOVERRIDE AND Fftw3_FOUND)
+    if (NOT LIQUID_FFTOVERRIDE AND FFTW3_FOUND)
         target_link_libraries(liquid-static fftw3f)
     endif ()
     set_property(TARGET liquid-static PROPERTY OUTPUT_NAME "liquid")
@@ -1028,20 +1059,35 @@ set(autotest_ALL_SOURCES
 set(autotest_SOURCES
     autotest/autotest.c
     autotest/autotestlib.c
+    autotest/null_autotest.c
     ${autotest_ALL_SOURCES}
     ${autotest_EXTRA_SOURCES}
     )
 
+if (LIQUID_CXX)
+    set_source_files_properties(${autotest_SOURCES} PROPERTIES LANGUAGE CXX)
+endif()
+
 add_custom_target(autotest_include
-                  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/autoscript" "/" "autotest" ${autotest_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
+                  COMMAND "$<TARGET_FILE:autoscript>" "${OS_PATH_SEP}" "autotest" ${autotest_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
                   DEPENDS autoscript
                   BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/autotest_include.h"
                   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                   )
 
 add_executable(autotest EXCLUDE_FROM_ALL ${autotest_SOURCES})
+set_property(TARGET autotest PROPERTY COMPILE_FLAGS "${_EXTRA_C_FLAGS}")
 add_dependencies(autotest autotest_include)
 target_link_libraries(autotest ${LIQUID_LIBRARY})
+if (GETOPT_LIBRARY)
+    target_link_libraries(autotest ${GETOPT_LIBRARY})
+endif(GETOPT_LIBRARY)
+
+add_custom_target(autotest_run
+                  COMMAND "$<TARGET_FILE:autotest>"
+                  DEPENDS autotest
+                  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+                  )
 
 #
 # Benchmark
@@ -1079,7 +1125,7 @@ if (HAVE_SYS_RESOURCE_H)
         )
 
     add_custom_target(benchmark_include
-                      COMMAND "${CMAKE_CURRENT_BINARY_DIR}/autoscript" "/" "benchmark" ${benchmark_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/benchmark_include.h"
+                      COMMAND "$<TARGET_FILE:autoscript>" "${OS_PATH_SEP}" "benchmark" ${benchmark_ALL_SOURCES} > "${CMAKE_CURRENT_BINARY_DIR}/benchmark_include.h"
                       DEPENDS autoscript
                       BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/benchmark_include.h"
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"

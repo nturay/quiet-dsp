@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <sys/resource.h>
 #include "liquid.h"
 
@@ -53,7 +53,7 @@ void fskdem_bench(struct rusage *     _start,
     unsigned long int i;
 
     // generate input vector to demodulate (spiral)
-    float complex buf[_k+10];
+    liquid_float_complex buf[_k+10];
     for (i=0; i<_k+10; i++)
         buf[i] = 0.07 * i * cexpf(_Complex_I*2*M_PI*0.1*i);
 

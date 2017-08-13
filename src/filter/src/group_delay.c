@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -45,11 +45,11 @@ float fir_group_delay(float * _h,
     }
 
     unsigned int i;
-    float complex t0=0.0f;
-    float complex t1=0.0f;
+    liquid_float_complex t0=0.0f;
+    liquid_float_complex t1=0.0f;
     for (i=0; i<_n; i++) {
-        t0 += _h[i] * cexpf(_Complex_I*2*M_PI*_fc*i) * i;
-        t1 += _h[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
+        t0 += _h[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i)) * (float)i;
+        t1 += _h[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i));
     }
 
     return crealf(t0/t1);
@@ -82,7 +82,7 @@ float iir_group_delay(float * _b,
     // compute c = conv(b,fliplr(a))
     //         c(z) = b(z)*a(1/z)*z^(-_na)
     unsigned int nc = _na + _nb - 1;
-    float c[nc];
+    float *c = (float*) alloca(nc*sizeof(float));
     unsigned int i,j;
     for (i=0; i<nc; i++)
         c[i] = 0.0;
@@ -98,12 +98,12 @@ float iir_group_delay(float * _b,
     //      sum(c[i] * exp(j 2 pi fc i) * i)
     //      --------------------------------
     //      sum(c[i] * exp(j 2 pi fc i))
-    float complex t0=0.0f;
-    float complex t1=0.0f;
-    float complex c0;
+    liquid_float_complex t0=0.0f;
+    liquid_float_complex t1=0.0f;
+    liquid_float_complex c0;
     for (i=0; i<nc; i++) {
-        c0  = c[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
-        t0 += c0*i;
+        c0  = c[i] * cexpf(_Complex_I*(float)(2*M_PI*_fc*i));
+        t0 += c0*(float)i;
         t1 += c0;
     }
 

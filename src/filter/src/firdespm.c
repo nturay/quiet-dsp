@@ -50,7 +50,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -688,7 +688,7 @@ void firdespm_iext_search(firdespm _q)
 
     // found extremal frequency indices
     unsigned int nmax = 2*_q->r + 2*_q->num_bands; // max number of extremals
-    unsigned int found_iext[nmax];
+    unsigned int *found_iext = (unsigned int*) alloca(nmax*sizeof(unsigned int));
     unsigned int num_found=0;
 
 #if 0
@@ -822,7 +822,6 @@ void firdespm_iext_search(firdespm _q)
     for (i=0; i<_q->r+1; i++)
         printf("iext_new[%4u] = %4u : %16.8e\n", i, found_iext[i], _q->E[found_iext[i]]);
 #endif
-
 }
 
 // evaluates result to determine if Remez exchange algorithm
@@ -863,7 +862,7 @@ void firdespm_compute_taps(firdespm _q, float * _h)
 
     // evaluate Lagrange polynomial on evenly spaced points
     unsigned int p = _q->r - _q->s + 1;
-    double G[p];
+    double *G = (double*) alloca(p*sizeof(double));
     for (i=0; i<p; i++) {
         double f = (double)(i) / (double)(_q->h_len);
         double xf = cos(2*M_PI*f);

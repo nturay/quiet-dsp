@@ -101,12 +101,12 @@ FIRINTERP() FIRINTERP(_create_kaiser)(unsigned int _M,
 
     // compute filter coefficients (floating point precision)
     unsigned int h_len = 2*_M*_m + 1;
-    float hf[h_len];
+    float *hf = (float*) alloca(h_len*sizeof(float));
     float fc = 0.5f / (float) (_M);
     liquid_firdes_kaiser(h_len, fc, _As, 0.0f, hf);
 
-    // copy coefficients to type-specific array (e.g. float complex)
-    TC hc[h_len];
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
+    TC *hc = (TC*) alloca(h_len*sizeof(TC));
     unsigned int i;
     for (i=0; i<h_len; i++)
         hc[i] = hf[i];
@@ -144,12 +144,12 @@ FIRINTERP() FIRINTERP(_create_prototype)(int          _type,
 
     // generate Nyquist filter
     unsigned int h_len = 2*_k*_m + 1;
-    float h[h_len];
-    liquid_firdes_prototype(_type,_k,_m,_beta,_dt,h);
+    float *h = (float*) alloca(h_len*sizeof(float));
+    liquid_firdes_prototype((liquid_firfilt_type)_type,_k,_m,_beta,_dt,h);
 
-    // copy coefficients to type-specific array (e.g. float complex)
+    // copy coefficients to type-specific array (e.g. liquid_float_complex)
     unsigned int i;
-    TC hc[h_len];
+    TC *hc = (TC*) alloca(h_len*sizeof(TC));
     for (i=0; i<h_len; i++)
         hc[i] = h[i];
 

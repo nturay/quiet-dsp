@@ -71,12 +71,12 @@ int main(int argc, char*argv[])
     float gamma = powf(10.0f, (SNRdB + noise_floor)/20.0f);
 
     // arrays
-    float complex s[n];             // synchronization pattern (samples)
-    float complex x[num_samples];   // transmitted signal
-    float complex y[num_samples];   // received signal
+    liquid_float_complex s[n];             // synchronization pattern (samples)
+    liquid_float_complex x[num_samples];   // transmitted signal
+    liquid_float_complex y[num_samples];   // received signal
 
     // generate synchronization pattern (OFDM symbol, slightly over-sampled)
-    float complex S[n];
+    liquid_float_complex S[n];
     for (i=0; i<n; i++)
         S[i] = (i < 0.4*n || i > 0.6*n) ? randnf() + _Complex_I*randnf() : 0.0f;
     fft_run(n, S, s, LIQUID_FFT_BACKWARD, 0);

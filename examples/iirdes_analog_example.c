@@ -105,9 +105,9 @@ int main(int argc, char*argv[]) {
     unsigned int nza = 0;
 
     // complex analog zeros, poles, gain
-    float complex za[order];
-    float complex pa[order];
-    float complex ka;
+    liquid_float_complex za[order];
+    liquid_float_complex pa[order];
+    liquid_float_complex ka;
 
     unsigned int i;
     

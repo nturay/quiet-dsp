@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
     unsigned int frame_len = qpacketmodem_get_frame_len(q);
 
     // allocate memory for frame samples
-    float complex frame_tx[frame_len];
-    float complex frame_rx[frame_len];
+    liquid_float_complex frame_tx[frame_len];
+    liquid_float_complex frame_rx[frame_len];
 
     // encode frame
     qpacketmodem_encode(q, payload_tx, frame_tx);

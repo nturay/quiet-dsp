@@ -70,8 +70,8 @@ int main(int argc, char*argv[]) {
 
     unsigned int i;
     unsigned int s[num_symbols];
-    float complex x[num_samples];
-    float complex y[num_samples];
+    liquid_float_complex x[num_samples];
+    liquid_float_complex y[num_samples];
     unsigned int sym_out[num_symbols];
 
     // generate random data sequence

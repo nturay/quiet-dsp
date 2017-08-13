@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 
@@ -58,12 +58,12 @@ void qpilotsync_test(modulation_scheme _ms,
     unsigned int frame_len = qpilotgen_get_frame_len(pg);
 
     // allocate arrays
-    unsigned char payload_sym_tx[_payload_len]; // transmitted payload symbols
-    float complex payload_tx    [_payload_len]; // transmitted payload samples
-    float complex frame_tx      [frame_len];    // transmitted frame samples
-    float complex frame_rx      [frame_len];    // received frame samples
-    float complex payload_rx    [_payload_len]; // received payload samples
-    unsigned char payload_sym_rx[_payload_len]; // received payload symbols
+    unsigned char *payload_sym_tx = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char)); // transmitted payload symbols
+    liquid_float_complex *payload_tx = (liquid_float_complex*) alloca((_payload_len)*sizeof(liquid_float_complex)); // transmitted payload samples
+    liquid_float_complex *frame_tx = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));    // transmitted frame samples
+    liquid_float_complex *frame_rx = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));    // received frame samples
+    liquid_float_complex *payload_rx = (liquid_float_complex*) alloca((_payload_len)*sizeof(liquid_float_complex)); // received payload samples
+    unsigned char *payload_sym_rx = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char)); // received payload symbols
 
     // create modem objects for payload
     modem mod = modem_create(_ms);
@@ -84,10 +84,10 @@ void qpilotsync_test(modulation_scheme _ms,
     // add channel impairments
     for (i=0; i<frame_len; i++) {
         // add carrier offset
-        frame_rx[i]  = frame_tx[i] * cexpf(_Complex_I*_dphi*i + _Complex_I*_phi);
+        frame_rx[i]  = frame_tx[i] * cexpf(_Complex_I*_dphi*(float)i + _Complex_I*_phi);
 
         // add noise
-        frame_rx[i] += nstd*(randnf() + _Complex_I*randnf())*M_SQRT1_2;
+        frame_rx[i] += nstd*(randnf() + _Complex_I*randnf())*(float)M_SQRT1_2;
 
         // apply channel gain
         frame_rx[i] *= _gamma;

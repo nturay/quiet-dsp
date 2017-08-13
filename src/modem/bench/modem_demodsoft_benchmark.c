@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <sys/resource.h>
 #include "liquid.h"
 
@@ -66,7 +66,7 @@ void modem_demodulate_soft_bench(struct rusage *_start,
     unsigned long int i;
 
     // generate input vector to demodulate (spiral)
-    float complex x[20];
+    liquid_float_complex x[20];
     for (i=0; i<20; i++)
         x[i] = 0.07 * i * cexpf(_Complex_I*2*M_PI*0.1*i);
 

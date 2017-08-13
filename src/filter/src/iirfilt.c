@@ -46,6 +46,12 @@
 // use structured dot product? 0:no, 1:yes
 #define LIQUID_IIRFILT_USE_DOTPROD   (0)
 
+// filter structure type
+enum type {
+    IIRFILT_TYPE_NORM=0,
+    IIRFILT_TYPE_SOS
+};
+
 struct IIRFILT(_s) {
     TC * b;             // numerator (feed-forward coefficients)
     TC * a;             // denominator (feed-back coefficients)
@@ -55,11 +61,7 @@ struct IIRFILT(_s) {
     unsigned int nb;    // numerator length
     unsigned int na;    // denominator length
 
-    // filter structure type
-    enum {
-        IIRFILT_TYPE_NORM=0,
-        IIRFILT_TYPE_SOS
-    } type;
+    enum type type;
 
 #if LIQUID_IIRFILT_USE_DOTPROD
     DOTPROD() dpb;      // numerator dot product
@@ -217,15 +219,15 @@ IIRFILT() IIRFILT(_create_prototype)(liquid_iirdes_filtertype _ftype,
 
     // allocate memory for filter coefficients
     unsigned int h_len = (_format == LIQUID_IIRDES_SOS) ? 3*(L+r) : N+1;
-    float B[h_len];
-    float A[h_len];
+    float *B = (float*) alloca(h_len*sizeof(float));
+    float *A = (float*) alloca(h_len*sizeof(float));
 
     // design filter (compute coefficients)
     liquid_iirdes(_ftype, _btype, _format, _order, _fc, _f0, _Ap, _As, B, A);
 
-    // move coefficients to type-specific arrays (e.g. float complex)
-    TC Bc[h_len];
-    TC Ac[h_len];
+    // move coefficients to type-specific arrays (e.g. liquid_float_complex)
+    TC *Bc = (TC*) alloca(h_len*sizeof(TC));
+    TC *Ac = (TC*) alloca(h_len*sizeof(TC));
     unsigned int i;
     for (i=0; i<h_len; i++) {
         Bc[i] = B[i];
@@ -267,27 +269,27 @@ IIRFILT() IIRFILT(_create_integrator)()
     // integrator digital zeros/poles/gain, [Pintelon:1990] Table II
     //
     // zeros, digital, integrator
-    float complex zdi[8] = {
-        1.175839 * -1.0f,
-        3.371020 * cexpf(_Complex_I * M_PI / 180.0f * -125.1125f),
-        3.371020 * cexpf(_Complex_I * M_PI / 180.0f *  125.1125f),
-        4.549710 * cexpf(_Complex_I * M_PI / 180.0f *  -80.96404f),
-        4.549710 * cexpf(_Complex_I * M_PI / 180.0f *   80.96404f),
-        5.223966 * cexpf(_Complex_I * M_PI / 180.0f *  -40.09347f),
-        5.223966 * cexpf(_Complex_I * M_PI / 180.0f *   40.09347f),
-        5.443743,};
+    liquid_float_complex zdi[8] = {
+        1.175839f * -1.0f,
+        3.371020f * cexpf(_Complex_I * (T)M_PI / 180.0f * -125.1125f),
+        3.371020f * cexpf(_Complex_I * (T)M_PI / 180.0f *  125.1125f),
+        4.549710f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -80.96404f),
+        4.549710f * cexpf(_Complex_I * (T)M_PI / 180.0f *   80.96404f),
+        5.223966f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -40.09347f),
+        5.223966f * cexpf(_Complex_I * (T)M_PI / 180.0f *   40.09347f),
+        5.443743f,};
     // poles, digital, integrator
-    float complex pdi[8] = {
+    liquid_float_complex pdi[8] = {
         0.5805235f * -1.0f,
-        0.2332021f * cexpf(_Complex_I * M_PI / 180.0f * -114.0968f),
-        0.2332021f * cexpf(_Complex_I * M_PI / 180.0f *  114.0968f),
-        0.1814755f * cexpf(_Complex_I * M_PI / 180.0f *  -66.33969f),
-        0.1814755f * cexpf(_Complex_I * M_PI / 180.0f *   66.33969f),
-        0.1641457f * cexpf(_Complex_I * M_PI / 180.0f *  -21.89539f),
-        0.1641457f * cexpf(_Complex_I * M_PI / 180.0f *   21.89539f),
+        0.2332021f * cexpf(_Complex_I * (T)M_PI / 180.0f * -114.0968f),
+        0.2332021f * cexpf(_Complex_I * (T)M_PI / 180.0f *  114.0968f),
+        0.1814755f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -66.33969f),
+        0.1814755f * cexpf(_Complex_I * (T)M_PI / 180.0f *   66.33969f),
+        0.1641457f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -21.89539f),
+        0.1641457f * cexpf(_Complex_I * (T)M_PI / 180.0f *   21.89539f),
         1.0f,};
     // gain, digital, integrator
-    float complex kdi = -1.89213380759321e-05f;
+    liquid_float_complex kdi = -1.89213380759321e-05f;
 
     // second-order sections
     // allocate 12 values for 4 second-order sections each with
@@ -316,27 +318,27 @@ IIRFILT() IIRFILT(_create_differentiator)()
     // differentiator digital zeros/poles/gain, [Pintelon:1990] Table IV
     //
     // zeros, digital, differentiator
-    float complex zdd[8] = {
+    liquid_float_complex zdd[8] = {
         1.702575f * -1.0f,
-        5.877385f * cexpf(_Complex_I * M_PI / 180.0f * -221.4063f),
-        5.877385f * cexpf(_Complex_I * M_PI / 180.0f *  221.4063f),
-        4.197421f * cexpf(_Complex_I * M_PI / 180.0f * -144.5972f),
-        4.197421f * cexpf(_Complex_I * M_PI / 180.0f *  144.5972f),
-        5.350284f * cexpf(_Complex_I * M_PI / 180.0f *  -66.88802f),
-        5.350284f * cexpf(_Complex_I * M_PI / 180.0f *   66.88802f),
+        5.877385f * cexpf(_Complex_I * (T)M_PI / 180.0f * -221.4063f),
+        5.877385f * cexpf(_Complex_I * (T)M_PI / 180.0f *  221.4063f),
+        4.197421f * cexpf(_Complex_I * (T)M_PI / 180.0f * -144.5972f),
+        4.197421f * cexpf(_Complex_I * (T)M_PI / 180.0f *  144.5972f),
+        5.350284f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -66.88802f),
+        5.350284f * cexpf(_Complex_I * (T)M_PI / 180.0f *   66.88802f),
         1.0f,};
     // poles, digital, differentiator
-    float complex pdd[8] = {
+    liquid_float_complex pdd[8] = {
         0.8476936f * -1.0f,
-        0.2990781f * cexpf(_Complex_I * M_PI / 180.0f * -125.5188f),
-        0.2990781f * cexpf(_Complex_I * M_PI / 180.0f *  125.5188f),
-        0.2232427f * cexpf(_Complex_I * M_PI / 180.0f *  -81.52326f),
-        0.2232427f * cexpf(_Complex_I * M_PI / 180.0f *   81.52326f),
-        0.1958670f * cexpf(_Complex_I * M_PI / 180.0f *  -40.51510f),
-        0.1958670f * cexpf(_Complex_I * M_PI / 180.0f *   40.51510f),
+        0.2990781f * cexpf(_Complex_I * (T)M_PI / 180.0f * -125.5188f),
+        0.2990781f * cexpf(_Complex_I * (T)M_PI / 180.0f *  125.5188f),
+        0.2232427f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -81.52326f),
+        0.2232427f * cexpf(_Complex_I * (T)M_PI / 180.0f *   81.52326f),
+        0.1958670f * cexpf(_Complex_I * (T)M_PI / 180.0f *  -40.51510f),
+        0.1958670f * cexpf(_Complex_I * (T)M_PI / 180.0f *   40.51510f),
         0.1886088f,};
     // gain, digital, differentiator
-    float complex kdd = 2.09049284907492e-05f;
+    liquid_float_complex kdd = 2.09049284907492e-05f;
 
     // second-order sections
     // allocate 12 values for 4 second-order sections each with
@@ -586,21 +588,21 @@ unsigned int IIRFILT(_get_length)(IIRFILT() _q)
 //  _H      :   output frequency response
 void IIRFILT(_freqresponse)(IIRFILT()       _q,
                             float           _fc,
-                            float complex * _H)
+                            liquid_float_complex * _H)
 {
     unsigned int i;
-    float complex H = 0.0f;
+    liquid_float_complex H = 0.0f;
 
     if (_q->type == IIRFILT_TYPE_NORM) {
         // 
-        float complex Ha = 0.0f;
-        float complex Hb = 0.0f;
+        liquid_float_complex Ha = 0.0f;
+        liquid_float_complex Hb = 0.0f;
 
         for (i=0; i<_q->nb; i++)
-            Hb += _q->b[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
+            Hb += _q->b[i] * cexpf(_Complex_I*(T)(2*M_PI*_fc*i));
 
         for (i=0; i<_q->na; i++)
-            Ha += _q->a[i] * cexpf(_Complex_I*2*M_PI*_fc*i);
+            Ha += _q->a[i] * cexpf(_Complex_I*(T)(2*M_PI*_fc*i));
 
         // TODO : check to see if we need to take conjugate
         H = Hb / Ha;
@@ -610,13 +612,13 @@ void IIRFILT(_freqresponse)(IIRFILT()       _q,
 
         // compute 3-point DFT for each second-order section
         for (i=0; i<_q->nsos; i++) {
-            float complex Hb =  _q->b[3*i+0] * cexpf(_Complex_I*2*M_PI*_fc*0) +
-                                _q->b[3*i+1] * cexpf(_Complex_I*2*M_PI*_fc*1) +
-                                _q->b[3*i+2] * cexpf(_Complex_I*2*M_PI*_fc*2);
+            liquid_float_complex Hb =  _q->b[3*i+0] * cexpf(_Complex_I*(T)(2*M_PI*_fc*0)) +
+                                _q->b[3*i+1] * cexpf(_Complex_I*(T)(2*M_PI*_fc*1)) +
+                                _q->b[3*i+2] * cexpf(_Complex_I*(T)(2*M_PI*_fc*2));
 
-            float complex Ha =  _q->a[3*i+0] * cexpf(_Complex_I*2*M_PI*_fc*0) +
-                                _q->a[3*i+1] * cexpf(_Complex_I*2*M_PI*_fc*1) +
-                                _q->a[3*i+2] * cexpf(_Complex_I*2*M_PI*_fc*2);
+            liquid_float_complex Ha =  _q->a[3*i+0] * cexpf(_Complex_I*(T)(2*M_PI*_fc*0)) +
+                                _q->a[3*i+1] * cexpf(_Complex_I*(T)(2*M_PI*_fc*1)) +
+                                _q->a[3*i+2] * cexpf(_Complex_I*(T)(2*M_PI*_fc*2));
 
             // TODO : check to see if we need to take conjugate
             H *= Hb / Ha;
@@ -640,8 +642,8 @@ float IIRFILT(_groupdelay)(IIRFILT() _q,
         // compute group delay from regular transfer function form
 
         // copy coefficients
-        float b[_q->nb];
-        float a[_q->na];
+        float *b = (float*) alloca(_q->nb*sizeof(float));
+        float *a = (float*) alloca(_q->na*sizeof(float));
         for (i=0; i<_q->nb; i++) b[i] = crealf(_q->b[i]);
         for (i=0; i<_q->na; i++) a[i] = crealf(_q->a[i]);
         groupdelay = iir_group_delay(b, _q->nb, a, _q->na, _fc);

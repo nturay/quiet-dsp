@@ -101,9 +101,9 @@ int main(int argc, char*argv[])
 
     // buffers
     unsigned int    buf_len = 800;      // buffer size
-    float complex   x   [buf_len];      // original signal
-    float complex   y   [buf_len];      // channel output
-    float complex   syms[buf_len];      // recovered symbols
+    liquid_float_complex   x   [buf_len];      // original signal
+    liquid_float_complex   y   [buf_len];      // channel output
+    liquid_float_complex   syms[buf_len];      // recovered symbols
     // window for saving last few symbols
     windowcf sym_buf = windowcf_create(buf_len);
 
@@ -164,7 +164,7 @@ int main(int argc, char*argv[])
     fprintf(fid,"close all;\n");
 
     // read buffer and write last symbols to file
-    float complex * rc;
+    liquid_float_complex * rc;
     windowcf_read(sym_buf, &rc);
     fprintf(fid,"syms = zeros(1,%u);\n", buf_len);
     for (i=0; i<buf_len; i++)

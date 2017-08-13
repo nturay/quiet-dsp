@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include <math.h>
+
 #include <stdlib.h>
 
 #include "liquid.internal.h"
@@ -55,7 +55,7 @@ struct gmskdem_s {
     firfilt_rrrf filter;    // receiver matched filter
 #endif
 
-    float complex x_prime;  // received signal state
+    liquid_float_complex x_prime;  // received signal state
 
     // demodulated symbols counter
     unsigned int num_symbols_demod;
@@ -194,7 +194,7 @@ void gmskdem_set_eq_bw(gmskdem _q,
 }
 
 void gmskdem_demodulate(gmskdem _q,
-                        float complex * _x,
+                        liquid_float_complex * _x,
                         unsigned int * _s)
 {
     // increment symbol counter

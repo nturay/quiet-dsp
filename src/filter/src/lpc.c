@@ -26,7 +26,7 @@
 // linear prediction coefficients
 //
 
-#include <math.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,7 +53,7 @@ void liquid_lpc(float * _x,
     }
 
     // compute auto-correlation with lags
-    float r[_p+1];    // auto-correlation array
+    float *r = (float*) alloca((_p+1)*sizeof(float));    // auto-correlation array
 
     unsigned int i;
     for (i=0; i<_p+1; i++) {
@@ -92,10 +92,10 @@ void liquid_levinson(float * _r,
     }
 
     // allocate arrays
-    float a0[_p+1]; // temporary coefficients array, index [n]
-    float a1[_p+1]; // temporary coefficients array, index [n-1]
-    float e[_p+1];  // prediction error
-    float k[_p+1];  // reflection coefficients
+    float *a0 = (float*) alloca((_p+1)*sizeof(float)); // temporary coefficients array, index [n]
+    float *a1 = (float*) alloca((_p+1)*sizeof(float)); // temporary coefficients array, index [n-1]
+    float *e = (float*) alloca((_p+1)*sizeof(float));  // prediction error
+    float *k = (float*) alloca((_p+1)*sizeof(float));  // reflection coefficients
 
     // initialize
     k[0] = 1.0f;

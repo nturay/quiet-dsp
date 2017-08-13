@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <string.h>
 
 #include "liquid.internal.h"
@@ -95,7 +95,7 @@ BPRESYNC() BPRESYNC(_create)(TC *         _v,
         _q->dphi[i] = (float)i / (float)(_q->m-1)*_dphi_max;
         unsigned int k;
         for (k=0; k<_q->n; k++) {
-            TC v_prime = _v[k] * cexpf(-_Complex_I*k*_q->dphi[i]);
+            TC v_prime = _v[k] * cexpf(-_Complex_I*(float)k*_q->dphi[i]);
             bsequence_push(_q->sync_i[i], crealf(v_prime)>0);
             bsequence_push(_q->sync_q[i], cimagf(v_prime)>0);
         }
@@ -155,8 +155,8 @@ void BPRESYNC(_reset)(BPRESYNC() _q)
 //  _id         :   ...
 void BPRESYNC(_correlatex)(BPRESYNC()      _q,
                            unsigned int    _id,
-                           float complex * _rxy0,
-                           float complex * _rxy1)
+                           liquid_float_complex * _rxy0,
+                           liquid_float_complex * _rxy1)
 {
     // validate input...
     if (_id >= _q->m) {
@@ -173,12 +173,12 @@ void BPRESYNC(_correlatex)(BPRESYNC()      _q,
     // non-conjugated
     int rxy_i0 = rxy_ii - rxy_qq;
     int rxy_q0 = rxy_iq + rxy_qi;
-    *_rxy0 = (rxy_i0 + rxy_q0 * _Complex_I) * _q->n_inv;
+    *_rxy0 = ((float)rxy_i0 + (float)rxy_q0 * _Complex_I) * _q->n_inv;
 
     // conjugated
     int rxy_i1 = rxy_ii + rxy_qq;
     int rxy_q1 = rxy_iq - rxy_qi;
-    *_rxy1 = (rxy_i1 + rxy_q1 * _Complex_I) * _q->n_inv;
+    *_rxy1 = ((float)rxy_i1 + (float)rxy_q1 * _Complex_I) * _q->n_inv;
 }
 
 /* push input sample into pre-demod synchronizer            */
@@ -201,10 +201,10 @@ void BPRESYNC(_correlate)(BPRESYNC() _q,
                           float *    _dphi_hat)
 {
     unsigned int i;
-    float complex rxy_max = 0;  // maximum cross-correlation
+    liquid_float_complex rxy_max = 0;  // maximum cross-correlation
     float abs_rxy_max = 0;      // absolute value of rxy_max
-    float complex rxy0;
-    float complex rxy1;
+    liquid_float_complex rxy0;
+    liquid_float_complex rxy1;
     float dphi_hat = 0.0f;
     for (i=0; i<_q->m; i++)  {
 

@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -119,8 +119,8 @@ void liquid_firdes_gmskrx(unsigned int _k,
     unsigned int h_len = 2*k*m+1;   // filter length
 
     // arrays
-    float ht[h_len];         // transmit filter coefficients
-    float hr[h_len];         // recieve filter coefficients
+    float *ht = (float*) alloca(h_len*sizeof(float));         // transmit filter coefficients
+    float *hr = (float*) alloca(h_len*sizeof(float));         // recieve filter coefficients
 
     // design transmit filter
     liquid_firdes_gmsktx(k,m,BT,0.0f,ht);
@@ -130,18 +130,18 @@ void liquid_firdes_gmskrx(unsigned int _k,
     //
 
     // 'internal' arrays
-    float h_primef[h_len];          // temporary buffer for real 'prototype' coefficients
-    float g_primef[h_len];          // temporary buffer for real 'gain' coefficient
+    float *h_primef = (float*) alloca(h_len*sizeof(float));          // temporary buffer for real 'prototype' coefficients
+    float *g_primef = (float*) alloca(h_len*sizeof(float));          // temporary buffer for real 'gain' coefficient
 
-    float complex h_tx[h_len];      // impulse response of transmit filter
-    float complex h_prime[h_len];   // impulse response of 'prototype' filter
-    float complex g_prime[h_len];   // impulse response of 'gain' filter
-    float complex h_hat[h_len];     // impulse response of receive filter
+    liquid_float_complex *h_tx = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));      // impulse response of transmit filter
+    liquid_float_complex *h_prime = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));   // impulse response of 'prototype' filter
+    liquid_float_complex *g_prime = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));   // impulse response of 'gain' filter
+    liquid_float_complex *h_hat = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));     // impulse response of receive filter
     
-    float complex H_tx[h_len];      // frequency response of transmit filter
-    float complex H_prime[h_len];   // frequency response of 'prototype' filter
-    float complex G_prime[h_len];   // frequency response of 'gain' filter
-    float complex H_hat[h_len];     // frequency response of receive filter
+    liquid_float_complex *H_tx = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));      // frequency response of transmit filter
+    liquid_float_complex *H_prime = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));   // frequency response of 'prototype' filter
+    liquid_float_complex *G_prime = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));   // frequency response of 'gain' filter
+    liquid_float_complex *H_hat = (liquid_float_complex*) alloca(h_len * sizeof(liquid_float_complex));     // frequency response of receive filter
 
     // create 'prototype' matched filter
     liquid_firdes_prototype(prototype,k,m,beta,0.0f,h_primef);

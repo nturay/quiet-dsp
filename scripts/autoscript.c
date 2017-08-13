@@ -171,7 +171,7 @@ void autoscript_print(autoscript _q)
             max_len = str_len > max_len ? str_len : max_len;
         }
     }
-    char space[max_len+1];
+    char *space = (char*) alloca((max_len+1)*sizeof(char));
     memset(space, ' ', max_len);
     space[max_len] = '\0';
 
@@ -182,7 +182,7 @@ void autoscript_print(autoscript _q)
         struct package_s * p = &_q->packages[i];
         for (j=0; j<p->num_scripts; j++) {
             // print formatting line, adding appropriate space to align columns
-            printf("    {.id = %4u, .api = &%s_%s,%s .name = \"%s\"}",
+            printf("    { %4u, &%s_%s,%s \"%s\"}",
                 n,
                 _q->type,
                 p->scripts[j].name,
@@ -200,7 +200,7 @@ void autoscript_print(autoscript _q)
     printf("// array of packages\n");
     printf("package_t packages[NUM_PACKAGES] = {\n");
     for (i=0; i<_q->num_packages; i++) {
-        printf("    {.id = %4u, .index = %4u, .num_scripts = %4u, .name = \"%s\"}",
+        printf("    { %4u, %4u, %4u, \"%s\"}",
             i,
             n,
             _q->packages[i].num_scripts,
@@ -240,7 +240,7 @@ void autoscript_parsefilename(autoscript _q,
 
     // generate tag (e.g. "_benchmark")
     unsigned int tag_len = strlen(_q->type) + 2;
-    char tag[tag_len];
+    char *tag = (char*) alloca((tag_len)*sizeof(char));
     tag[0] = '_';
     strcpy(tag+1, _q->type);
     tag[tag_len-1] = '\0';
@@ -295,7 +295,7 @@ void autoscript_parsefile(autoscript _q,
     }
     // generate tag (e.g. "void benchmark_");
     unsigned int tag_len = 5 + strlen(_q->type) + 2;
-    char tag[tag_len];
+    char *tag = (char*) alloca((tag_len)*sizeof(char));
     strcpy(tag, "void ");
     strcpy(tag+5, _q->type);
     tag[tag_len-2] = '_';

@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 #include "liquid.internal.h"
 
 #define LIQUID_qnsearch_GAMMA_MIN 0.000001

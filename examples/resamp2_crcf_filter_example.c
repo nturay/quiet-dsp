@@ -25,9 +25,9 @@ int main() {
     unsigned int N = num_samples + h_len;
 
     // arrays
-    float complex x[N];             // input time series
-    float complex y0[N];            // output time series (lower band)
-    float complex y1[N];            // output time series (upper band)
+    liquid_float_complex x[N];             // input time series
+    liquid_float_complex y0[N];            // output time series (lower band)
+    liquid_float_complex y1[N];            // output time series (upper band)
 
     // generate input sequence
     unsigned int i;

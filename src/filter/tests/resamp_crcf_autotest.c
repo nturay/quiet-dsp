@@ -46,8 +46,8 @@ void autotest_resamp_crcf()
     unsigned int y_len = (unsigned int) ceilf(1.1 * nx * r) + 4;
 
     // arrays
-    float complex x[nx];
-    float complex y[y_len];
+    liquid_float_complex *x = (liquid_float_complex*) alloca((nx)*sizeof(liquid_float_complex));
+    liquid_float_complex *y = (liquid_float_complex*) alloca((y_len)*sizeof(liquid_float_complex));
 
     // create resampler
     resamp_crcf q = resamp_crcf_create(r,m,bw,As,npfb);
@@ -59,7 +59,7 @@ void autotest_resamp_crcf()
         float w = i < n ? kaiser(i, n, 10.0f, 0.0f) : 0.0f;
 
         // apply window to complex sinusoid
-        x[i] = cexpf(_Complex_I*2*M_PI*fx*i) * w;
+        x[i] = cexpf(_Complex_I*(float)(2*M_PI*fx*i)) * w;
 
         // accumulate window
         wsum += w;
@@ -90,8 +90,8 @@ void autotest_resamp_crcf()
     // run FFT and ensure that carrier has moved and that image
     // frequencies and distortion have been adequately suppressed
     unsigned int nfft = 1 << liquid_nextpow2(ny);
-    float complex yfft[nfft];   // fft input
-    float complex Yfft[nfft];   // fft output
+    liquid_float_complex *yfft = (liquid_float_complex*) alloca((nfft)*sizeof(liquid_float_complex));   // fft input
+    liquid_float_complex *Yfft = (liquid_float_complex*) alloca((nfft)*sizeof(liquid_float_complex));   // fft output
     for (i=0; i<nfft; i++)
         yfft[i] = i < ny ? y[i] : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);
@@ -179,7 +179,7 @@ void autotest_resamp_crcf_output_block()
     unsigned int npfb=64;       // number of filters in bank (timing resolution)
     unsigned int n=400;         // number of input samples
     float fx=0.254230646f;      // complex input sinusoid frequency (0.2*r)
-    complex float magic = 123456 + _Complex_I * 7890123;
+    liquid_float_complex magic = 123456.f + _Complex_I * 7890123.f;
 
     unsigned int i;
 
@@ -192,8 +192,8 @@ void autotest_resamp_crcf_output_block()
     unsigned int ny = y_len - 1;
 
     // arrays
-    float complex x[nx];
-    float complex y[y_len];
+    liquid_float_complex *x = (liquid_float_complex*) alloca((nx)*sizeof(liquid_float_complex));
+    liquid_float_complex *y = (liquid_float_complex*) alloca((y_len)*sizeof(liquid_float_complex));
 
     // set magic value
     y[y_len - 1] = magic;
@@ -208,7 +208,7 @@ void autotest_resamp_crcf_output_block()
         float w = i < n ? kaiser(i, n, 10.0f, 0.0f) : 0.0f;
 
         // apply window to complex sinusoid
-        x[i] = cexpf(_Complex_I*2*M_PI*fx*i) * w;
+        x[i] = cexpf(_Complex_I*(float)(2*M_PI*fx*i)) * w;
 
         // accumulate window
         wsum += w;
@@ -234,8 +234,8 @@ void autotest_resamp_crcf_output_block()
     // run FFT and ensure that carrier has moved and that image
     // frequencies and distortion have been adequately suppressed
     unsigned int nfft = 1 << liquid_nextpow2(uy);
-    float complex yfft[nfft];   // fft input
-    float complex Yfft[nfft];   // fft output
+    liquid_float_complex *yfft = (liquid_float_complex*) alloca((nfft)*sizeof(liquid_float_complex));   // fft input
+    liquid_float_complex *Yfft = (liquid_float_complex*) alloca((nfft)*sizeof(liquid_float_complex));   // fft output
     for (i=0; i<nfft; i++)
         yfft[i] = i < uy ? y[i] : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);
@@ -280,7 +280,8 @@ void autotest_resamp_crcf_output_block()
     CONTEND_LESS_THAN( max_sidelobe, -As );     // maximum side-lobe should be sufficiently low
 
     // make sure our magic value is still there
-    CONTEND_DELTA(y[y_len - 1], magic, 0.0001f);
+    CONTEND_DELTA(crealf(y[y_len - 1]), crealf(magic), 0.0001f);
+    CONTEND_DELTA(cimagf(y[y_len - 1]), cimagf(magic), 0.0001f);
 
     // did we use the right number of samples?
     CONTEND_EQUALITY(ux, nx);

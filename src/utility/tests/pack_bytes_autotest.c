@@ -150,8 +150,8 @@ void autotest_unpack_array_block() {
 //
 void autotest_repack_array() {
     unsigned int n=512;     // input/output array size
-    unsigned char src[n];   // original data array
-    unsigned char dst[n];   // repacked data array
+    unsigned char *src = (unsigned char*) alloca((n)*sizeof(unsigned char));   // original data array
+    unsigned char *dst = (unsigned char*) alloca((n)*sizeof(unsigned char));   // repacked data array
 
     unsigned int i;
     // initialize input/output arrays

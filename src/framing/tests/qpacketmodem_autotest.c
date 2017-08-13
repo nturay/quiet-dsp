@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 
@@ -40,13 +40,13 @@ void qpacketmodem_modulated(unsigned int _payload_len,
 
     // create and configure packet encoder/decoder object
     qpacketmodem q = qpacketmodem_create();
-    qpacketmodem_configure(q, _payload_len, _check, _fec0, _fec1, _ms);
+    qpacketmodem_configure(q, _payload_len, (crc_scheme)_check, (fec_scheme)_fec0, (fec_scheme)_fec1, _ms);
     if (liquid_autotest_verbose)
         qpacketmodem_print(q);
 
     // initialize payload
-    unsigned char payload_tx[_payload_len];
-    unsigned char payload_rx[_payload_len];
+    unsigned char *payload_tx = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char));
+    unsigned char *payload_rx = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char));
 
     // initialize payload
     for (i=0; i<_payload_len; i++) {
@@ -58,7 +58,7 @@ void qpacketmodem_modulated(unsigned int _payload_len,
     unsigned int frame_len = qpacketmodem_get_frame_len(q);
 
     // allocate memory for frame samples
-    float complex frame[frame_len];
+    liquid_float_complex *frame = (liquid_float_complex*) alloca((frame_len)*sizeof(liquid_float_complex));
 
     // encode frame
     qpacketmodem_encode(q, payload_tx, frame);
@@ -98,13 +98,13 @@ void qpacketmodem_unmodulated(unsigned int _payload_len,
 
     // create and configure packet encoder/decoder object
     qpacketmodem q = qpacketmodem_create();
-    qpacketmodem_configure(q, _payload_len, _check, _fec0, _fec1, _ms);
+    qpacketmodem_configure(q, _payload_len, (crc_scheme)_check, (fec_scheme)_fec0, (fec_scheme)_fec1, _ms);
     if (liquid_autotest_verbose)
         qpacketmodem_print(q);
 
     // initialize payload
-    unsigned char payload_tx[_payload_len];
-    unsigned char payload_rx[_payload_len];
+    unsigned char *payload_tx = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char));
+    unsigned char *payload_rx = (unsigned char*) alloca((_payload_len)*sizeof(unsigned char));
 
     // initialize payload
     for (i=0; i<_payload_len; i++) {
@@ -116,7 +116,7 @@ void qpacketmodem_unmodulated(unsigned int _payload_len,
     unsigned int frame_len = qpacketmodem_get_frame_len(q);
 
     // allocate memory for frame samples
-    unsigned int frame_syms[frame_len];
+    unsigned int *frame_syms = (unsigned int*) alloca((frame_len)*sizeof(unsigned int));
 
     // encode frame symbols
     qpacketmodem_encode_syms(q, payload_tx, frame_syms);

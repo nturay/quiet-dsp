@@ -24,7 +24,7 @@
 // Matrix Cholesky decomposition method definitions
 //
 
-#include <math.h>
+
 #include "liquid.internal.h"
 
 #define DEBUG_MATRIX_CHOL 0

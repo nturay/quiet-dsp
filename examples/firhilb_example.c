@@ -33,9 +33,9 @@ int main() {
     firhilbf_print(qi);
 
     // data arrays
-    float complex x[  num_total_samples];   // complex input
+    liquid_float_complex x[  num_total_samples];   // complex input
     float         y[2*num_total_samples];   // real output
-    float complex z[  num_total_samples];   // complex output
+    liquid_float_complex z[  num_total_samples];   // complex output
 
     // initialize input array
     unsigned int i;

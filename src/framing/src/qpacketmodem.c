@@ -29,9 +29,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
-#include <complex.h>
+
 
 #include "liquid.internal.h"
 
@@ -72,7 +72,7 @@ qpacketmodem qpacketmodem_create()
     q->payload_bit_len = 8*q->payload_enc_len;
 
     // number of symbols in encoded payload
-    div_t d = div(q->payload_bit_len, q->bits_per_symbol);
+    div_t d = div((int)q->payload_bit_len, (int)q->bits_per_symbol);
     q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
 
     // soft demodulator uses one byte to represent each soft bit
@@ -132,7 +132,7 @@ int qpacketmodem_configure(qpacketmodem _q,
     _q->payload_dec_len = _payload_len;
 
     // recreate modem object and get new bits per symbol
-    _q->mod_payload = modem_recreate(_q->mod_payload, _ms);
+    _q->mod_payload = modem_recreate(_q->mod_payload, (modulation_scheme)_ms);
     _q->bits_per_symbol = modem_get_bps(_q->mod_payload);
 
     // recreate packetizer object and compute new encoded payload length
@@ -143,7 +143,7 @@ int qpacketmodem_configure(qpacketmodem _q,
     _q->payload_bit_len = 8*_q->payload_enc_len;
 
     // number of symbols in encoded payload
-    div_t d = div(_q->payload_bit_len, _q->bits_per_symbol);
+    div_t d = div((int)_q->payload_bit_len, (int)_q->bits_per_symbol);
     _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
 
     // encoded payload array (leave room for soft-decision decoding)
@@ -252,7 +252,7 @@ int qpacketmodem_decode_bits(qpacketmodem    _q,
 //  _frame      :   encoded/modulated payload symbols
 void qpacketmodem_encode(qpacketmodem          _q,
                          const unsigned char * _payload,
-                         float complex *       _frame)
+                         liquid_float_complex *       _frame)
 {
     // encode payload symbols into internal buffer
     qpacketmodem_encode_syms(_q, _payload, _q->payload_mod);
@@ -268,7 +268,7 @@ void qpacketmodem_encode(qpacketmodem          _q,
 //  _frame      :   encoded/modulated payload symbols
 //  _payload    :   recovered decoded payload bytes
 int qpacketmodem_decode(qpacketmodem    _q,
-                        float complex * _frame,
+                        liquid_float_complex * _frame,
                         unsigned char * _payload)
 {
     unsigned int i;
@@ -297,7 +297,7 @@ int qpacketmodem_decode(qpacketmodem    _q,
 //  _frame      :   encoded/modulated payload symbols
 //  _payload    :   recovered decoded payload bytes
 int qpacketmodem_decode_soft(qpacketmodem    _q,
-                             float complex * _frame,
+                             liquid_float_complex * _frame,
                              unsigned char * _payload)
 {
     unsigned int i;

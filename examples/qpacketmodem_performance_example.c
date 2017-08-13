@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
     // initialize payload
     unsigned char payload_tx       [payload_len]; // payload (transmitted)
     unsigned char payload_rx       [payload_len]; // payload (received)
-    float complex frame_tx         [frame_len];   // frame samples (transmitted)
-    float complex frame_rx         [frame_len];   // frame samples (received)
+    liquid_float_complex frame_tx         [frame_len];   // frame samples (transmitted)
+    liquid_float_complex frame_rx         [frame_len];   // frame samples (received)
     unsigned int  num_bit_errors   [num_snr];     // bit errors for each SNR point
     unsigned int  num_packet_errors[num_snr];     // packet errors for each SNR point
     float         BER              [num_snr];     // bit error rate

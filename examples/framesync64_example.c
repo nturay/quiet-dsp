@@ -99,8 +99,8 @@ int main(int argc, char*argv[])
         payload[i] = rand() & 0xff;
 
     // allocate memory for the frame samples
-    float complex frame[frame_len]; // generated frame
-    float complex y[num_samples];   // received sequence
+    liquid_float_complex frame[frame_len]; // generated frame
+    liquid_float_complex y[num_samples];   // received sequence
     
     // generate the frame
     framegen64_execute(fg, header, payload, frame);

@@ -45,10 +45,10 @@ struct FFTFILT(_s) {
     // internal memory arrays
     // TODO: make TI/TO type, but ensuring complex
     // TODO: use special format for fftfilt_rrrf type
-    float complex * time_buf;   // time buffer [size: 2*n x 1]
-    float complex * freq_buf;   // freq buffer [size: 2*n x 1]
-    float complex * H;          // FFT of filter coefficients [size: 2*n x 1]
-    float complex * w;          // overlap array [size: n x 1]
+    liquid_float_complex * time_buf;   // time buffer [size: 2*n x 1]
+    liquid_float_complex * freq_buf;   // freq buffer [size: 2*n x 1]
+    liquid_float_complex * H;          // FFT of filter coefficients [size: 2*n x 1]
+    liquid_float_complex * w;          // overlap array [size: n x 1]
 
     // FFT objects
 #ifdef LIQUID_FFTOVERRIDE
@@ -92,10 +92,10 @@ FFTFILT() FFTFILT(_create)(TC *         _h,
     memmove(q->h, _h, _h_len*sizeof(TC));
 
     // allocate internal memory arrays
-    q->time_buf = (float complex *) malloc((2*q->n)* sizeof(float complex)); // time buffer
-    q->freq_buf = (float complex *) malloc((2*q->n)* sizeof(float complex)); // frequency buffer
-    q->H        = (float complex *) malloc((2*q->n)* sizeof(float complex)); // FFT{ h }
-    q->w        = (float complex *) malloc((  q->n)* sizeof(float complex)); // delay buffer
+    q->time_buf = (liquid_float_complex *) malloc((2*q->n)* sizeof(liquid_float_complex)); // time buffer
+    q->freq_buf = (liquid_float_complex *) malloc((2*q->n)* sizeof(liquid_float_complex)); // frequency buffer
+    q->H        = (liquid_float_complex *) malloc((2*q->n)* sizeof(liquid_float_complex)); // FFT{ h }
+    q->w        = (liquid_float_complex *) malloc((  q->n)* sizeof(liquid_float_complex)); // delay buffer
 
     // create internal FFT objects
 #ifdef LIQUID_FFTOVERRIDE
@@ -116,7 +116,7 @@ FFTFILT() FFTFILT(_create)(TC *         _h,
 #else
     FFT_EXECUTE(q->fft);
 #endif
-    memmove(q->H, q->freq_buf, 2*q->n*sizeof(float complex));
+    memmove(q->H, q->freq_buf, 2*q->n*sizeof(liquid_float_complex));
 
     // set default scaling
     FFTFILT(_set_scale)(q, 1);
@@ -256,7 +256,7 @@ void FFTFILT(_execute)(FFTFILT() _q,
 #endif
 
     // copy buffer
-    memmove(_q->w, &_q->time_buf[_q->n], _q->n*sizeof(float complex));
+    memmove(_q->w, &_q->time_buf[_q->n], _q->n*sizeof(liquid_float_complex));
 }
 
 // return length of filter object's internal coefficients

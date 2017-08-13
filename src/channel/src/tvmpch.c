@@ -123,7 +123,7 @@ void TVMPCH(_push)(TVMPCH() _q,
     // update coefficients
     unsigned int i;
     for (i=0; i<_q->h_len-1; i++)
-        _q->h[i] = _q->alpha*_q->h[i] + _q->beta*(randnf() + _Complex_I*randnf()) * _q->std * M_SQRT1_2;
+        _q->h[i] = _q->alpha*_q->h[i] + _q->beta*(randnf() + _Complex_I*randnf()) * _q->std * (TC)(M_SQRT1_2);
 
     // push sample into window buffer
     WINDOW(_push)(_q->w, _x);
@@ -178,10 +178,10 @@ unsigned int TVMPCH(_get_length)(TVMPCH() _q)
 //  _H      :   output frequency response
 void TVMPCH(_freqresponse)(TVMPCH()        _q,
                            float           _fc,
-                           float complex * _H)
+                           liquid_float_complex * _H)
 {
     unsigned int i;
-    float complex H = 0.0f;
+    liquid_float_complex H = 0.0f;
 
     // compute dot product between coefficients and exp{ 2 pi fc {0..n-1} }
     for (i=0; i<_q->h_len; i++)

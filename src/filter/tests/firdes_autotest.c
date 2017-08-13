@@ -100,7 +100,7 @@ void autotest_liquid_firdes_rkaiser()
 
     // Create filter
     unsigned int h_len = 2*k*m+1;
-    float h[h_len];
+    float *h = (float*) alloca((h_len)*sizeof(float));
     liquid_firdes_rkaiser(k,m,beta,offset,h);
 
     // compute filter ISI

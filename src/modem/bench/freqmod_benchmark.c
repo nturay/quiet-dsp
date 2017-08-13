@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <sys/resource.h>
 #include "liquid.h"
 
@@ -36,7 +36,7 @@ void benchmark_freqmod(struct rusage *     _start,
     freqmod mod = freqmod_create(kf);
 
     float         m[20];    // message signal
-    float complex r[20];    // modulated signal
+    liquid_float_complex r[20];    // modulated signal
 
     unsigned long int i;
 

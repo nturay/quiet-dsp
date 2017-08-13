@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include "liquid.internal.h"
 
 // create DCT/DST plan
@@ -47,7 +47,7 @@ FFT(plan) FFT(_create_plan_r2r_1d)(unsigned int _nfft,
     q->nfft   = _nfft;
     q->xr     = _x;
     q->yr     = _y;
-    q->type   = _type;
+    q->type   = (liquid_fft_type)_type;
     q->flags  = _flags;
 
     // TODO : use separate 'method' for real-to-real types

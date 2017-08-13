@@ -41,8 +41,8 @@ void POLY(_fit_lagrange)(T * _x,
         _p[i] = 0.;
 
     // compute roots, gain
-    T roots[k];     // polynomial roots
-    T c[_n];        // expanded polynomial
+    T *roots = (T*) alloca((k)*sizeof(T));     // polynomial roots
+    T *c = (T*) alloca((_n)*sizeof(T));        // expanded polynomial
     T g;            // gain
     unsigned int j;
     unsigned int n;
@@ -114,7 +114,7 @@ void POLY(_fit_lagrange_barycentric)(T * _x,
             else        _w[j] *= (_x[j] - _x[k]);
         }
 
-        _w[j] = 1. / _w[j];
+        _w[j] = (T)1.0 / _w[j];
     }
 
     // normalize by _w[0]

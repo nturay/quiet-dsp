@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "liquid.internal.h"
 
@@ -56,7 +56,7 @@ bsequence bsequence_create(unsigned int _num_bits)
     bs->num_bits = _num_bits;
     
     // initialize array length
-    div_t d = div( bs->num_bits, sizeof(unsigned int)*8 );
+    div_t d = div( (int)bs->num_bits, (int)(sizeof(unsigned int)*8) );
     bs->s_len = d.quot;
     bs->s_len += (d.rem > 0) ? 1 : 0;
 
@@ -270,7 +270,7 @@ unsigned int bsequence_index(bsequence _bs,
         fprintf(stderr,"error: bsequence_index(), invalid index %u\n", _i);
         exit(-1);
     }
-    div_t d = div( _i, 8*sizeof(unsigned int) );
+    div_t d = div( (int)_i, (int)(8*sizeof(unsigned int)) );
 
     // compute byte index
     unsigned int k = _bs->s_len - d.quot - 1;
@@ -297,8 +297,8 @@ void bsequence_create_ccodes(bsequence _qa, bsequence _qb)
 
     // generate two temporary arrays
     unsigned int num_bytes = _qa->num_bits / 8;
-    unsigned char a[num_bytes];
-    unsigned char b[num_bytes];
+    unsigned char *a = (unsigned char*) alloca(num_bytes*sizeof(unsigned char));
+    unsigned char *b = (unsigned char*) alloca(num_bytes*sizeof(unsigned char));
 
     memset(a, 0x00, num_bytes);
     memset(b, 0x00, num_bytes);

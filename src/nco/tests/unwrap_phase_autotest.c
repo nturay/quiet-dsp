@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-#include <complex.h>
+
 #include "autotest/autotest.h"
 #include "liquid.h"
 
@@ -33,9 +33,9 @@ void autotest_nco_unwrap_phase()
     float tol = 1e-6f;  // error tolerance
     
     // initialize data arrays
-    float phi[n];       // original array
-    float theta[n];     // wrapped array
-    float phi_hat[n];   // unwrapped array
+    float *phi = (float*) alloca((n)*sizeof(float));       // original array
+    float *theta = (float*) alloca((n)*sizeof(float));     // wrapped array
+    float *phi_hat = (float*) alloca((n)*sizeof(float));   // unwrapped array
 
     float phi0 = 3.0f;  // initial phase
     float dphi = 0.1f;  // phase step

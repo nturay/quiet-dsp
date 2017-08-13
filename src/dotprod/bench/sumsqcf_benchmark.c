@@ -34,8 +34,8 @@ void sumsqcf_bench(struct rusage *     _start,
     *_num_iterations /= _n;
     if (*_num_iterations < 1) *_num_iterations = 1;
 
-    float complex x[_n];
-    float complex y = 0.0f;
+    liquid_float_complex x[_n];
+    liquid_float_complex y = 0.0f;
     unsigned int long i;
     for (i=0; i<_n; i++)
         x[i] = 0.2f + 0.2f*_Complex_I;

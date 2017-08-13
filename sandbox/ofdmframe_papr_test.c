@@ -28,7 +28,7 @@ void usage()
 // compute peak-to-average power ratio
 //  _x  :   input time series
 //  _n  :   number of samples
-float ofdmframe_PAPR(float complex * _x,
+float ofdmframe_PAPR(liquid_float_complex * _x,
                      unsigned int    _n);
 
 int main(int argc, char*argv[])
@@ -71,8 +71,8 @@ int main(int argc, char*argv[])
 
     modem mod = modem_create(ms);
 
-    float complex X[M];             // channelized symbols
-    float complex buffer[frame_len];// output time series
+    liquid_float_complex X[M];             // channelized symbols
+    liquid_float_complex buffer[frame_len];// output time series
     float * PAPR = (float*) malloc(num_symbols*sizeof(float));
 
     // histogram display
@@ -200,7 +200,7 @@ int main(int argc, char*argv[])
 // compute peak-to-average power ratio
 //  _x  :   input time series
 //  _n  :   number of samples
-float ofdmframe_PAPR(float complex * _x,
+float ofdmframe_PAPR(liquid_float_complex * _x,
                      unsigned int    _n)
 {
     float e;

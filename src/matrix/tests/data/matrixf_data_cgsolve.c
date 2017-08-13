@@ -24,7 +24,9 @@
 // data for testing conjugate gradient solver
 //
 
-#include <complex.h>
+
+
+#include "liquid.h"
 
 // matrixf_data_cgsolve_A [size: 8 x 8]
 float matrixf_data_cgsolve_A[] = {

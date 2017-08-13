@@ -29,9 +29,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
-#include <complex.h>
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -44,11 +44,11 @@ struct qpilotsync_s {
     unsigned int    pilot_spacing;  // spacing between pilot symbols
     unsigned int    num_pilots;     // total number of pilot symbols
     unsigned int    frame_len;      // total number of frame symbols
-    float complex * pilots;         // pilot sequence
+    liquid_float_complex * pilots;         // pilot sequence
 
     unsigned int    nfft;           // FFT size
-    float complex * buf_time;       // FFT time buffer
-    float complex * buf_freq;       // FFT freq buffer
+    liquid_float_complex * buf_time;       // FFT time buffer
+    liquid_float_complex * buf_freq;       // FFT freq buffer
     fftplan         fft;            // transform object
 
     float           dphi_hat;       // carrier frequency offset estimate
@@ -78,12 +78,12 @@ qpilotsync qpilotsync_create(unsigned int _payload_len,
     q->pilot_spacing = _pilot_spacing;
 
     // derived values
-    div_t d = div(q->payload_len,(q->pilot_spacing - 1));
+    div_t d = div((int)q->payload_len,(int)(q->pilot_spacing - 1));
     q->num_pilots = d.quot + (d.rem ? 1 : 0);
     q->frame_len  = q->payload_len + q->num_pilots;
 
     // allocate memory for pilots
-    q->pilots = (float complex*) malloc(q->num_pilots*sizeof(float complex));
+    q->pilots = (liquid_float_complex*) malloc(q->num_pilots*sizeof(liquid_float_complex));
 
     // find appropriate sequence size
     unsigned int m = liquid_nextpow2(q->num_pilots);
@@ -102,8 +102,8 @@ qpilotsync qpilotsync_create(unsigned int _payload_len,
 
     // compute fft size and create transform objects
     q->nfft = 1 << liquid_nextpow2(q->num_pilots + (q->num_pilots>>1));
-    q->buf_time = (float complex*) malloc(q->nfft*sizeof(float complex));
-    q->buf_freq = (float complex*) malloc(q->nfft*sizeof(float complex));
+    q->buf_time = (liquid_float_complex*) malloc(q->nfft*sizeof(liquid_float_complex));
+    q->buf_freq = (liquid_float_complex*) malloc(q->nfft*sizeof(liquid_float_complex));
     q->fft      = fft_create_plan(q->nfft, q->buf_time, q->buf_freq, LIQUID_FFT_FORWARD, 0);
 
     // reset and return pointer to main object
@@ -173,8 +173,8 @@ unsigned int qpilotsync_get_frame_len(qpilotsync _q)
 // TODO: include method with just symbol indices? would be useful for
 //       non-linear modulation types
 void qpilotsync_execute(qpilotsync      _q,
-                        float complex * _frame,
-                        float complex * _payload)
+                        liquid_float_complex * _frame,
+                        liquid_float_complex * _payload)
 {
     unsigned int i;
     unsigned int n = 0;
@@ -247,9 +247,9 @@ void qpilotsync_execute(qpilotsync      _q,
     // METHOD 2: compute metric by de-rotating pilots and measuring resulting phase
     // NOTE: this is possibly more accurate than the above method but might also
     //       be more computationally complex
-    float complex metric = 0;
+    liquid_float_complex metric = 0;
     for (i=0; i<_q->num_pilots; i++)
-        metric += _q->buf_time[i] * cexpf(-_Complex_I*_q->dphi_hat*i*(float)(_q->pilot_spacing));
+        metric += _q->buf_time[i] * cexpf(-_Complex_I*_q->dphi_hat*(float)i*(float)(_q->pilot_spacing));
     //printf("metric : %12.8f <%12.8f>\n", cabsf(metric), cargf(metric));
     _q->phi_hat = cargf(metric);
     _q->g_hat   = cabsf(metric) / (float)(_q->num_pilots);

@@ -20,11 +20,11 @@ int main() {
     unsigned int p=12;      // equalizer order
 
     // bookkeeping variables
-    float complex d[n];     // data sequence
-    float complex y[n];     // received data sequence (filtered by channel)
-    float complex d_hat[n]; // recovered data sequence
-    float complex h[h_len]; // channel filter coefficients
-    float complex w[p];     // equalizer filter coefficients
+    liquid_float_complex d[n];     // data sequence
+    liquid_float_complex y[n];     // received data sequence (filtered by channel)
+    liquid_float_complex d_hat[n]; // recovered data sequence
+    liquid_float_complex h[h_len]; // channel filter coefficients
+    liquid_float_complex w[p];     // equalizer filter coefficients
     unsigned int i;
 
     // create equalizer (default initial coefficients)
@@ -73,7 +73,7 @@ int main() {
         printf("  w(%3u) = %12.8f + j*%12.8f\n", i, crealf(w[i]), cimagf(w[i]));
 
     // compute MSE
-    float complex e;
+    liquid_float_complex e;
     float mse=0.0f;
     for (i=0; i<n; i++) {
         // compute mse

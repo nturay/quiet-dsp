@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -43,27 +43,32 @@
 //
 
 // internal callback
-int ofdmflexframesync_internal_callback(float complex * _X,
+int ofdmflexframesync_internal_callback(liquid_float_complex * _X,
                                         unsigned char * _p,
                                         unsigned int    _M,
                                         void * _userdata);
 
 // receive header data
 void ofdmflexframesync_rxheader(ofdmflexframesync _q,
-                                float complex * _X);
+                                liquid_float_complex * _X);
 
 // decode header
 void ofdmflexframesync_decode_header(ofdmflexframesync _q);
 
 // receive payload data
 void ofdmflexframesync_rxpayload(ofdmflexframesync _q,
-                                float complex * _X);
+                                liquid_float_complex * _X);
 
 static ofdmflexframegenprops_s ofdmflexframesyncprops_header_default = {
     OFDMFLEXFRAME_H_CRC,
     OFDMFLEXFRAME_H_FEC0,
     OFDMFLEXFRAME_H_FEC1,
     OFDMFLEXFRAME_H_MOD,
+};
+
+enum state {
+    OFDMFLEXFRAMESYNC_STATE_HEADER, // extract header
+    OFDMFLEXFRAMESYNC_STATE_PAYLOAD // extract payload symbols
 };
 
 struct ofdmflexframesync_s {
@@ -111,7 +116,7 @@ struct ofdmflexframesync_s {
     unsigned int payload_enc_len;       // length of encoded payload
     unsigned int payload_mod_len;       // number of payload modem symbols
     int payload_valid;                  // valid payload flag
-    float complex * payload_syms;       // received payload symbols
+    liquid_float_complex * payload_syms;       // received payload symbols
 
     // callback
     framesync_callback callback;        // user-defined callback function
@@ -124,10 +129,7 @@ struct ofdmflexframesync_s {
 
     // counters/states
     unsigned int symbol_counter;        // received symbol number
-    enum {
-        OFDMFLEXFRAMESYNC_STATE_HEADER, // extract header
-        OFDMFLEXFRAMESYNC_STATE_PAYLOAD // extract payload symbols
-    } state;
+    enum state state;
     unsigned int header_symbol_index;   // number of header symbols received
     unsigned int payload_symbol_index;  // number of payload symbols received
     unsigned int payload_buffer_index;  // bit-level index of payload (pack array)
@@ -209,7 +211,7 @@ ofdmflexframesync ofdmflexframesync_create(unsigned int       _M,
     q->payload_enc_len = packetizer_get_enc_msg_len(q->p_payload);
     q->payload_enc = (unsigned char*) malloc(q->payload_enc_len*sizeof(unsigned char));
     q->payload_dec = (unsigned char*) malloc(q->payload_len*sizeof(unsigned char));
-    q->payload_syms = (float complex *) malloc(q->payload_len*sizeof(float complex));
+    q->payload_syms = (liquid_float_complex *) malloc(q->payload_len*sizeof(liquid_float_complex));
     q->payload_mod_len = 0;
 
     // reset state
@@ -257,7 +259,7 @@ void ofdmflexframesync_set_header_len(ofdmflexframesync _q,
 {
     _q->header_user_len = _len;
     _q->header_dec_len = OFDMFLEXFRAME_H_DEC + _q->header_user_len;
-    _q->header = realloc(_q->header, _q->header_dec_len*sizeof(unsigned char));
+    _q->header = (unsigned char*) realloc(_q->header, _q->header_dec_len*sizeof(unsigned char));
 
     if (_q->p_header) {
         packetizer_destroy(_q->p_header);
@@ -272,17 +274,17 @@ void ofdmflexframesync_set_header_len(ofdmflexframesync _q,
     } else {
         _q->header_enc_len = packetizer_get_enc_msg_len(_q->p_header);
         unsigned int bps = modulation_types[_q->header_props.mod_scheme].bps;
-        div_t bps_d = div(_q->header_enc_len*8, bps);
+        div_t bps_d = div((int)_q->header_enc_len*8, (int)bps);
         _q->header_sym_len = bps_d.quot + (bps_d.rem ? 1 : 0);
     }
-    _q->header_enc = realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
+    _q->header_enc = (unsigned char*) realloc(_q->header_enc, _q->header_enc_len*sizeof(unsigned char));
 
-    _q->header_mod = realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
+    _q->header_mod = (unsigned char*) realloc(_q->header_mod, _q->header_sym_len*sizeof(unsigned char));
     // create header objects
     if (_q->mod_header) {
         modem_destroy(_q->mod_header);
     }
-    _q->mod_header = modem_create(_q->header_props.mod_scheme);
+    _q->mod_header = modem_create((modulation_scheme)_q->header_props.mod_scheme);
 }
 
 void ofdmflexframesync_decode_header_soft(ofdmflexframesync _q,
@@ -351,7 +353,7 @@ int ofdmflexframesync_is_frame_open(ofdmflexframesync _q)
 
 // execute synchronizer object on buffer of samples
 void ofdmflexframesync_execute(ofdmflexframesync _q,
-                               float complex * _x,
+                               liquid_float_complex * _x,
                                unsigned int _n)
 {
     // push samples through ofdmframesync object
@@ -406,7 +408,7 @@ void ofdmflexframesync_debug_print(ofdmflexframesync _q,
 //  _p          :   subcarrier allocation
 //  _M          :   number of subcarriers
 //  _userdata   :   user-defined data structure
-int ofdmflexframesync_internal_callback(float complex * _X,
+int ofdmflexframesync_internal_callback(liquid_float_complex * _X,
                                         unsigned char * _p,
                                         unsigned int    _M,
                                         void * _userdata)
@@ -442,7 +444,7 @@ int ofdmflexframesync_internal_callback(float complex * _X,
 
 // receive header data
 void ofdmflexframesync_rxheader(ofdmflexframesync _q,
-                                float complex * _X)
+                                liquid_float_complex * _X)
 {
 #if DEBUG_OFDMFLEXFRAMESYNC
     printf("  ofdmflexframesync extracting header...\n");
@@ -622,7 +624,7 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
         // configure modem
         if (mod_scheme != _q->ms_payload) {
             // set new properties
-            _q->ms_payload  = mod_scheme;
+            _q->ms_payload  = (modulation_scheme)mod_scheme;
             _q->bps_payload = modulation_types[mod_scheme].bps;
 
             // recreate modem (destroy/create)
@@ -631,9 +633,9 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
 
         // set new packetizer properties
         _q->payload_len = payload_len;
-        _q->check       = check;
-        _q->fec0        = fec0;
-        _q->fec1        = fec1;
+        _q->check       = (crc_scheme)check;
+        _q->fec0        = (fec_scheme)fec0;
+        _q->fec1        = (fec_scheme)fec1;
         
         // recreate packetizer object
         _q->p_payload = packetizer_recreate(_q->p_payload,
@@ -645,12 +647,12 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
         // re-compute payload encoded message length
         if (_q->payload_soft) {
             _q->payload_enc_len = 8*packetizer_get_enc_msg_len(_q->p_payload);
-            div_t d = div(_q->payload_enc_len, _q->bps_payload);
+            div_t d = div((int)_q->payload_enc_len, (int)_q->bps_payload);
             _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
         } else {
             _q->payload_enc_len = packetizer_get_enc_msg_len(_q->p_payload);
             // re-compute number of modulated payload symbols
-            div_t d = div(8*_q->payload_enc_len, _q->bps_payload);
+            div_t d = div((int)8*_q->payload_enc_len, (int)_q->bps_payload);
             _q->payload_mod_len = d.quot + (d.rem ? 1 : 0);
         }
 
@@ -661,7 +663,7 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
         // re-allocate buffers accordingly
         _q->payload_enc = (unsigned char*) realloc(_q->payload_enc, _q->payload_enc_len*sizeof(unsigned char));
         _q->payload_dec = (unsigned char*) realloc(_q->payload_dec, _q->payload_len*sizeof(unsigned char));
-        _q->payload_syms = (float complex*) realloc(_q->payload_syms, _q->payload_mod_len*sizeof(float complex));
+        _q->payload_syms = (liquid_float_complex*) realloc(_q->payload_syms, _q->payload_mod_len*sizeof(liquid_float_complex));
 #if DEBUG_OFDMFLEXFRAMESYNC
         printf("      * payload mod syms:   %u symbols\n", _q->payload_mod_len);
 #endif
@@ -670,7 +672,7 @@ void ofdmflexframesync_decode_header(ofdmflexframesync _q)
 
 // receive payload data
 void ofdmflexframesync_rxpayload(ofdmflexframesync _q,
-                                 float complex * _X)
+                                 liquid_float_complex * _X)
 {
     // demodulate paylod symbols
     unsigned int i;

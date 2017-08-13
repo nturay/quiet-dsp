@@ -69,8 +69,8 @@ int main(int argc, char*argv[]) {
     firinterp_crcf q = firinterp_crcf_create_kaiser(k,m,As);
 
     // generate input signal and interpolate
-    float complex x[num_symbols];   // input symbols
-    float complex y[num_samples];   // output samples
+    liquid_float_complex x[num_symbols];   // input symbols
+    liquid_float_complex y[num_samples];   // output samples
     unsigned int i;
     for (i=0; i<num_data_symbols; i++) {
         x[i] = (rand() % 2 ? 1.0f : -1.0f) +

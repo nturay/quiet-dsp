@@ -29,7 +29,7 @@ int main()
     spgramcf periodogram = spgramcf_create_default(nfft);
 
     unsigned int buf_len = 1024;
-    float complex buf[buf_len];
+    liquid_float_complex buf[buf_len];
 
     // create stream generator
     symstreamcf gen = symstreamcf_create_linear(ftype,k,m,beta,ms);

@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
     float rate = (float)n / (float)k;
     unsigned char msg_org[n];       // original data message
     unsigned char msg_enc[k];       // encoded data message
-    float complex sym_rec[8*k];     // received BPSK symbols
+    liquid_float_complex sym_rec[8*k];     // received BPSK symbols
     unsigned char msg_cor[k];       // corrupted data message
     unsigned char msg_dec_per0[n];  // decoded data message (regular decoding)
     unsigned char msg_dec_per2[n];  // decoded data message (persistent decoding)

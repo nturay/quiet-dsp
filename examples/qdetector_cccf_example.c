@@ -76,7 +76,7 @@ int main(int argc, char*argv[])
     }
 
     // generate synchronization sequence (QPSK symbols)
-    float complex sequence[sequence_len];
+    liquid_float_complex sequence[sequence_len];
     for (i=0; i<sequence_len; i++) {
         sequence[i] = (rand() % 2 ? 1.0f : -1.0f) * M_SQRT1_2 +
                       (rand() % 2 ? 1.0f : -1.0f) * M_SQRT1_2 * _Complex_I;
@@ -102,11 +102,11 @@ int main(int argc, char*argv[])
     unsigned int num_symbols = buf_len;
 
     // arrays
-    float complex y[num_samples];       // received signal
-    float complex syms_rx[num_symbols]; // recovered symbols
+    liquid_float_complex y[num_samples];       // received signal
+    liquid_float_complex syms_rx[num_symbols]; // recovered symbols
 
     // get pointer to sequence and generate full sequence
-    float complex * v = (float complex*) qdetector_cccf_get_sequence(q);
+    liquid_float_complex * v = (liquid_float_complex*) qdetector_cccf_get_sequence(q);
     unsigned int filter_delay = 15;
     firfilt_crcf filter = firfilt_crcf_create_kaiser(2*filter_delay+1, 0.4f, 60.0f, -tau);
     float        nstd        = 0.1f;
@@ -155,7 +155,7 @@ int main(int argc, char*argv[])
 
         for (i=0; i<buf_len; i++) {
             // 
-            float complex sample;
+            liquid_float_complex sample;
             nco_crcf_mix_down(nco, v[i], &sample);
             nco_crcf_step(nco);
 

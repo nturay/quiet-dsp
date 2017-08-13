@@ -33,7 +33,7 @@ void fskmodem_test_mod_demod(unsigned int _m,
     fskdem dem = fskdem_create(_m,_k,_bandwidth);
 
     unsigned int M = 1 << _m;   // constellation size
-    float complex buf[_k];      // transmit buffer
+    liquid_float_complex *buf = (liquid_float_complex*) alloca((_k)*sizeof(liquid_float_complex));      // transmit buffer
     
     // modulate, demodulate, count errors
     unsigned int i;

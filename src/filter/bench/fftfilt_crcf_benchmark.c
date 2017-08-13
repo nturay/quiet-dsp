@@ -47,12 +47,12 @@ void fftfilt_crcf_bench(struct rusage *     _start,
     fftfilt_crcf q = fftfilt_crcf_create(h,h_len,_n);
 
     // generate input vector
-    float complex x[_n + 4];
+    liquid_float_complex x[_n + 4];
     for (i=0; i<_n+4; i++)
         x[i] = randnf() + _Complex_I*randnf();
 
     // output vector
-    float complex y[_n];
+    liquid_float_complex y[_n];
 
     // start trials
     getrusage(RUSAGE_SELF, _start);

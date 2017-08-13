@@ -31,8 +31,8 @@ int main() {
     unsigned int i;
 
     // allocate memory for data arrays
-    float complex x[n];
-    float complex y[n];
+    liquid_float_complex x[n];
+    liquid_float_complex y[n];
 
     // generate input signal (sine wave with decaying amplitude)
     unsigned int wlen = (unsigned int)roundf(0.75*n);
@@ -51,7 +51,7 @@ int main() {
 
     // compute response
     unsigned int nfft = 1024;
-    float complex H[nfft];
+    liquid_float_complex H[nfft];
     for (i=0; i<nfft; i++) {
         float freq = ((float)i - 0.5f*(float)nfft) / (float)nfft;
         firfilt_crcf_freqresponse(q, freq, &H[i]);

@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+
 #include <assert.h>
 #include <float.h>
 
@@ -46,7 +46,7 @@
 
 // update sum{ |x|^2 }
 void detector_cccf_update_sumsq(detector_cccf _q,
-                                float complex _x);
+                                liquid_float_complex _x);
 
 // compute all dot product outputs
 void detector_cccf_compute_dotprods(detector_cccf _q);
@@ -60,8 +60,13 @@ void detector_cccf_estimate_offsets(detector_cccf _q,
 void detector_cccf_debug_print(detector_cccf _q,
                                const char *  _filename);
 
+enum state {
+    DETECTOR_STATE_SEEK=0,  // seek sequence
+    DETECTOR_STATE_FINDMAX, // find maximum
+};
+
 struct detector_cccf_s {
-    float complex * s;      // sequence
+    liquid_float_complex * s;      // sequence
     unsigned int n;         // sequence length
     float threshold;        // detection threshold
     
@@ -88,10 +93,7 @@ struct detector_cccf_s {
     float x2_hat;           // estimate of E{|x|^2}
 
     // counters/states
-    enum {
-        DETECTOR_STATE_SEEK=0,  // seek sequence
-        DETECTOR_STATE_FINDMAX, // find maximum
-    } state;
+    enum state state;
     unsigned int timer;         // sample timer
 
 #if DEBUG_DETECTOR
@@ -106,7 +108,7 @@ struct detector_cccf_s {
 //  _n          :   sequence length
 //  _threshold  :   detection threshold (default: 0.7)
 //  _dphi_max   :   maximum carrier offset
-detector_cccf detector_cccf_create(float complex * _s,
+detector_cccf detector_cccf_create(liquid_float_complex * _s,
                                    unsigned int    _n,
                                    float           _threshold,
                                    float           _dphi_max)
@@ -144,8 +146,8 @@ detector_cccf detector_cccf_create(float complex * _s,
     q->dphi_max = q->m * q->dphi_step;
 
     // allocate memory for sequence and copy
-    q->s = (float complex*) malloc((q->n)*sizeof(float complex));
-    memmove(q->s, _s, q->n*sizeof(float complex));
+    q->s = (liquid_float_complex*) malloc((q->n)*sizeof(liquid_float_complex));
+    memmove(q->s, _s, q->n*sizeof(liquid_float_complex));
 
     // create internal buffer
     q->buffer = windowcf_create(q->n);
@@ -158,12 +160,12 @@ detector_cccf detector_cccf_create(float complex * _s,
     q->rxy1 = (float*)        malloc((q->m)*sizeof(float));
     q->rxy  = (float*)        malloc((q->m)*sizeof(float));
     unsigned int k;
-    float complex sconj[q->n];
+    liquid_float_complex *sconj = (liquid_float_complex*) alloca(q->n*sizeof(liquid_float_complex));
     for (k=0; k<q->m; k++) {
         // pre-spin sequence (slightly over-sampled in frequency)
         q->dphi[k] = ((float)k - (float)(q->m-1)/2) * q->dphi_step;
         for (i=0; i<q->n; i++)
-            sconj[i] = conjf(q->s[i]) * cexpf(-_Complex_I*q->dphi[k]*i);
+            sconj[i] = conjf(q->s[i]) * cexpf(-_Complex_I*q->dphi[k]*(float)i);
         q->dp[k] = dotprod_cccf_create(sconj, q->n);
     }
 
@@ -246,7 +248,7 @@ void detector_cccf_reset(detector_cccf _q)
 //  _dphi_hat   :   carrier frequency offset estimate (set when detected)
 //  _gamma_hat  :   channel gain estimate (set when detected)
 int detector_cccf_correlate(detector_cccf _q,
-                            float complex _x,
+                            liquid_float_complex _x,
                             float *       _tau_hat,
                             float *       _dphi_hat,
                             float *       _gamma_hat)
@@ -336,7 +338,7 @@ int detector_cccf_correlate(detector_cccf _q,
 
 // compute sum{ |x|^2 }
 void detector_cccf_update_sumsq(detector_cccf _q,
-                                float complex _x)
+                                liquid_float_complex _x)
 {
     // update estimate of signal magnitude
     float x2_n = crealf(_x * conjf(_x));    // |x[n-1]|^2 (input sample)
@@ -361,13 +363,13 @@ void detector_cccf_update_sumsq(detector_cccf _q,
 void detector_cccf_compute_dotprods(detector_cccf _q)
 {
     // read buffer
-    float complex * r;
+    liquid_float_complex * r;
     windowcf_read(_q->buffer, &r);
 
     // compute dot products
     // TODO: compute conjugate as well
     unsigned int k;
-    float complex rxy;
+    liquid_float_complex rxy;
 #if DEBUG_DETECTOR_PRINT
     printf("  rxy : ");
 #endif
@@ -461,13 +463,13 @@ void detector_cccf_estimate_offsets(detector_cccf _q,
 float detector_cccf_estimate_dphi(detector_cccf _q)
 {
     // read buffer...
-    float complex * r;
+    liquid_float_complex * r;
     windowcf_read(_q->buffer, &r);
 
     //
-    float complex r0 = 0.0f;
-    float complex r1 = 0.0f;
-    float complex metric = 0.0f;
+    liquid_float_complex r0 = 0.0f;
+    liquid_float_complex r1 = 0.0f;
+    liquid_float_complex metric = 0.0f;
     unsigned int i;
     for (i=0; i<_q->n; i++) {
         r0 = r1;
@@ -494,7 +496,7 @@ void detector_cccf_debug_print(detector_cccf _q,
     fprintf(fid,"clear all;\n");
     fprintf(fid,"N = %u;\n", DEBUG_DETECTOR_BUFFER_LEN);
     unsigned int i;
-    float complex * rc;
+    liquid_float_complex * rc;
     float * r;
 
     fprintf(fid,"x = zeros(1,N);\n");

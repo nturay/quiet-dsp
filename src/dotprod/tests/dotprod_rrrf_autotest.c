@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "autotest/autotest.h"
@@ -331,8 +332,8 @@ void autotest_dotprod_rrrf_struct_lengths()
 void runtest_dotprod_rrrf(unsigned int _n)
 {
     float tol = 1e-4;
-    float h[_n];
-    float x[_n];
+    float *h = (float*) alloca((_n)*sizeof(float));
+    float *x = (float*) alloca((_n)*sizeof(float));
 
     // generate random coefficients
     unsigned int i;

@@ -43,9 +43,9 @@ void cpfskmodem_test_mod_demod(unsigned int _bps,
 
     msequence ms = msequence_create_default(7);
 
-    float complex buf[_k];      // sample buffer
-    unsigned int  sym_in [num_symbols]; // symbol buffer
-    unsigned int  sym_out[num_symbols]; // symbol buffer
+    liquid_float_complex *buf = (liquid_float_complex*) alloca((_k)*sizeof(liquid_float_complex));      // sample buffer
+    unsigned int  *sym_in = (unsigned int*) alloca((num_symbols)*sizeof(unsigned int)); // symbol buffer
+    unsigned int  *sym_out = (unsigned int*) alloca((num_symbols)*sizeof(unsigned int)); // symbol buffer
 
     // modulate, demodulate, count errors
     unsigned int i;

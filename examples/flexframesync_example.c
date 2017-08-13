@@ -110,8 +110,8 @@ int main(int argc, char *argv[])
 
     // generate the frame in blocks
     unsigned int  buf_len = 256;
-    float complex x[buf_len];
-    float complex y[buf_len];
+    liquid_float_complex x[buf_len];
+    liquid_float_complex y[buf_len];
 
     int frame_complete = 0;
     float phi = 0.0f;

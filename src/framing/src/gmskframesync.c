@@ -27,8 +27,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
-#include <complex.h>
+
+
 #include <assert.h>
 
 #include "liquid.internal.h"
@@ -43,7 +43,7 @@
 
 // execute a single, post-filtered sample
 void gmskframesync_execute_sample(gmskframesync _q,
-                                  float complex _x);
+                                  liquid_float_complex _x);
 
 // push buffered p/n sequence through synchronizer
 void gmskframesync_pushpn(gmskframesync _q);
@@ -53,7 +53,7 @@ void gmskframesync_syncpn(gmskframesync _q);
 
 // update instantaneous frequency estimate
 void gmskframesync_update_fi(gmskframesync _q,
-                             float complex _x);
+                             liquid_float_complex _x);
 
 // update symbol synchronizer internal state (filtered error, index, etc.)
 //  _q      :   frame synchronizer
@@ -64,13 +64,20 @@ int gmskframesync_update_symsync(gmskframesync _q,
                                  float *       _y);
 
 // execute stages
-void gmskframesync_execute_detectframe(gmskframesync _q, float complex _x);
-void gmskframesync_execute_rxpreamble( gmskframesync _q, float complex _x);
-void gmskframesync_execute_rxheader(   gmskframesync _q, float complex _x);
-void gmskframesync_execute_rxpayload(  gmskframesync _q, float complex _x);
+void gmskframesync_execute_detectframe(gmskframesync _q, liquid_float_complex _x);
+void gmskframesync_execute_rxpreamble( gmskframesync _q, liquid_float_complex _x);
+void gmskframesync_execute_rxheader(   gmskframesync _q, liquid_float_complex _x);
+void gmskframesync_execute_rxpayload(  gmskframesync _q, liquid_float_complex _x);
 
 // decode header
 void gmskframesync_decode_header(gmskframesync _q);
+
+enum state {
+    STATE_DETECTFRAME=0,        // detect frame (seek p/n sequence)
+    STATE_RXPREAMBLE,           // receive p/n sequence
+    STATE_RXHEADER,             // receive header data
+    STATE_RXPAYLOAD,            // receive payload data
+};
 
 // gmskframesync object structure
 struct gmskframesync_s {
@@ -85,7 +92,7 @@ struct gmskframesync_s {
     framesyncstats_s framestats;    // frame statistic object
     
     //
-    float complex x_prime;          // received sample state
+    liquid_float_complex x_prime;          // received sample state
     float fi_hat;                   // instantaneous frequency estimate
     
     // timing recovery objects, states
@@ -134,12 +141,7 @@ struct gmskframesync_s {
     int payload_valid;              // did payload pass crc?
     
     // status variables
-    enum {
-        STATE_DETECTFRAME=0,        // detect frame (seek p/n sequence)
-        STATE_RXPREAMBLE,           // receive p/n sequence
-        STATE_RXHEADER,             // receive header data
-        STATE_RXPAYLOAD,            // receive payload data
-    } state;
+    enum state state;
     unsigned int preamble_counter;  // counter: num of p/n syms received
     unsigned int header_counter;    // counter: num of header syms received
     unsigned int payload_counter;   // counter: num of payload syms received
@@ -178,7 +180,7 @@ gmskframesync gmskframesync_create(framesync_callback _callback,
     q->preamble_len = 63;
     q->preamble_pn = (float*)malloc(q->preamble_len*sizeof(float));
     q->preamble_rx = (float*)malloc(q->preamble_len*sizeof(float));
-    float complex preamble_samples[q->preamble_len*q->k];
+    liquid_float_complex *preamble_samples = (liquid_float_complex*) alloca((q->preamble_len*q->k)*sizeof(liquid_float_complex));
     msequence ms = msequence_create(6, 0x6d, 1);
     gmskmod mod = gmskmod_create(q->k, q->m, q->BT);
 
@@ -361,7 +363,7 @@ int gmskframesync_is_frame_open(gmskframesync _q)
 }
 
 void gmskframesync_execute_sample(gmskframesync _q,
-                                  float complex _x)
+                                  liquid_float_complex _x)
 {
     switch (_q->state) {
     case STATE_DETECTFRAME:
@@ -391,13 +393,13 @@ void gmskframesync_execute_sample(gmskframesync _q,
 //  _x      :   input sample array [size: _n x 1]
 //  _n      :   number of input samples
 void gmskframesync_execute(gmskframesync   _q,
-                           float complex * _x,
+                           liquid_float_complex * _x,
                            unsigned int    _n)
 {
     // push through synchronizer
     unsigned int i;
     for (i=0; i<_n; i++) {
-        float complex xf;   // input sample
+        liquid_float_complex xf;   // input sample
 #if GMSKFRAMESYNC_PREFILTER
         iirfilt_crcf_execute(_q->prefilter, _x[i], &xf);
 #else
@@ -503,7 +505,7 @@ void gmskframesync_pushpn(gmskframesync _q)
     firpfb_rrrf_reset(_q->dmf);
 
     // read buffer
-    float complex * rc;
+    liquid_float_complex * rc;
     windowcf_read(_q->buffer, &rc);
 
     // compute delay and filterbank index
@@ -525,7 +527,7 @@ void gmskframesync_pushpn(gmskframesync _q)
     
     unsigned int buffer_len = (_q->preamble_len + _q->m) * _q->k;
     for (i=0; i<delay; i++) {
-        float complex y;
+        liquid_float_complex y;
         nco_crcf_mix_down(_q->nco_coarse, rc[i], &y);
         nco_crcf_step(_q->nco_coarse);
 
@@ -561,7 +563,7 @@ void gmskframesync_syncpn(gmskframesync _q)
 
 // update instantaneous frequency estimate
 void gmskframesync_update_fi(gmskframesync _q,
-                             float complex _x)
+                             liquid_float_complex _x)
 {
     // compute differential phase
     _q->fi_hat = cargf(conjf(_q->x_prime)*_x) * _q->k;
@@ -571,7 +573,7 @@ void gmskframesync_update_fi(gmskframesync _q,
 }
 
 void gmskframesync_execute_detectframe(gmskframesync _q,
-                                       float complex _x)
+                                       liquid_float_complex _x)
 {
     // push sample into pre-demod p/n sequence buffer
     windowcf_push(_q->buffer, _x);
@@ -595,7 +597,7 @@ void gmskframesync_execute_detectframe(gmskframesync _q,
 }
 
 void gmskframesync_execute_rxpreamble(gmskframesync _q,
-                                      float complex _x)
+                                      liquid_float_complex _x)
 {
     // validate input
     if (_q->preamble_counter == _q->preamble_len) {
@@ -604,7 +606,7 @@ void gmskframesync_execute_rxpreamble(gmskframesync _q,
     }
 
     // mix signal down
-    float complex y;
+    liquid_float_complex y;
     nco_crcf_mix_down(_q->nco_coarse, _x, &y);
     nco_crcf_step(_q->nco_coarse);
 
@@ -631,10 +633,10 @@ void gmskframesync_execute_rxpreamble(gmskframesync _q,
 }
 
 void gmskframesync_execute_rxheader(gmskframesync _q,
-                                    float complex _x)
+                                    liquid_float_complex _x)
 {
     // mix signal down
-    float complex y;
+    liquid_float_complex y;
     nco_crcf_mix_down(_q->nco_coarse, _x, &y);
     nco_crcf_step(_q->nco_coarse);
 
@@ -699,10 +701,10 @@ void gmskframesync_execute_rxheader(gmskframesync _q,
 }
 
 void gmskframesync_execute_rxpayload(gmskframesync _q,
-                                     float complex _x)
+                                     liquid_float_complex _x)
 {
     // mix signal down
-    float complex y;
+    liquid_float_complex y;
     nco_crcf_mix_down(_q->nco_coarse, _x, &y);
     nco_crcf_step(_q->nco_coarse);
 
@@ -836,9 +838,9 @@ void gmskframesync_decode_header(gmskframesync _q)
     if (_q->header_valid) {
         // set new packetizer properties
         _q->payload_dec_len = payload_dec_len;
-        _q->check           = check;
-        _q->fec0            = fec0;
-        _q->fec1            = fec1;
+        _q->check           = (crc_scheme)check;
+        _q->fec0            = (fec_scheme)fec0;
+        _q->fec1            = (fec_scheme)fec1;
         
         // recreate packetizer object
         _q->p_payload = packetizer_recreate(_q->p_payload,
@@ -911,7 +913,7 @@ void gmskframesync_debug_print(gmskframesync _q,
     fprintf(fid,"num_samples = %u;\n", DEBUG_GMSKFRAMESYNC_BUFFER_LEN);
     fprintf(fid,"t = 0:(num_samples-1);\n");
     unsigned int i;
-    float complex * rc;
+    liquid_float_complex * rc;
 
     // write x
     fprintf(fid,"x = zeros(1,num_samples);\n");

@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+
 #include <sys/resource.h>
 #include "liquid.h"
 
@@ -39,7 +39,7 @@ void benchmark_gmskmodem_modulate(struct rusage *_start,
     // create modem object
     gmskmod mod   = gmskmod_create(k, m, BT);
 
-    float complex x[k];
+    liquid_float_complex x[k];
     unsigned int symbol_in = 0;
     
     unsigned long int i;
@@ -71,7 +71,7 @@ void benchmark_gmskmodem_demodulate(struct rusage *_start,
     // create modem object
     gmskdem demod = gmskdem_create(k, m, BT);
 
-    float complex x[k];
+    liquid_float_complex x[k];
     unsigned int symbol_out = 0;
     
     unsigned long int i;

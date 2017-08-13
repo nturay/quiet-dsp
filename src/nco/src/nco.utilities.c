@@ -26,9 +26,11 @@
 // Numerically-controlled oscillator (nco) utilities
 //
 
-#include <math.h>
+
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "liquid.internal.h"
 
 // unwrap phase of array (basic)
 void liquid_unwrap_phase(float * _theta,

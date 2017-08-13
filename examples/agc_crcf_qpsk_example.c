@@ -35,8 +35,8 @@ int main(int argc, char*argv[])
     float nstd = powf(10.0f, noise_floor / 20.0f);
 
     // arrays
-    float complex x[num_samples];
-    float complex y[num_samples];
+    liquid_float_complex x[num_samples];
+    liquid_float_complex y[num_samples];
     float rssi[num_samples];
 
     // create objects
@@ -51,7 +51,7 @@ int main(int argc, char*argv[])
     printf("automatic gain control // loop bandwidth: %4.2e\n",bt);
 
     unsigned int sym;
-    float complex s;
+    liquid_float_complex s;
     for (i=0; i<num_symbols; i++) {
         // generate random symbol
         sym = modem_gen_rand_sym(mod);
