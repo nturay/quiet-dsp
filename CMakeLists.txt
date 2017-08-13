@@ -173,7 +173,11 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
     set(GETOPT_LIBRARY getopt)
 endif ()
 
-
+if (LIQUID_CXX)
+    # not presently supported in c++ mode
+    set(LIQUID_BUILD_EXAMPLES OFF)
+    set(LIQUID_BUILD_SANDBOX OFF)
+endif()
 #
 # MODULE : agc - automatic gain control
 #
