@@ -5,7 +5,7 @@ build:
 
 branches:
     only:
-        - win
+        - devel
 
 environment:
     matrix:
