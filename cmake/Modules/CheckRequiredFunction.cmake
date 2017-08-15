@@ -1,15 +1,28 @@
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 
-macro(CHECK_REQUIRED_FUNCTION FUNCTION LIBRARY VARIABLE)
-    # First try without any library.
-    CHECK_FUNCTION_EXISTS("${FUNCTION}" ${VARIABLE})
+macro(CHECK_REQUIRED_FUNCTION FUNCTIONS_SPACE LIBRARY VARIABLE)
+    string(REPLACE " " ";" FUNCTIONS ${FUNCTIONS_SPACE})
+    FOREACH(FUNCTION ${FUNCTIONS})
+        # First try without any library.
+        CHECK_FUNCTION_EXISTS("${FUNCTION}" ${VARIABLE})
+        if (NOT ${VARIABLE})
+            unset(${VARIABLE} CACHE)
+            # Retry with the library specified
+            CHECK_LIBRARY_EXISTS("${LIBRARY}" "${FUNCTION}" "" ${VARIABLE})
+        endif ()
+
+        if (${VARIABLE})
+            break()
+        endif()
+    ENDFOREACH()
     if (NOT ${VARIABLE})
-        unset(${VARIABLE} CACHE)
-        # Retry with the library specified
-        CHECK_LIBRARY_EXISTS("${LIBRARY}" "${FUNCTION}" "" ${VARIABLE})
-    endif ()
-    if (NOT ${VARIABLE})
-        message(FATAL_ERROR "Required function '${FUNCTION}' not found")
+        list(LENGTH FUNCTIONS functions_length)
+        if (functions_length EQUAL 1)
+            message(FATAL_ERROR "Required function '${FUNCTIONS}' not found")
+        else()
+            string(REPLACE " " ", " FUNCTIONS_COMMA ${FUNCTIONS_SPACE})
+            message(FATAL_ERROR "Required function not found, require one of ${FUNCTIONS_COMMA}")
+        endif()
     endif ()
 endmacro ()
