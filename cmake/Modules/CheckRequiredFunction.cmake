@@ -14,6 +14,8 @@ macro(CHECK_REQUIRED_FUNCTION FUNCTIONS_SPACE LIBRARY VARIABLE)
 
         if (${VARIABLE})
             break()
+        else()
+            unset(${VARIABLE} CACHE)
         endif()
     ENDFOREACH()
     if (NOT ${VARIABLE})
