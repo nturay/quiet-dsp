@@ -91,4 +91,7 @@
 /* The size of `unsigned int', as computed by sizeof. */
 #cmakedefine SIZEOF_UNSIGNED_INT @SIZEOF_UNSIGNED_INT@
 
+/* Define to 1 if <math.h> contains single-precision fp. */
+#cmakedefine HAVE_SINGLE_FP @HAVE_SINGLE_FP@
+
 #endif // __LIQUID_CONFIG_H__
