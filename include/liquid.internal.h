@@ -74,10 +74,12 @@ static const liquid_float_complex _Complex_I(0.0f, 1.0f);
 #endif
 
 #ifndef HAVE_SINGLE_FP
+extern "C" {
 static inline float sinf(float f) { return (float)sin(f); }
 static inline float cosf(float f) { return (float)cos(f); }
 static inline float expf(float f) { return (float)exp(f); }
 static inline float sqrtf(float f) { return (float)sqrt(f); }
+}
 #endif
 
 
