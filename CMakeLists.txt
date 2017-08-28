@@ -80,6 +80,11 @@ CHECK_REQUIRED_FUNCTION(cimagf m HAVE_CIMAGF)
 CHECK_REQUIRED_FUNCTION("sqrtf sqrt" m HAVE_SQRTF)
 
 CHECK_LIBRARY_EXISTS(m sqrtf "" HAVE_LIBM)
+CHECK_FUNCTION_EXISTS(sinf HAVE_SINGLE_FP)
+if (NOT HAVE_SINGLE_FP)
+    unset(HAVE_SINGLE_FP CACHE)
+    CHECK_LIBRARY_EXISTS(m sinf "" HAVE_SINGLE_FP)
+endif ()
 
 find_path(fec_include NAMES fec.h)
 find_library(fec_library NAMES fec)
