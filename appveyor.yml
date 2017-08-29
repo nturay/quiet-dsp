@@ -44,6 +44,7 @@ build_script:
     - cmake -G "%GENERATOR%" -DCMAKE_C_COMPILER=%COMPILER% -DCMAKE_CXX_COMPILER=%COMPILER% -DCMAKE_BUILD_TYPE=Release -DLIQUID_BUILD_EXAMPLES=off -DLIQUID_BUILD_SANDBOX=off ..
     - cmake --build . --config Release
     - cmake --build . --config Release --target autotest
+    - dumpbin /headers Release\liquid.lib
 
 test_script:
     - cd %APPVEYOR_BUILD_FOLDER%
