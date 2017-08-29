@@ -912,6 +912,7 @@ set(utility_SOURCES
     src/utility/src/msb_index.c
     src/utility/src/pack_bytes.c
     src/utility/src/shift_array.c
+    src/utility/src/single_fp.c
     )
 
 set(utility_AUTOTESTS_SOURCES
