@@ -470,7 +470,7 @@ set(filter_SOURCES
 	src/filter/src/bessel.c
 	src/filter/src/butter.c
 	src/filter/src/cheby1.c
-    src/filter/src/cheby2.c
+	src/filter/src/cheby2.c
 	src/filter/src/ellip.c
 	src/filter/src/filter_rrrf.c
 	src/filter/src/filter_crcf.c
@@ -506,6 +506,7 @@ set(filter_AUTOTESTS_SOURCES
 	src/filter/tests/msresamp_crcf_autotest.c
 	src/filter/tests/resamp_crcf_autotest.c
 	src/filter/tests/resamp2_crcf_autotest.c
+	src/filter/tests/rresamp_crcf_autotest.c
 	src/filter/tests/symsync_crcf_autotest.c
 	src/filter/tests/symsync_rrrf_autotest.c
     )
@@ -605,6 +606,8 @@ set(framing_SOURCES
     src/framing/src/bsync_crcf.c
     src/framing/src/bsync_cccf.c
     src/framing/src/detector_cccf.c
+    src/framing/src/dsssframegen.c
+    src/framing/src/dsssframesync.c
     src/framing/src/framedatastats.c
     src/framing/src/framesyncstats.c
     src/framing/src/framegen64.c
@@ -665,12 +668,14 @@ set(math_SOURCES
     )
 
 set(math_AUTOTESTS_SOURCES
+    src/math/tests/gcd_autotest.c
     src/math/tests/kbd_autotest.c
     src/math/tests/math_autotest.c
     src/math/tests/math_bessel_autotest.c
     src/math/tests/math_gamma_autotest.c
     src/math/tests/math_complex_autotest.c
     src/math/tests/polynomial_autotest.c
+    src/math/tests/prime_autotest.c
     )
 
 set(math_BENCHMARKS_SOURCES
@@ -798,10 +803,12 @@ set(multichannel_BENCHMARKS_SOURCES
 set(nco_SOURCES
     src/nco/src/nco_crcf.c
     src/nco/src/nco.utilities.c
+    src/nco/src/synth_crcf.c
     )
 
 set(nco_AUTOTESTS_SOURCES
     src/nco/tests/nco_crcf_frequency_autotest.c
+    src/nco/tests/nco_crcf_mix_autotest.c
     src/nco/tests/nco_crcf_phase_autotest.c
     src/nco/tests/nco_crcf_pll_autotest.c
     src/nco/tests/unwrap_phase_autotest.c
@@ -907,6 +914,7 @@ set(utility_SOURCES
     src/utility/src/msb_index.c
     src/utility/src/pack_bytes.c
     src/utility/src/shift_array.c
+    src/utility/src/utility.c
     )
 
 set(utility_AUTOTESTS_SOURCES

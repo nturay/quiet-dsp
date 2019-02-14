@@ -27,6 +27,7 @@ LIQUID_BUILD_SAMPLES(
     detector_cccf_example
     dotprod_rrrf_example
     dotprod_cccf_example
+    dsssframesync_example
     eqlms_cccf_block_example
     eqlms_cccf_blind_example
     eqlms_cccf_decisiondirected_example

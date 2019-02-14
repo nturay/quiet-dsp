@@ -6,6 +6,7 @@ build:
 branches:
     only:
         - devel
+        - mega_merge
 
 environment:
     matrix:
