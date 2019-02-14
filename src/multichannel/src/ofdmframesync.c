@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 - 2015 Joseph Gaeddert
+ * Copyright (c) 2007 - 2017 Joseph Gaeddert
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,8 +81,9 @@ struct ofdmframesync_s {
 
     // gain
     float g0;               // nominal gain (coarse initial estimate)
-    liquid_float_complex * G0;     // complex subcarrier gain estimate, S0[0]
-    liquid_float_complex * G1;     // complex subcarrier gain estimate, S0[1]
+    liquid_float_complex * G0a;    // complex subcarrier gain estimate, S0[a]
+    liquid_float_complex * G0b;    // complex subcarrier gain estimate, S0[b]
+    liquid_float_complex * G1;     // complex subcarrier gain estimate, S1
     liquid_float_complex * G;      // complex subcarrier gain estimate
     liquid_float_complex * B;      // subcarrier phase rotation due to backoff
     liquid_float_complex * R;      // 
@@ -208,17 +209,17 @@ ofdmframesync ofdmframesync_create(unsigned int           _M,
 
     // gain
     q->g0 = 1.0f;
-    q->G0 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
-    q->G1 = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
-    q->G  = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
-    q->B  = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
-    q->R  = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->G0a = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->G0b = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->G   = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->B   = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
+    q->R   = (liquid_float_complex*) malloc((q->M)*sizeof(liquid_float_complex));
 
 #if 1
-    memset(q->G0, 0x00, q->M*sizeof(liquid_float_complex));
-    memset(q->G1, 0x00, q->M*sizeof(liquid_float_complex));
-    memset(q->G , 0x00, q->M*sizeof(liquid_float_complex));
-    memset(q->B,  0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->G0a, 0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->G0b, 0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->G ,  0x00, q->M*sizeof(liquid_float_complex));
+    memset(q->B,   0x00, q->M*sizeof(liquid_float_complex));
 #endif
 
     // timing backoff
@@ -301,8 +302,8 @@ void ofdmframesync_destroy(ofdmframesync _q)
     free(_q->s1);
 
     // free gain arrays
-    free(_q->G0);
-    free(_q->G1);
+    free(_q->G0a);
+    free(_q->G0b);
     free(_q->G);
     free(_q->B);
     free(_q->R);
@@ -456,10 +457,10 @@ void ofdmframesync_execute_seekplcp(ofdmframesync _q)
 #endif
 
     // estimate S0 gain
-    ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0);
+    ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0a);
 
     liquid_float_complex s_hat;
-    ofdmframesync_S0_metrics(_q, _q->G0, &s_hat);
+    ofdmframesync_S0_metrics(_q, _q->G0a, &s_hat);
     s_hat *= g;
 
     float tau_hat  = cargf(s_hat) * (float)(_q->M2) / (2*M_PI);
@@ -516,10 +517,10 @@ void ofdmframesync_execute_S0a(ofdmframesync _q)
     // TODO : re-estimate nominal gain
 
     // estimate S0 gain
-    ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0);
+    ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0a);
 
     liquid_float_complex s_hat;
-    ofdmframesync_S0_metrics(_q, _q->G0, &s_hat);
+    ofdmframesync_S0_metrics(_q, _q->G0a, &s_hat);
     s_hat *= _q->g0;
 
     _q->s_hat_0 = s_hat;
@@ -562,10 +563,10 @@ void ofdmframesync_execute_S0b(ofdmframesync _q)
     windowcf_read(_q->input_buffer, &rc);
 
     // estimate S0 gain
-    ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G1);
+    ofdmframesync_estimate_gain_S0(_q, &rc[_q->cp_len], _q->G0b);
 
     liquid_float_complex s_hat;
-    ofdmframesync_S0_metrics(_q, _q->G1, &s_hat);
+    ofdmframesync_S0_metrics(_q, _q->G0b, &s_hat);
     s_hat *= _q->g0;
 
     _q->s_hat_1 = s_hat;
@@ -601,7 +602,7 @@ void ofdmframesync_execute_S0b(ofdmframesync _q)
     liquid_float_complex g_hat = 0.0f;
     unsigned int i;
     for (i=0; i<_q->M; i++)
-        g_hat += _q->G1[i] * conjf(_q->G0[i]);
+        g_hat += _q->G0b[i] * conjf(_q->G0a[i]);
 
 #if 0
     // compute carrier frequency offset estimate using freq. domain method
@@ -869,7 +870,7 @@ void ofdmframesync_estimate_eqgain(ofdmframesync _q,
         _q->x[i] = (i < _ntaps) ? 1.0f : 0.0f;
     FFT_EXECUTE(_q->fft);
 
-    memmove(_q->G0, _q->G, _q->M*sizeof(liquid_float_complex));
+    memmove(_q->G0a, _q->G, _q->M*sizeof(liquid_float_complex));
 
     // smooth complex equalizer gains
     for (i=0; i<_q->M; i++) {
@@ -891,8 +892,8 @@ void ofdmframesync_estimate_eqgain(ofdmframesync _q,
             w = _q->X[(i + _q->M - j) % _q->M];
 
             // accumulate gain
-            //G_hat += w * 0.5f * (_q->G0[j] + _q->G1[j]);
-            G_hat += w * _q->G0[j];
+            //G_hat += w * 0.5f * (_q->G0a[j] + _q->G0b[j]);
+            G_hat += w * _q->G0a[j];
             w0 += w;
         }
 
@@ -1228,8 +1229,8 @@ void ofdmframesync_debug_print(ofdmframesync _q,
     fprintf(fid,"G_hat  = zeros(1,M);\n");
     fprintf(fid,"G      = zeros(1,M);\n");
     for (i=0; i<_q->M; i++) {
-        fprintf(fid,"G0(%3u)    = %12.8f + j*%12.8f;\n", i+1, crealf(_q->G0[i]),   cimagf(_q->G0[i]));
-        fprintf(fid,"G1(%3u)    = %12.8f + j*%12.8f;\n", i+1, crealf(_q->G1[i]),   cimagf(_q->G1[i]));
+        fprintf(fid,"G0(%3u)    = %12.8f + j*%12.8f;\n", i+1, crealf(_q->G0a[i]),  cimagf(_q->G0a[i]));
+        fprintf(fid,"G1(%3u)    = %12.8f + j*%12.8f;\n", i+1, crealf(_q->G0b[i]),  cimagf(_q->G0b[i]));
         fprintf(fid,"G_hat(%3u) = %12.8f + j*%12.8f;\n", i+1, crealf(_q->G_hat[i]),cimagf(_q->G_hat[i]));
         fprintf(fid,"G(%3u)     = %12.8f + j*%12.8f;\n", i+1, crealf(_q->G[i]),    cimagf(_q->G[i]));
     }
