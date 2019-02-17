@@ -42,8 +42,8 @@ void test_harness_rresamp_crcf(unsigned int _P,
     unsigned int  nx = n * _Q;  // number of input samples
 
     // buffers
-    liquid_float_complex * x = alloca(nx*sizeof(liquid_float_complex));        // input sample buffer
-    liquid_float_complex * y = alloca(ny*sizeof(liquid_float_complex));        // output sample buffer
+    liquid_float_complex * x = (liquid_float_complex*)alloca(nx*sizeof(liquid_float_complex));        // input sample buffer
+    liquid_float_complex * y = (liquid_float_complex*)alloca(ny*sizeof(liquid_float_complex));        // output sample buffer
 
     // create resampler
     rresamp_crcf q = rresamp_crcf_create(_P, _Q, _m, _bw, _As);
@@ -82,8 +82,8 @@ void test_harness_rresamp_crcf(unsigned int _P,
     // run FFT and ensure that carrier has moved and that image
     // frequencies and distortion have been adequately suppressed
     unsigned int nfft = 8192;   // about 1500 max samples
-    liquid_float_complex * yfft = alloca(nfft*sizeof(liquid_float_complex));   // fft input
-    liquid_float_complex * Yfft = alloca(nfft*sizeof(liquid_float_complex));   // fft output
+    liquid_float_complex * yfft = (liquid_float_complex*)alloca(nfft*sizeof(liquid_float_complex));   // fft input
+    liquid_float_complex * Yfft = (liquid_float_complex*)alloca(nfft*sizeof(liquid_float_complex));   // fft output
     for (i=0; i<nfft; i++)
         yfft[i] = i < ny ? y[i]/(wsum*sqrt(r)) : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);
