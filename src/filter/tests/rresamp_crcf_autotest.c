@@ -85,7 +85,7 @@ void test_harness_rresamp_crcf(unsigned int _P,
     liquid_float_complex * yfft = (liquid_float_complex*)alloca(nfft*sizeof(liquid_float_complex));   // fft input
     liquid_float_complex * Yfft = (liquid_float_complex*)alloca(nfft*sizeof(liquid_float_complex));   // fft output
     for (i=0; i<nfft; i++)
-        yfft[i] = i < ny ? y[i]/(wsum*sqrt(r)) : 0.0f;
+        yfft[i] = i < ny ? y[i]/(float)(wsum*sqrt(r)) : 0.0f;
     fft_run(nfft, yfft, Yfft, LIQUID_FFT_FORWARD, 0);
     fft_shift(Yfft, nfft);  // run FFT shift
 
