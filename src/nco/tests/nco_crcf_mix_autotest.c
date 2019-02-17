@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include "autotest/autotest.h"
 #include "liquid.h"
-#include "liquid.internal.h"
 
 void autotest_nco_crcf_mix_block_up()
 {
