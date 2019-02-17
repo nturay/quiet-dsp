@@ -21,9 +21,9 @@
  */
 
 #include <stdlib.h>
-#include <complex.h>
 #include "autotest/autotest.h"
 #include "liquid.h"
+#include "liquid.internal.h"
 
 void autotest_nco_crcf_mix_block_up()
 {
@@ -39,11 +39,11 @@ void autotest_nco_crcf_mix_block_up()
     nco_crcf_set_frequency(nco, freq);
 
     // generate signal
-    liquid_float_complex buf_0[buf_len];
-    liquid_float_complex buf_1[buf_len];
+    liquid_float_complex * buf_0 = (liquid_float_complex*)alloca(buf_len*sizeof(liquid_float_complex));
+    liquid_float_complex * buf_1 = (liquid_float_complex*)alloca(buf_len*sizeof(liquid_float_complex));
     unsigned int i;
     for (i=0; i<buf_len; i++)
-        buf_0[i] = cexpf(_Complex_I*2*M_PI*randf());
+        buf_0[i] = cexpf(_Complex_I*(float)(2.f*M_PI)*randf());
 
     // mix signal
     nco_crcf_mix_block_up(nco, buf_0, buf_1, buf_len);
