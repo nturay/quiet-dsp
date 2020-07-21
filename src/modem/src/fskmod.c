@@ -54,11 +54,12 @@ fskmod fskmod_create(unsigned int _m,
                      unsigned int _k,
                      float        _bandwidth)
 {
+    printf("fskmod_create, _m = %d, _k = %d, _bandwidth = %f\n", _m, _k, _bandwidth);
     // validate input
     if (_m == 0) {
         fprintf(stderr,"error: fskmod_create(), bits/symbol must be greater than 0\n");
         exit(1);
-    } else if (_k < 2 || _k > 2048) {
+    } else if (_k < (1 << _m) || _k > 2048) {
         fprintf(stderr,"error: fskmod_create(), samples/symbol must be in [2^_m, 2048]\n");
         exit(1);
     } else if (_bandwidth <= 0.0f || _bandwidth >= 0.5f) {
@@ -90,6 +91,10 @@ fskmod fskmod_create(unsigned int _m,
 // destroy fskmod object
 void fskmod_destroy(fskmod _q)
 {
+    if (!_q) {
+        return;
+    }
+
     // destroy oscillator object
     nco_crcf_destroy(_q->oscillator);
 
