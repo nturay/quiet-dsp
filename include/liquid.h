@@ -4943,7 +4943,8 @@ typedef struct {
 
 typedef struct fskframegen_s * fskframegen;
 
-fskframegen fskframegen_create();
+fskframegen fskframegen_create(fskframegenprops_s * _props,
+                               float _bandwidth);
 void fskframegen_destroy(fskframegen _q);
 void fskframegen_reset(fskframegen _q);
 int fskframegen_is_assembled(fskframegen _q);
