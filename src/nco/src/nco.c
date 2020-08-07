@@ -340,9 +340,14 @@ uint32_t NCO(_constrain)(float _theta)
     // TODO: make more computationally efficient
     while (_theta >=  2*M_PI) _theta -= 2*M_PI;
     while (_theta <= -2*M_PI) _theta += 2*M_PI;
-    
-    // 1/(2 pi) ~ 0.159154943091895
-    return (uint32_t)round(_theta * (1LLU<<32) * 0.159154943091895);
+
+    if (_theta >= 0) {
+        // 1/(2 pi) ~ 0.159154943091895
+        return (uint32_t)round(_theta * (1LLU<<32) * 0.159154943091895);
+    } else {
+        // 1/(2 pi) ~ 0.159154943091895
+        return (uint32_t)(~((int)(round(_theta * (-1) * (1LLU<<32) * 0.159154943091895))) + 1);
+    }
 }
 
 // compute index for sine look-up table
